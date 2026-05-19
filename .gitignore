@@ -1,0 +1,74 @@
+# bes-backup .gitignore
+#
+# Strategy (see references/self-modifying-agent-backup.md):
+#   - Track: intentional state (persona, agent-authored skills, cron, memories, config, custom scripts)
+#   - Exclude: secrets, runtime state, vendored bundled-skill categories
+#   - Bundled-skill categories use **/-style excludes so individual skills can be
+#     re-included later via `!skills/<cat>/<skill>/` + `!skills/<cat>/<skill>/**`
+#
+# Convention: when customizing a bundled skill, add a re-include block at the END
+# of this file. See trailing block for examples (none yet — Bes is freshly born).
+
+# ─── Secrets (NEVER track) ──────────────────────────────────────────────────
+.env
+auth.json
+*.pem
+*.key
+*-token
+*-credentials
+.git-credentials
+
+# ─── Runtime / ephemeral state ──────────────────────────────────────────────
+sessions/
+logs/
+audio_cache/
+pairing/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.lock
+*.pid
+*.sock
+
+# Hermes-internal noisy state
+skills/.curator_state
+skills/.usage.json
+skills/.hub/
+skills/.skills_prompt_snapshot.json
+.skills_prompt_snapshot.json
+
+# Vendored Hermes source + node bundle (regenerable from install)
+hermes-agent/
+node/
+
+# ─── Bundled skill categories (vendored — re-include individual skills as needed) ───
+# Use `skills/<cat>/**` rather than `skills/<cat>/` so the directory itself is
+# tracked-eligible and re-include patterns below can work.
+skills/analytics/**
+skills/apple/**
+skills/autonomous-ai-agents/**
+skills/creative/**
+skills/data-science/**
+skills/devops/**
+skills/dogfood/**
+skills/email/**
+skills/gaming/**
+skills/github/**
+skills/mcp/**
+skills/media/**
+skills/mlops/**
+skills/note-taking/**
+skills/productivity/**
+skills/red-teaming/**
+skills/research/**
+skills/smart-home/**
+skills/social-media/**
+skills/software-development/**
+skills/yuanbao/**
+
+# ─── Re-include exceptions for customized bundled skills ────────────────────
+# When you customize a bundled skill, add lines like:
+#   !skills/productivity/linear/
+#   !skills/productivity/linear/SKILL.md
+# (none yet — Bes is fresh)
