@@ -109,6 +109,29 @@ Template files use the **Templater plugin**, NOT core Obsidian templates. Templa
 3. When simplifying templates, preserve ALL Templater tags exactly as-is.
 4. Always review the full diff before committing template changes.
 
+## Category notes and templates
+
+The vault has four category notes: **Meetings**, **Organizations**, **People**, **Projects**. Each has a corresponding template in `<vault>/Templates/`. When creating a note of a given type, follow that type's template. When searching for notes by category, filter by `category: "[[CategoryName]]"`.
+
+### Templates (from `<vault>/Templates/`)
+
+All four share the same frontmatter skeleton:
+```yaml
+---
+id: "<% tp.date.now("YYYYMMDDHHmmss") %>"
+daily_note: "<% tp.date.now("[[YYYY-MM-DD dddd]]") %>"
+category: "[[<CategoryName>]]"
+---
+```
+
+Differences by type:
+- **New Meeting.md** — `category: "[[Meetings]]"`. Adds `#meeting` tag inline. Renames file to `YYYY-MM-DD` (date only, no title — title added manually after creation).
+- **New Person.md** — `category: "[[People]]"`. Renames file to timestamp.
+- **New Organization.md** — `category: "[[Organizations]]"`. Renames file to timestamp.
+- **New Project.md** — `category: "[[Projects]]"`. Renames file to timestamp.
+
+When Bes creates these notes (bypassing Templater), substitute the Templater expressions with real values and follow the rename convention for the filename.
+
 ## Filename conventions
 
 Different note types follow different filename rules, defined by the template for that type:
@@ -116,8 +139,8 @@ Different note types follow different filename rules, defined by the template fo
 - **Default** (most notes): `[Descriptive title] YYYYMMDDHHmmss` — descriptive title followed by file-created timestamp.
 - **Daily Notes**: `YYYY-MM-DD dddd` (e.g. `2026-05-20 Wednesday`). **Current** daily notes live in the vault root; **archived** ones get moved to `Daily Notes/` after the day is done.
 - **Weekly Reviews**: `YYYY-MM-DD Weekly Review` (using the Friday date).
-- **Meeting notes**: `YYYY-MM-DD [Descriptive title]`.
-- **Projects, sources, Templates contents**: simple descriptive titles, no timestamp.
+- **Meeting notes**: `YYYY-MM-DD [Descriptive title]` — date prefix, then a short descriptive title.
+- **People / Organizations / Projects**: simple descriptive title, no timestamp (Templater renames to timestamp, but Bes should use a meaningful name instead).
 
 ## YAML frontmatter
 
