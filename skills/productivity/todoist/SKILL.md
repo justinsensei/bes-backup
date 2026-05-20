@@ -38,6 +38,28 @@ Justin's task system. Todoist Pro account (uid `49270620`), shared between this 
 - Recurring habits you'd track in a habit tracker (sleep, exercise) → recurring Todoist tasks work for these but Justin hasn't asked for that pattern; don't impose it.
 - Anything Clio-related — Clio doesn't have the integration, so don't tell Justin "I'll add this to Clio's Todoist."
 
+## Justin's GTD structure
+
+Justin uses Todoist as a GTD system. The full structure is in `references/justin-gtd-structure.md`. Key facts for daily use:
+
+- **Projects = areas of focus**: Work (blue), Personal (green). `#Hermes` is a sub-Project under Work — tasks there are actioned BY the Hermes infra agent, not Justin.
+- **Someday Maybe** is a section inside each Project (not a separate Project). Any task dropped there **must also get the `@someday` label** — this is how the Next Actions filters exclude them (Todoist can't filter by section).
+- **`@waiting`** = delegated or blocked. **`@someday`** = Someday Maybe. Both labels must be applied manually at capture time.
+- **Default routing**: Inbox, unless Justin names a project or it obviously belongs in Work/Personal.
+- **Filters**: "Next Actions — Work", "Next Actions — Personal", "Waiting For" — already created, don't recreate.
+
+## Capture from daily notes / email
+
+When scanning Obsidian daily notes or email for action items:
+
+1. **Daily notes**: check vault root (today's note) AND `Daily Notes/` archive (past days). Read the last 7 days.
+2. **Skip completed items**: in daily notes, tasks marked `[x]` in the Things Log are done — skip them.
+3. **Skip decisions-already-made**: entries in "Decisions Made" sections are not action items.
+4. **Capture from Open Questions / Blockers**: these are the richest source of genuine open actions.
+5. **Email noise to filter**: automated notifications, shipping/delivery, marketing newsletters, payment receipts, parking receipts, calendar invite confirmations, Todoist onboarding emails, App Store Connect issue alerts (Justin is not the one who handles those), Readwise summaries, Substack newsletters.
+6. **Add descriptions**: include context (who to follow up with, relevant issue numbers, deadlines) in the task description — not in the content.
+7. **Batch-add**: use a single `add-tasks` call for all captured items. Confirm with Justin first only if the list is large and contains uncertain items.
+
 ## Justin-specific conventions
 
 1. **Don't over-create.** One well-shaped task beats five fragmented sub-bullets. When in doubt, ask. Justin would rather get one clarifying question than discover 8 micro-tasks in his inbox.
@@ -234,6 +256,10 @@ mcp_servers:
 Token via `hermes config set TODOIST_API_KEY '...'` (writes to `~/.hermes/.env`, never committed).
 
 On restart, look for `MCP server 'todoist' (stdio): registered 54 tool(s)` in `~/.hermes/logs/agent.log`. If you see anything less than 54, something's wrong with the env var or the package version.
+
+## Reference files
+
+- `references/justin-gtd-structure.md` — Justin's full GTD project/label/filter structure with design rationale. Load this before restructuring anything or setting up new Projects/filters.
 
 ## Notes
 
