@@ -7,3 +7,5 @@ Obsidian vault has four category notes: Meetings, Organizations, People, Project
 Todoist structure (as of 2026-05-20): Projects = Work (blue), Personal (green), each with a Someday Maybe section. Sub-Project: #Hermes under #Work — for Hermes Agent setup/infra tasks, actioned by Hermes agent. Labels: @waiting (orange), @someday (grey). Filters: "Next Actions — Work" (#Work & !@waiting & !@someday), "Next Actions — Personal" (#Personal & !@waiting & !@someday), "Waiting For" (@waiting). Convention: items in Someday Maybe sections get @someday; delegated/blocked items get @waiting.
 §
 App Store Connect issue emails are not Justin's to handle — ignore them when capturing action items from email.
+§
+Todoist is for actions only — no informational notes or FYIs. If something isn't actionable, don't capture it.
