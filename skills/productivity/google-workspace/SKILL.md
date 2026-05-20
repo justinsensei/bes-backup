@@ -444,6 +444,28 @@ All commands return JSON. Parse with `jq` or read directly. Key fields:
 - **Docs create**: `{status: "created", documentId, title, url}`
 - **Docs append**: `{status: "appended", documentId, inserted_at, characters}`
 
+## Email noise filtering (for action-item capture)
+
+When scanning Gmail to extract action items for Todoist or similar:
+
+**Skip these automatically — they are never actionable for Justin:**
+- Automated notifications: shipping/delivery (Amazon, etc.), parking receipts (PayByPhone), payment receipts
+- App Store Connect issue alerts — Justin doesn't handle these; engineering does
+- Calendar invite confirmations (accepted/declined auto-replies)
+- Marketing newsletters (Mobbin, Loom, Figma announcements, Substack, Readwise summaries, Lenny's Newsletter, etc.)
+- Todoist onboarding/tip emails
+- Raymond James email-address-update confirmations
+- Proud Haven / Hello Neighbor weekly newsletters (volunteer org updates, not personal asks)
+- Guidepoint consultation requests — decline unless Justin explicitly says he wants to take them
+
+**Read the full body before deciding on:**
+- Emails from schools (Waldorf Pittsburgh, Winchester-Thurston) — often contain hard deadlines
+- Emails from family (Nana, teachers) — may require coordinated action
+- Raymond James / financial advisor threads — may have pending decisions
+- Emails from SignLab colleagues — check for asks, not just FYIs
+
+**Capture rule:** Only add to Todoist if there is a concrete next action for Justin. Informational emails, FYIs, and emails where Justin already replied are not actions.
+
 ## Rules
 
 1. **Never send email, create/delete calendar events, delete Drive files, share files, or modify Docs/Sheets without confirming with the user first.** Show what will be done (recipients, file IDs, content, share role) and ask for approval. For `drive delete`, prefer the default trash (reversible) over `--permanent`.
