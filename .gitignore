@@ -109,3 +109,21 @@ skills/note-taking/bes-email-dispatch/**/*.pyc
 # Exclude pycache from within the allowlisted dir
 skills/social-media/slack/**/__pycache__/
 skills/social-media/slack/**/*.pyc
+
+# Tracked customizations of bundled skills: jq-pipe migration (replaced
+# `| python3 -m json.tool` with `| jq .` so Hermes tirith scanner stops
+# flagging curl|interpreter as HIGH risk on every API call). Full-dir
+# allowlist so future patches/refs/scripts get backed up automatically.
+!skills/productivity/linear/
+!skills/productivity/linear/**
+!skills/productivity/airtable/
+!skills/productivity/airtable/**
+!skills/research/arxiv/
+!skills/research/arxiv/**
+!skills/creative/comfyui/
+!skills/creative/comfyui/**
+# Exclude pycache from any of the above
+skills/productivity/linear/**/__pycache__/
+skills/productivity/airtable/**/__pycache__/
+skills/research/arxiv/**/__pycache__/
+skills/creative/comfyui/**/__pycache__/
