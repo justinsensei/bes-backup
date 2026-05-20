@@ -102,3 +102,10 @@ skills/productivity/google-workspace/scripts/__pycache__/
 # Exclude pycache from within the allowlisted dir
 skills/note-taking/bes-email-dispatch/**/__pycache__/
 skills/note-taking/bes-email-dispatch/**/*.pyc
+
+# Agent-authored skill: slack (SignLab workspace, user-token via xoxp-)
+!skills/social-media/slack/
+!skills/social-media/slack/**
+# Exclude pycache from within the allowlisted dir
+skills/social-media/slack/**/__pycache__/
+skills/social-media/slack/**/*.pyc
