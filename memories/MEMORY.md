@@ -5,3 +5,5 @@ Email access: read Gmail via Google OAuth, NOT himalaya. Tokens at `~/.hermes/go
 Obsidian vault has four category notes: Meetings, Organizations, People, Projects. Each has its own template. When creating a note of a category, follow that category's template. When searching for notes by category, filter by `category: "[[CategoryName]]"` (e.g. `category: "[[Meetings]]"`).
 §
 Todoist structure (as of 2026-05-20): Projects = Work (blue), Personal (green), each with a Someday Maybe section. Sub-Project: #Hermes under #Work — for Hermes Agent setup/infra tasks, actioned by Hermes agent. Labels: @waiting (orange), @someday (grey). Filters: "Next Actions — Work" (#Work & !@waiting & !@someday), "Next Actions — Personal" (#Personal & !@waiting & !@someday), "Waiting For" (@waiting). Convention: items in Someday Maybe sections get @someday; delegated/blocked items get @waiting.
+§
+App Store Connect issue emails are not Justin's to handle — ignore them when capturing action items from email.
