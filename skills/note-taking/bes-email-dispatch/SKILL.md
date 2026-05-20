@@ -40,31 +40,33 @@ For each message ID:
 
    | Shape of instruction | Action |
    |---|---|
-   | "Save as a note" / "Save this" / "Note this" / empty | Create a new note in `Notebook/` titled from the original subject |
-   | "Person note for <Name>" / "Add to <Name>'s page" / "<Name> works at <Org>" | Create or update a person note (see Person notes below) |
-   | "Add to <existing note>" / "Append to <title>" | Find the closest matching note by title; append the email's relevant content under a dated heading |
+   | "Save as a note" / "Save this" / "Note this" / empty | Create a new note at the **root of the vault** titled from the original subject |
+   | "Person note for <Name>" / "Add to <Name>'s page" / "<Name> works at <Org>" | Create or update a person note at the **root of the vault** (see Person notes below) |
+   | "Add to <existing note>" / "Append to <title>" | Find the closest matching note by title; append under a dated heading **in whatever folder the note already lives in** (do not move the note) |
    | "Summarize and …" / free-form prose | Use judgment. The instruction is authorization to do reasonable, reversible things in the vault. |
 
 3. **Write to vault**. Vault path is `/home/justin.guest/vault` (also in `$OBSIDIAN_VAULT_PATH`). The vault syncs to Justin's Macbook via the watcher (see `vm-hermes-vault-sync` skill) — your writes show up on his iPad within a minute or two.
 
+   **All new notes land at the root of the vault.** Sorting into subfolders is a distinct flow Justin handles himself. The vault has subfolders (`Notebook/`, `Daily Notes/`, `Granola/`, `Meetings/`, `References/`, `Attachments/`, etc.) but they exist for Justin's manual organization, not as agent write targets.
+
 4. **Report**. One concise line per processed message in your final response, suitable for Telegram delivery:
-   - `✅ <subject snippet> → created Notebook/<filename>.md (instruction: <verbatim or "default save">)`
-   - `✅ <subject snippet> → updated People/<Name>.md (added: <one-sentence summary>)`
-   - `⚠ <subject snippet> → ambiguous instruction "<text>"; saved to Notebook/<filename>.md and flagged in #review`
+   - `✅ <subject snippet> → created <filename>.md (instruction: <verbatim or "default save">)`
+   - `✅ <subject snippet> → updated <Name>.md (added: <one-sentence summary>)`
+   - `⚠ <subject snippet> → ambiguous instruction "<text>"; saved to <filename>.md and flagged in body`
    - `❌ <subject snippet> → load_context failed (is_real=false). Skipping.`
 
 ## Vault layout conventions
 
-The vault uses top-level index notes plus topic folders. Inspect first if unsure:
+**All new notes go to the root of the vault.** Justin sorts manually — pre-sorting into folders is the wrong move because it competes with his organizational flow.
 
-- `Notebook/` — general dated notes. **Default destination for "Save as note."** Filename format: `YYYY-MM-DD <Subject>.md` (subject cleaned of `Fwd:` and trimmed to ~60 chars).
-- `People/` — per-person notes. If the folder doesn't exist yet, create it. Filename: `<Full Name>.md`. Look for existing matches case-insensitively before creating; if a match exists with slightly different formatting, append to the existing one rather than creating a duplicate.
-- `Meetings/`, `Granola/`, `Daily Notes/`, `Projects/` — purpose-specific; don't write here unless the instruction explicitly points there.
-- `People.md`, `Organizations.md`, `Projects.md` (top-level files) — index notes. If creating a new Person note, optionally append a `- [[<Name>]]` line to `People.md` (check first whether the link already exists).
+- **New note ("Save as note", default, or no instruction)** → root, filename `YYYY-MM-DD <Subject>.md` (subject cleaned of `Fwd:` and trimmed to ~60 chars; sanitize illegal filename characters: `/ \ : * ? " < > |`).
+- **New person note** → root, filename `<Full Name>.md`. Look for an existing match case-insensitively first; if a match exists with slightly different formatting, append to the existing one rather than creating a duplicate.
+- **Append to an existing note** → use that note's current location, do not move it. If the title match is ambiguous (multiple plausible matches), pick the closest and mention the chosen path in the report; if no match, fall back to creating a new note at root and note that in the report.
+- **Filename collision** → if `YYYY-MM-DD <Subject>.md` already exists, append a short numeric suffix (`YYYY-MM-DD <Subject> 2.md`). Never overwrite.
 
 ## Person note shape
 
-When creating or updating `People/<Name>.md`:
+When creating or updating `<Name>.md` at the root of the vault:
 
 ```markdown
 ---
@@ -93,7 +95,7 @@ When updating, **append** a new `### <date> — <subject>` block under `## Email
 
 ## Default note shape (when "Save as note" or no instruction)
 
-`Notebook/<YYYY-MM-DD> <subject>.md`:
+Filename: `<YYYY-MM-DD> <subject>.md` at the **root of the vault**.
 
 ```markdown
 ---
