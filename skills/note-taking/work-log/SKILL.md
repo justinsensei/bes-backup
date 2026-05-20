@@ -148,6 +148,10 @@ Justin's `bes-vault-sync` watcher auto-commits and pushes the vault to `obsidian
 
 ## Pitfalls
 
+- **Slack channel names in Obsidian must be escaped.** A bare `#channel-name` in a note will be interpreted as an Obsidian tag. Always write `\#channel-name` (backslash prefix) so it renders as plain text.
+
+
+
 - **`gws_multi.py` path varies by Hermes home.** Always resolve it as `${HERMES_HOME:-$HOME/.hermes}/skills/productivity/google-workspace/scripts/gws_multi.py` — don't hardcode `/home/justin.guest/...`.
 - **Gmail date format is `YYYY/MM/DD` with slashes**, not dashes. Calendar event listings use ISO. Don't mix them up.
 - **`slack` CLI defaults to read-only-ish use.** Never let a subagent post to a channel — the work-log gather is read-only by definition.
