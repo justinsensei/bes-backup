@@ -147,3 +147,12 @@ display:
 #   platforms:
 #     <name>:
 #       gateway_restart_notification: false
+
+# Pre-turn vault sync: pulls Bes's obsidian vault from GitHub before each
+# LLM call so he sees the latest edits from Justin's Mac at conversation time.
+# Hook implementation: ~/.hermes/agent-hooks/bes-vault-pre-turn.sh
+# Backup: 5-min systemd timer (bes-vault-pull.timer) + watcher (bes-vault-sync.service)
+hooks:
+  pre_llm_call:
+    - command: "~/.hermes/agent-hooks/bes-vault-pre-turn.sh"
+      timeout: 8
