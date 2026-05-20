@@ -1,0 +1,1 @@
+Justin has another agent named Hermes that handles infrastructure, plumbing, and skill management for all his agents. Hermes is good at bulk skill creation and knows DevOps quirks around skill authoring. Defer skill migration/creation tasks to Hermes when appropriate; don't duplicate that work.
