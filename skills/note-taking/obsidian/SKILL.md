@@ -140,7 +140,7 @@ Different note types follow different filename rules, defined by the template fo
 - **Daily Notes**: `YYYY-MM-DD dddd` (e.g. `2026-05-20 Wednesday`). **Current** daily notes live in the vault root; **archived** ones get moved to `Daily Notes/` after the day is done.
 - **Weekly Reviews**: `YYYY-MM-DD Weekly Review` (using the Friday date).
 - **Meeting notes**: `YYYY-MM-DD [Descriptive title]` — date prefix, then a short descriptive title.
-- **People / Organizations / Projects**: simple descriptive title, no timestamp (Templater renames to timestamp, but Bes should use a meaningful name instead).
+- **People / Organizations / Projects**: simple descriptive title, no timestamp (Templater renames to timestamp, but Bes should use a meaningful name instead). Example: `Bes Setup.md`, not `20260521094904.md`.
 
 ## YAML frontmatter
 
