@@ -49,9 +49,11 @@ This is intentionally broad — you want to know what Todoist already knows. Kee
 
 Spawn one subagent per source in a **single batch**. Each subagent returns a compact bullet list of *open actions* — things Justin needs to do. Not FYIs. Not things others owe him (unless he needs to follow up). Not decisions already made.
 
-Pass `TODAY`, `TOMORROW`, `TODAY_SLASH`, `TOMORROW_SLASH`, `WEEK_FROM_NOW`, and `LINEAR_USER_ID` (if known) into each subagent as verbatim substituted strings.
+Pass `TODAY`, `TOMORROW`, `TODAY_SLASH`, `TOMORROW_SLASH`, `WEEK_FROM_NOW`, `LOOKBACK_HOURS`, `LOOKBACK_START`, and `LOOKBACK_START_SLASH` into each subagent as verbatim substituted strings.
 
 **Budget for every subagent: ≤8 tool calls. Return partial results and stop if budget is exhausted.**
+
+Sources: **Slack, Gmail, Obsidian daily notes, Calendar.** Linear is excluded — Justin manages Linear separately and creates Todoist tasks from it manually.
 
 **Do not pipe command output into a language interpreter** (no `... | python3 -c "..."`, no `... | bash`, no `... | node -e "..."`). The security scanner flags `cmd | python3` etc. as `pipe_to_interpreter` (HIGH) regardless of intent and will halt your run for approval. If you need to post-process JSON, use `jq` (installed). If you need real Python, write a short script to a tempfile and run it as `python3 /tmp/foo.py` — the file boundary is what satisfies the scanner.
 
