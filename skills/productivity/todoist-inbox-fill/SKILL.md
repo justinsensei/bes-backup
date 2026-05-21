@@ -88,39 +88,7 @@ Sources: **Slack, Gmail, Obsidian daily notes, Calendar.** Linear is excluded �
 
 ---
 
-### Subagent B — Linear
-
-- **Toolsets:** `["terminal"]`
-- **Skill:** `linear`
-- **Goal:** Find open Linear issues that are actions for Justin. Budget: 8 tool calls.
-- **Context:**
-  > Justin's Linear user-id is `<LINEAR_USER_ID>` (if blank, resolve once via `{ viewer { id } }` and return the id in your output so it can be cached).
-  >
-  > Run **one** GraphQL query for issues assigned to Justin that are in an actionable state (not done, not cancelled):
-  >
-  > ```graphql
-  > { issues(filter: {
-  >     and: [
-  >       { assignee: { id: { eq: "<LINEAR_USER_ID>" } } },
-  >       { state: { type: { nin: ["completed", "cancelled"] } } }
-  >     ]
-  >   }, first: 50) {
-  >     nodes { identifier title state { name type } priority url team { key } updatedAt }
-  >   } }
-  > ```
-  >
-  > From the results, surface only the ones that look like they need Justin's **active next action** — e.g. In Progress, In Review, or Triage/Unstarted if recently updated (updated in last 7 days).
-  >
-  > Format each as a candidate task:
-  > `- [Linear] <TEAM-ID: title> | state: <state> | url: <url>`
-  >
-  > End with `Total: N candidates`.
-  >
-  > Budget: 8 tool calls. Return what you have and stop.
-
----
-
-### Subagent C — Gmail (work + personal-main)
+### Subagent B — Gmail (work + personal-main)
 
 - **Toolsets:** `["terminal"]`
 - **Skill:** `google-workspace`
@@ -150,7 +118,7 @@ Sources: **Slack, Gmail, Obsidian daily notes, Calendar.** Linear is excluded �
 
 ---
 
-### Subagent D — Obsidian daily notes (last 7 days)
+### Subagent C — Obsidian daily notes (lookback window)
 
 - **Toolsets:** `["terminal", "file"]`
 - **Skill:** `obsidian`
@@ -158,7 +126,7 @@ Sources: **Slack, Gmail, Obsidian daily notes, Calendar.** Linear is excluded �
 - **Context:**
   > Read `OBSIDIAN_VAULT_PATH` from env (fallback: `~/Documents/Obsidian Vault`). Daily note filename format: `YYYY-MM-DD DayName.md`. Current notes live in the vault root; older ones in `Daily Notes/`.
   >
-  > For each of the last 7 days (starting today, <TODAY>), find and read the daily note if it exists.
+  > For each of the last N days matching the lookback window (starting today, <TODAY>, going back to <LOOKBACK_START>), find and read the daily note if it exists.
   >
   > From each note, extract:
   > - Unchecked task items: lines matching `- [ ]` that are not marked done.
@@ -176,7 +144,7 @@ Sources: **Slack, Gmail, Obsidian daily notes, Calendar.** Linear is excluded �
 
 ---
 
-### Subagent E — Calendar (upcoming meetings needing prep)
+### Subagent D — Calendar (upcoming meetings needing prep)
 
 - **Toolsets:** `["terminal"]`
 - **Skill:** `google-workspace`
