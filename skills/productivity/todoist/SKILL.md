@@ -30,18 +30,16 @@ As of May 2026, Justin moved away from pure GTD. The structure is:
 - **Real "projects" (multi-step efforts with accruing context) live in Obsidian**, not in Todoist. When a task is associated with an Obsidian project, that linkage goes in the task's description as prose — typically a wikilink like `Project: [[Project-Name]]` or `From: Meetings/2026-05-20 X.md`. **You can and should follow these links** using your Obsidian skill when the work calls for it.
 - **Labels carry GTD-style context.**
 
-<!-- TODO (Justin + Bes): fill in the label scheme. Likely includes some subset of:
-     - @waiting (delegated / blocked)
-     - @phone / @email / @errand / @home / @deep-work (GTD contexts)
-     - @energy-high / @energy-low (mood-based)
-     - one or more energy/time labels
-     Drop the actual scheme in here once it's settled, ideally as a markdown table:
+| Label | Type | Meaning |
+|---|---|---|
+| `work` | Area | Work tasks |
+| `home` | Area | Home / personal tasks |
+| `@<location>` | Location | Where the task needs to happen, e.g. `@costco`, `@office` |
+| `+<person>` | Person | Person the task involves, e.g. `+nana`, `+sam` |
+| `waiting` | Special | Delegated or blocked — waiting on someone/something |
+| `hermes` | Special | Hermes-originated tasks — **do not touch** |
 
-     | Label | Meaning |
-     |---|---|
-     | @waiting | Delegated or blocked; you're waiting on someone/something |
-     | ... | ... |
--->
+**Label deduction:** When Justin asks Bes to add a task, infer labels from context even if not explicitly stated. A task clearly about work gets `work`; one about picking something up at a specific store gets `@store-name`; one involving a specific person gets `+person`. If ambiguous, leave unlabeled — don't guess. Never infer `hermes` or add it to any task.
 
 - **The `hermes` label** (id `2183843700`, teal) is reserved for Hermes-originated tasks. Bes should not apply, remove, or modify it. If you see it on a task, that means Hermes created it; treat it as a read signal, not something to manage.
 
@@ -112,7 +110,7 @@ When scanning Obsidian daily notes or email for action items:
 1. **Don't over-create.** One well-shaped task beats five fragmented sub-bullets. When in doubt, ask. Justin would rather get one clarifying question than discover 8 micro-tasks in his Inbox.
 2. **Inbox is the default destination.** Justin sorts manually into Now/Next/Later/Maybe. Don't try to be helpful by routing for him.
 3. **Priorities default to `p4`** (Todoist's lowest / unflagged). Only set `p1`/`p2` when Justin explicitly says "urgent", "high priority", "today", or similar. P3 is mid; P4 is the unspecified default.
-4. **Don't pre-empt his hotkey workflow.** Justin has his own quick-entry tooling for the casual case. Bes-side Todoist is for tasks that arise IN conversation with the agent — meeting summaries, follow-ups discovered while researching, work mirrored from Obsidian project notes, etc.
+4. **Create tasks when asked, no friction.** If Justin says "add X to my list", "create a task for Y", "remind me to Z" — just do it. Default destination is Inbox unless he specifies a status project. Infer labels from context (area, location, people) even if not mentioned explicitly. Don't ask for confirmation on straightforward captures — act, then confirm with one line.
 5. **Be conservative with deletes.** Use `complete-tasks` to finish a task, NOT `delete-object`. The completed-task history is useful for retrospectives.
 6. **Use natural-language dates.** `dueString: "tomorrow at 3pm"`, `"every monday"`, `"in 2 weeks"` — Todoist parses these correctly and preserves Justin's timezone (America/New_York). Don't construct ISO timestamps unless you have a specific reason.
 7. **Don't touch the `hermes` label.** It's Hermes's identity marker. If a task is labeled `hermes`, that means the other agent created it. Leave the label alone; otherwise the task is fully in Bes's scope.
