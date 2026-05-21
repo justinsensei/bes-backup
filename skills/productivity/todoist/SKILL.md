@@ -276,6 +276,8 @@ Justin has four saved filters for temporal visibility:
 
 | Filter | Query | ID |
 |---|---|---|
+| Now | `today \| overdue` | 2370421908 |
+| Inbox | `#Inbox` | 2370421909 |
 | This Week | `due before: sun` | 2370421613 |
 | Next Week | `(due: next week \| due after: next week) & due before: 1 week after next week` | 2370421614 |
 | This Month | `due before: first day & !due before: sun & !(due: next week \| due after: next week) & due before: 1 week after next week` | 2370421615 |
