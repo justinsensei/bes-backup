@@ -262,6 +262,26 @@ update-tasks(tasks=[{id: "<id>", projectId: "6ggx3QWJXR72QHQ9"}])
 
 `reschedule-tasks` preserves recurrence patterns; `update-tasks` with `dueString` can silently strip them (Pitfall 1).
 
+### Pattern: bootstrap a new project (Todoist task + Obsidian note)
+
+When Justin starts a new project (lowercase — GTD/general project, not a Todoist Project):
+
+1. Create the Obsidian project note using the New Project template (`/home/justin.guest/vault/Templates/New Project.md`). Filename: simple descriptive title, e.g. `Bes Setup.md` (no timestamp — Bes overrides Templater's timestamp-rename convention for project notes).
+2. Create a tracking task in the appropriate Todoist Project with `description: "Project: [[<Note Name>]]"`.
+3. Any sub-tasks that belong to this project also get `description: "Project: [[<Note Name>]]"`. This is the only link between Todoist and Obsidian — no formal back-sync, just the prose reference.
+
+These two steps can be parallelized (same tool call turn).
+
+### Pattern: capture already-completed items
+
+When Justin says a task is already done, or "I think it's done?":
+
+1. If there's any uncertainty, **verify first** before creating and completing. For tool/integration access tasks, run a smoke test (e.g. `slack whoami`, Linear `{ viewer { name } }` query, `ls ~/.hermes/google_tokens/`).
+2. Create the task normally.
+3. Call `complete-tasks` on it immediately.
+
+Don't skip verification when Justin hedges — "I think it's done" is an invitation to check. The smoke test takes seconds and prevents a completed task from masking a broken integration.
+
 ### Pattern: mirror open actions from an Obsidian project
 
 You're working in an Obsidian project note that has 3 obvious open actions in its "Next Steps" section. Justin asks: "What of this is actually on my Todoist?"
