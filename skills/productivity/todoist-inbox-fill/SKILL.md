@@ -221,9 +221,8 @@ Once Justin responds:
 
 - Batch-add with a single `add-tasks` call (up to 25 items).
 - For each created task, immediately add a brief comment via `add-comments` explaining the source and why it was captured. Keep it to one short sentence. Examples:
-  - "From Slack #product-eng — @maya asked a direct question, no reply yet."
-  - "Linear SL-204 assigned to you, currently In Progress."
-  - "Email from Alex Chen (work) — direct ask about Q3 roadmap."
+  - "From Slack — reminder set on @maya's message re: sprint retro in #product-eng."
+  - "Email from Alex Chen (work) — direct ask about Q3 roadmap, still in inbox."
   - "From daily note 2026-05-20 — unchecked action item under Open Questions."
   - "Calendar: Board review Thu 2pm — external attendees, prep warranted."
   Use a single `add-comments` call with all comments in one batch (one per task).

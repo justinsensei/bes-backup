@@ -213,6 +213,13 @@ context to distinguish these from genuinely reminder-flagged messages.
    requests/minute depending on method). For "scan everything Justin is
    in", batch and add a small `time.sleep(1)` between channel reads.
 
+8. **`reminders:read` scope is not installed.** Calling `reminders.list`
+   via the Slack SDK will fail with `missing_scope`. The installed token
+   does not have this scope. Use `has:reminder` in a search query as a
+   workaround (see "What do I have reminders set on?" in Common recipes).
+   To get the real scope, Justin would need to re-authorize the Slack app
+   with `reminders:read` added.
+
 ## Adding a second workspace later
 
 When/if Justin adds Nous Research or another workspace, the design path is:
