@@ -109,6 +109,19 @@ Template files use the **Templater plugin**, NOT core Obsidian templates. Templa
 3. When simplifying templates, preserve ALL Templater tags exactly as-is.
 4. Always review the full diff before committing template changes.
 
+### Creating new templates via copy
+
+**Do NOT use `write_file` to create a new template based on an existing one.** `write_file` will corrupt nested quotes inside Templater expressions (e.g. `[[[]YYYY-MM-DD dddd[]]]\")` gains a stray backslash). 
+
+Instead, use `cp` + `sed` to clone and modify:
+
+```bash
+cp "<vault>/Templates/New Organization.md" "<vault>/Templates/New Category.md"
+sed -i 's/Organizations/Categories/' "<vault>/Templates/New Category.md"
+```
+
+Always `diff` the result against the source template afterward to confirm only the intended lines differ.
+
 ## Entities and category notes
 
 An **entity** is any note with a `category:` frontmatter field. The canonical list of entity types lives in `<vault>/Categories/`. Each category note is itself an entity (`category: "[[Categories]]"`), including `Categories/Categories.md` which is self-referential.
