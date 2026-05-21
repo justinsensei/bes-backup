@@ -264,15 +264,15 @@ update-tasks(tasks=[{id: "<id>", projectId: "6ggx3QWJXR72QHQ9"}])
 
 `reschedule-tasks` preserves recurrence patterns; `update-tasks` with `dueString` can silently strip them (Pitfall 1).
 
-### Pattern: bootstrap a new project (Todoist task + Obsidian note)
+### Pattern: bootstrap a new project (Todoist Project + Obsidian note)
 
-When Justin starts a new project (lowercase — GTD/general project, not a Todoist Project):
+Use the `manage-projects` skill for the full workflow. Summary:
 
-1. Create the Obsidian project note using the New Project template (`/home/justin.guest/vault/Templates/New Project.md`). Filename: simple descriptive title, e.g. `Bes Setup.md` (no timestamp — Bes overrides Templater's timestamp-rename convention for project notes).
-2. Create a tracking task in the appropriate Todoist Project with `description: "Project: [[<Note Name>]]"`.
-3. Any sub-tasks that belong to this project also get `description: "Project: [[<Note Name>]]"`. This is the only link between Todoist and Obsidian — no formal back-sync, just the prose reference.
+1. Create a Todoist **Project** (capital P) nested under Work or Home.
+2. Add flat tasks directly into that project (no sub-tasks, no `parentId`).
+3. Create an Obsidian project note with `category: "[[Projects]]"` and `Todoist: <project URL>` in the body.
 
-These two steps can be parallelized (same tool call turn).
+The link is bidirectional: Obsidian note body links to Todoist project URL; Todoist project name matches the Obsidian note filename. See `manage-projects` for exact steps and pitfalls.
 
 ### Pattern: capture already-completed items
 
