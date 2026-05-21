@@ -216,7 +216,7 @@ Once Justin responds:
   - **description**: everything Justin needs to start the task cold — where details live, direct URL or permalink, relevant phone numbers or contact info, sender/assignee, deadline if known, Obsidian project link if applicable. One line per piece of context. If the source has a URL, always include it. The bar: can Justin open this task and immediately know where to go?
   - **projectId**: omit (→ Inbox)
   - **priority**: `"p4"` unless the source clearly signals urgency
-  - **labels**: infer from content (`work` for work-related, `home` for personal, `@location` if applicable)
+  - **labels**: infer from content (`@location` labels if applicable — do NOT use `work` or `home` as labels; those are Todoist projects, not labels)
   - **dueString**: only set if the source has a clear deadline or Justin requests one; otherwise leave unset
 
 - Batch-add with a single `add-tasks` call (up to 25 items).
