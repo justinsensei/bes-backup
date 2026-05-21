@@ -163,3 +163,9 @@ skills/note-taking/obsidian-manage-categories/**/__pycache__/
 skills/note-taking/obsidian-people-notes/**/__pycache__/
 skills/note-taking/did-i-already-do-this/**/__pycache__/
 skills/productivity/manage-projects/**/__pycache__/
+
+# Tracked customization of bundled skill: apple/imessage
+# Scoped read-only via SSH proxy to host (allowlist of 13 chats).
+# Only SKILL.md is patched — references/ stays upstream (none currently).
+!skills/apple/imessage/
+!skills/apple/imessage/SKILL.md
