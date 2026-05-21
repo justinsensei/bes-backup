@@ -74,7 +74,7 @@
       "last_status": null,
       "last_error": null,
       "last_delivery_error": null,
-      "deliver": "origin",
+      "deliver": "local",
       "origin": {
         "platform": "telegram",
         "chat_id": "8612970484",
@@ -86,5 +86,5 @@
       "profile": null
     }
   ],
-  "updated_at": "2026-05-21T14:49:47.136290-04:00"
+  "updated_at": "2026-05-21T14:50:22.285290-04:00"
 }
