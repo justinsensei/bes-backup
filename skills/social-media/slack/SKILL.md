@@ -153,6 +153,17 @@ accepts either `U01ABC...` or `@alice` (resolved via users.list).
    `<@U_justin>` in text. The search endpoint sometimes misses mentions in
    private channels depending on indexing.
 
+**"What do I have reminders set on?"**
+Use `has:reminder` in a search query — this is the supported workaround
+for the missing `reminders:read` scope (see Pitfalls). It returns messages
+Justin has flagged with Slack's native reminder feature:
+```bash
+slack search 'has:reminder after:2026-05-19' --limit 50
+```
+Note: the literal word "reminder" appearing in message *text* can
+occasionally bleed in (e.g. "Reminder: meeting at 3pm"). Use channel
+context to distinguish these from genuinely reminder-flagged messages.
+
 **"Reply to Alice's DM"**
 1. `slack channels --type im` to find the DM channel ID for Alice's user_id.
 2. `slack read <dm_id> --since 24h --text` to read context.
