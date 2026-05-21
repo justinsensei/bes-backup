@@ -276,11 +276,13 @@ Justin has four saved filters for temporal visibility:
 
 | Filter | Query | ID |
 |---|---|---|
-| This Week | `due: this week` | 2370421613 |
-| Next Week | `due: next week` | 2370421614 |
-| This Month | `due: this month & !due: this week & !due: next week` | 2370421615 |
-| Later | `!due: this month & due after: today` | 2370421618 |
+| This Week | `due before: sat` | 2370421613 |
+| Next Week | `(due: next week \| due after: next week) & due before: 1 week after next week` | 2370421614 |
+| This Month | `due before: first day & !due before: sat & !(due: next week \| due after: next week) & due before: 1 week after next week` | 2370421615 |
+| Later | `due after: 1 week after next week` | 2370421618 |
 | No Date | `no date` | 2370421711 |
+
+**Note:** `due: this week` is NOT valid Todoist filter syntax. Use `due before: sat` for this week. The `deadline:` keyword is also not supported in filter queries — filters are due-date only.
 
 **Important:** Todoist's filter API does not support `deadline:` queries — only `due:` works. These filters are due-date only.
 
