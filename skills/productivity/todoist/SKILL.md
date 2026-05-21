@@ -146,7 +146,7 @@ The MCP server registers these as `mcp_todoist_<name>` (hyphens become underscor
 | Tool | Use for |
 |---|---|
 | `add-projects` / `update-projects` / `project-management` | **Don't restructure the Now/Next/Later/Maybe scheme.** Justin owns the top-level project structure. Adding a project to that hierarchy needs explicit direction. |
-| `add-sections` / `update-sections` / `find-sections` | Under the new model Justin doesn't use sections. Don't add them without explicit direction. |
+| `add-sections` / `update-sections` / `find-sections` | Justin doesn't use sections. Do not add them. |
 | `add-labels` / `update-labels` / `find-labels` | Labels are cross-project tags. Use the existing label scheme (above); don't invent new labels without confirming with Justin. Never touch the `hermes` label. |
 | `add-filters` / `update-filters` / `find-filters` | Saved queries. Check `find-filters` for what Justin has set up. |
 
