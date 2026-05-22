@@ -230,6 +230,7 @@ Sources: **Slack, Gmail, Obsidian daily notes, Calendar, Linear, iMessages, Gran
   >
   > **Task naming rules (these exact formats will become Todoist task content):**
   > - Assigned To Do/In Progress: `Work on <identifier> <title>`
+  > - Assigned Monitoring: `Check in on <identifier> <title>`
   > - Triage: `Triage <identifier> <title>`
   >
   > **Command safety:** Parse the curl JSON response with `jq`, never with `| python3 -c` or `| node -e` (scanner blocks `pipe_to_interpreter`). Example:
