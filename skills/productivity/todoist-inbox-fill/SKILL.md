@@ -135,6 +135,33 @@ Sources: **Slack, Gmail, Obsidian daily notes, Calendar, Linear.**
 
 ---
 
+### Subagent G — Granola meeting notes (Next Steps for Justin)
+
+- **Toolsets:** `["terminal", "file"]`
+- **Skill:** `obsidian`
+- **Goal:** Find Next Steps assigned to Justin in recent Granola meeting notes. Budget: 8 tool calls.
+- **Context:**
+  > Vault path: resolve from env `OBSIDIAN_VAULT_PATH` (fallback: `~/Documents/Obsidian Vault`). Granola notes live under `<vault>/Granola/`, organized by month folders (`YYYY-MM/`). Each note filename starts with the meeting date (`YYYY-MM-DD`).
+  >
+  > Identify which month folders to search based on the lookback window (`<LOOKBACK_START>` to `<TODAY>`). Typically just the current month, but if the lookback crosses a month boundary, include both.
+  >
+  > For each `.md` file in the relevant folder(s) whose date prefix falls within the lookback window:
+  > 1. Read the file.
+  > 2. Find the `### Next Steps` section.
+  > 3. Extract only lines that begin with `- Justin:` (case-insensitive). These are the action items assigned to Justin.
+  > 4. Skip all other lines (other people's action items, bullets under other sections).
+  >
+  > **Command safety:** Use `search_files` and `read_file` from the file toolset — do NOT use `grep` piped to `python3 -c` or similar (scanner blocks `pipe_to_interpreter`). Use `jq` if reshaping JSON.
+  >
+  > Format each candidate task:
+  > `- [Granola/<YYYY-MM-DD>] <action text (strip the "Justin: " prefix)> | meeting: <note title> | file: <relative path>`
+  >
+  > End with `Total: N candidates across M meeting notes`.
+  >
+  > Budget: 8 tool calls. Return what you have and stop.
+
+---
+
 ### Subagent C — Obsidian daily notes (lookback window)
 
 - **Toolsets:** `["terminal", "file"]`
