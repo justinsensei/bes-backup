@@ -176,7 +176,7 @@ A hygiene script runs daily at 8am and auto-fixes structural issues. Location: `
 
 **Folders the script skips entirely:** `Granola/`, `Readwise/`, `Templates/`, `Daily Notes/`, `Categories/`, `.git`, `.trash`, `.cursor`, `.claude`
 
-For the full vault structural audit (folder sizes, issue catalogue, what was found and fixed), see `references/vault-audit-2026-05-22.md`.
+For the full vault structural audit (folder sizes, issue catalogue, what was found and fixed), see `references/vault-audit-2026-05-22.md`. For the hygiene script architecture and design decisions, see `references/vault-hygiene-design.md`.
 
 ## Entities and category notes
 
