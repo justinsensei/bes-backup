@@ -240,7 +240,7 @@ Sources: **Slack, Gmail, Obsidian daily notes, Calendar, Linear, iMessages, Gran
   > ```
   >
   > Format each result:
-  > - For assigned: `- [Linear/assigned] Work on <identifier> <title> | state: <state name> | url: <url>`
+  > - For assigned: `- [Linear/assigned] Work on <identifier> <title> | url: <url>`
   > - For triage: `- [Linear/triage] Triage <identifier> <title> | url: <url>`
   >
   > End with `Total: N candidates (assigned: X, triage: Y)`.
