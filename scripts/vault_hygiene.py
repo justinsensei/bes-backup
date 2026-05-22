@@ -4,17 +4,22 @@ vault_hygiene.py — Obsidian vault hygiene check + auto-fix.
 
 Auto-fixes:
   1. Move misplaced daily notes (YYYY-MM-DD Weekday.md) from Notebook/ to Daily Notes/
-  2. Convert inline category tags (#meetings, #people, etc.) to category: frontmatter,
-     remove the tag, and move the note to Notebook/ if not already there.
+  2. Convert inline category tags (#meetings, #people, etc.) to category: frontmatter
+     and remove the tag — but ONLY for People and Organizations (low-ambiguity types).
+     Projects and Meetings require the note to have a date-prefix filename (YYYY-MM-DD)
+     to qualify, because #project/#meeting tags are often used loosely on non-object notes.
 
-Reports (stdout, one section per issue type):
-  - Wrong-folder notes (non-daily typed notes outside Notebook/)
-  - ID conflicts (two notes share the same id)
-  - Notes missing an id (excluding Granola, Readwise, Templates, Daily Notes)
-  - Notes missing a daily_note link (excluding Granola, Readwise, Templates, Daily Notes)
+Reports (stdout):
+  - Wrong-folder notes (typed notes not in Notebook/ or vault root)
+  - ID conflicts
+  - Notes missing an id
+  - Notes missing a daily_note wikilink
 
-Exits 0 (no issues) or 1 (issues found / fixes applied).
-Dry-run mode: set DRY_RUN=1 env var.
+Ignored folders: Granola, Readwise, Templates, Daily Notes, Categories,
+                 .git, .trash, .cursor, .claude, ustin.guest
+
+Exits 0 (clean) or 1 (fixes applied / issues found).
+Dry-run: DRY_RUN=1
 """
 
 import os
@@ -27,31 +32,44 @@ from pathlib import Path
 VAULT = Path(os.environ.get("OBSIDIAN_VAULT_PATH", "/home/justin.guest/vault"))
 DRY_RUN = os.environ.get("DRY_RUN", "0") == "1"
 
-# Folders to ignore for most checks
-IGNORE_DIRS = {"Granola", "Readwise", "Templates", "Daily Notes", ".git", ".trash", ".cursor", ".claude", "ustin.guest"}
-
-# Valid category names and their canonical wikilink form
-CATEGORY_MAP = {
-    "meetings":      "[[Meetings]]",
-    "meeting":       "[[Meetings]]",
-    "people":        "[[People]]",
-    "person":        "[[People]]",
-    "organizations": "[[Organizations]]",
-    "organisation":  "[[Organizations]]",
-    "organization":  "[[Organizations]]",
-    "projects":      "[[Projects]]",
-    "project":       "[[Projects]]",
+IGNORE_DIRS = {
+    "Granola", "Readwise", "Templates", "Daily Notes",
+    "Categories", ".git", ".trash", ".cursor", ".claude", "ustin.guest",
 }
 
 WEEKDAYS = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"}
-
-# Pattern: YYYY-MM-DD Weekday.md  (misplaced daily note)
 DAILY_NOTE_PATTERN = re.compile(
     r"^\d{4}-\d{2}-\d{2} (" + "|".join(WEEKDAYS) + r")\.md$"
 )
 
+# Tags that unambiguously identify a note type regardless of filename
+ALWAYS_CONVERT = {
+    "people":        '[[People]]',
+    "person":        '[[People]]',
+    "organizations": '[[Organizations]]',
+    "organisation":  '[[Organizations]]',
+    "organization":  '[[Organizations]]',
+}
+
+# Tags that only convert if filename has a YYYY-MM-DD prefix (meeting/project notes
+# are more likely to have these tags with a date-stamped name)
+DATE_PREFIX_CONVERT = {
+    "meetings": '[[Meetings]]',
+    "meeting":  '[[Meetings]]',
+    "projects": '[[Projects]]',
+    "project":  '[[Projects]]',
+}
+
+DATE_PREFIX_RE = re.compile(r"^\d{4}-\d{2}-\d{2} ")
+
+NOTEBOOK_DIR   = VAULT / "Notebook"
+DAILY_DIR      = VAULT / "Daily Notes"
+CATEGORIES_DIR = VAULT / "Categories"
+
+
+# ─── Helpers ─────────────────────────────────────────────────────────────────
+
 def read_note(path: Path):
-    """Return (raw_text, frontmatter_dict, body_after_fm)."""
     text = path.read_text(encoding="utf-8", errors="replace")
     if not text.startswith("---"):
         return text, {}, text
@@ -60,7 +78,6 @@ def read_note(path: Path):
         return text, {}, text
     fm_raw = text[3:end].strip()
     body = text[end + 4:].lstrip("\n")
-    # Very lightweight YAML parse: key: value, handles quoted values
     fm = {}
     for line in fm_raw.splitlines():
         m = re.match(r'^(\w+):\s*(.*)', line)
@@ -68,48 +85,22 @@ def read_note(path: Path):
             fm[m.group(1)] = m.group(2).strip().strip('"\'')
     return text, fm, body
 
-def write_note(path: Path, text: str, dry_run=False):
-    if dry_run:
-        print(f"  [DRY RUN] would write: {path}")
-        return
-    path.write_text(text, encoding="utf-8")
-
-def move_note(src: Path, dst: Path, dry_run=False):
-    if dry_run:
-        print(f"  [DRY RUN] would move: {src} -> {dst}")
-        return
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    shutil.move(str(src), str(dst))
-
-def all_notes(skip_dirs=None):
-    """Yield all .md paths under vault, skipping specified top-level dirs."""
-    skip = skip_dirs or set()
-    for root, dirs, files in os.walk(VAULT):
-        root_path = Path(root)
-        # Prune ignored dirs (only at top level for IGNORE_DIRS)
-        if root_path == VAULT:
-            dirs[:] = [d for d in dirs if d not in skip]
-        else:
-            dirs[:] = [d for d in dirs if d not in {".git", ".trash"}]
-        for f in files:
-            if f.endswith(".md"):
-                yield root_path / f
 
 def frontmatter_set(text: str, key: str, value: str) -> str:
-    """Set a frontmatter key=value in raw note text. Adds if missing."""
+    """Set key=value in frontmatter. Adds key if missing."""
     if not text.startswith("---"):
         return f'---\n{key}: {value}\n---\n\n{text}'
     end = text.find("\n---", 3)
     if end == -1:
         return text
     fm_block = text[3:end]
-    # Replace existing key
     pattern = re.compile(rf'^{re.escape(key)}:.*$', re.MULTILINE)
     if pattern.search(fm_block):
         new_fm = pattern.sub(f'{key}: {value}', fm_block)
     else:
         new_fm = fm_block.rstrip() + f'\n{key}: {value}'
     return "---" + new_fm + text[end:]
+
 
 def frontmatter_remove_blank_category(text: str) -> str:
     """Remove a bare 'category:' line with no value."""
@@ -122,110 +113,118 @@ def frontmatter_remove_blank_category(text: str) -> str:
     new_fm = re.sub(r'\ncategory:\s*$', '', fm_block, flags=re.MULTILINE)
     return "---" + new_fm + text[end:]
 
-def remove_tag_from_body(text: str, tag: str) -> str:
-    """Remove #tag from note body. Handles standalone or inline."""
-    # Remove standalone tag line
-    text = re.sub(rf'^\s*#{re.escape(tag)}\s*$', '', text, flags=re.MULTILINE)
-    # Remove inline tag (surrounded by whitespace or EOL)
-    text = re.sub(rf'\s+#{re.escape(tag)}(?=\s|$)', ' ', text)
-    text = re.sub(rf'^#{re.escape(tag)}\s+', '', text, flags=re.MULTILINE)
-    # Collapse multiple blank lines
+
+def remove_tag(text: str, tag: str) -> str:
+    """Remove #tag from note, then collapse extra blank lines."""
+    # Standalone line
+    text = re.sub(rf'^[ \t]*#{re.escape(tag)}[ \t]*$', '', text, flags=re.MULTILINE)
+    # Inline (between words / at end of line)
+    text = re.sub(rf'(?<=\s)#{re.escape(tag)}(?=\s|$)', '', text)
+    text = re.sub(rf'^#{re.escape(tag)}(?=\s|$)', '', text, flags=re.MULTILINE)
     text = re.sub(r'\n{3,}', '\n\n', text)
     return text.strip() + '\n'
 
-# ─── main ────────────────────────────────────────────────────────────────────
+
+def write_note(path: Path, text: str):
+    if DRY_RUN:
+        print(f"  [DRY RUN] would write: {path}")
+        return
+    path.write_text(text, encoding="utf-8")
+
+
+def move_file(src: Path, dst: Path):
+    if DRY_RUN:
+        print(f"  [DRY RUN] would move: {src} → {dst}")
+        return
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    shutil.move(str(src), str(dst))
+
+
+def all_notes(skip_dirs=None):
+    skip = skip_dirs or set()
+    for root, dirs, files in os.walk(VAULT):
+        root_path = Path(root)
+        if root_path == VAULT:
+            dirs[:] = [d for d in dirs if d not in skip]
+        else:
+            dirs[:] = [d for d in dirs if d not in {".git", ".trash"}]
+        for f in sorted(files):
+            if f.endswith(".md"):
+                yield root_path / f
+
+
+# ─── Main ────────────────────────────────────────────────────────────────────
 
 fixes_applied = []
-issues = defaultdict(list)  # issue_type -> list of (path, detail)
+issues = defaultdict(list)
 
-# ── 1. Misplaced daily notes (Notebook/ → Daily Notes/) ───────────────────
-notebook_dir = VAULT / "Notebook"
-daily_notes_dir = VAULT / "Daily Notes"
-
-for path in sorted(notebook_dir.glob("*.md")):
+# ── 1. Misplaced daily notes: Notebook/ → Daily Notes/ ───────────────────────
+for path in sorted(NOTEBOOK_DIR.glob("*.md")):
     if DAILY_NOTE_PATTERN.match(path.name):
-        dst = daily_notes_dir / path.name
+        dst = DAILY_DIR / path.name
         if dst.exists():
-            issues["wrong_folder_conflict"].append((path, f"target already exists: {dst}"))
+            issues["move_conflict"].append(
+                (path, f"target already exists: {dst}")
+            )
         else:
-            move_note(path, dst, dry_run=DRY_RUN)
-            fixes_applied.append(f"Moved misplaced daily note: Notebook/{path.name} → Daily Notes/{path.name}")
+            move_file(path, dst)
+            fixes_applied.append(
+                f"Moved misplaced daily note: Notebook/{path.name} → Daily Notes/{path.name}"
+            )
 
-# ── 2. Category tag → frontmatter conversion ─────────────────────────────
-# Scan all notes (skip ignored dirs) for #tag that matches a known category
+# ── 2. Category tag → frontmatter ────────────────────────────────────────────
 for path in sorted(all_notes(skip_dirs=IGNORE_DIRS)):
     text = path.read_text(encoding="utf-8", errors="replace")
     _, fm, _ = read_note(path)
 
-    existing_category = fm.get("category", "").strip()
-    # Skip notes that already have a valid category
-    if existing_category and existing_category not in ("", "[[]]"):
+    existing_cat = fm.get("category", "").strip().strip('"\'')
+    if existing_cat and existing_cat not in ("", "[[]]"):
+        continue  # already has a real category
+
+    found_tag = None
+    found_wikilink = None
+
+    # Check always-convert tags
+    for tag, wikilink in ALWAYS_CONVERT.items():
+        if re.search(rf'(?m)(?:^|(?<=\s))#{re.escape(tag)}(?=\s|$)', text):
+            found_tag, found_wikilink = tag, wikilink
+            break
+
+    # Check date-prefix-only tags
+    if not found_tag and DATE_PREFIX_RE.match(path.name):
+        for tag, wikilink in DATE_PREFIX_CONVERT.items():
+            if re.search(rf'(?m)(?:^|(?<=\s))#{re.escape(tag)}(?=\s|$)', text):
+                found_tag, found_wikilink = tag, wikilink
+                break
+
+    if not found_tag:
         continue
 
-    # Find matching category tags
-    tag_matches = []
-    for tag, wikilink in CATEGORY_MAP.items():
-        # Match #tag as standalone line or inline (word boundary)
-        if re.search(rf'(?m)(?:^|\s)#{re.escape(tag)}(?:\s|$)', text):
-            tag_matches.append((tag, wikilink))
-
-    if not tag_matches:
-        continue
-
-    # Use first match (most notes will only have one)
-    tag, wikilink = tag_matches[0]
-    category_value = f'"{wikilink}"'
-
-    # Remove blank category: line if present, then set proper value
     new_text = frontmatter_remove_blank_category(text)
-    new_text = frontmatter_set(new_text, "category", category_value)
-    new_text = remove_tag_from_body(new_text, tag)
+    new_text = frontmatter_set(new_text, "category", f'"{found_wikilink}"')
+    new_text = remove_tag(new_text, found_tag)
 
-    # Also move to Notebook/ if not already there and not in vault root
-    in_notebook = path.parent == notebook_dir
-    in_root = path.parent == VAULT
-
-    if new_text != text or not in_notebook:
-        write_note(path, new_text, dry_run=DRY_RUN)
-
-        # If not in Notebook/ and not in root, flag it (we don't auto-move arbitrary notes)
-        if not in_notebook and not in_root:
-            issues["wrong_folder"].append(
-                (path, f"has category {wikilink} but lives in {path.parent.name}/")
-            )
+    if new_text != text:
+        write_note(path, new_text)
         fixes_applied.append(
-            f"Converted tag #{tag} → category: {category_value}: {path.relative_to(VAULT)}"
+            f"Converted tag #{found_tag} → category: \"{found_wikilink}\": "
+            f"{path.relative_to(VAULT)}"
         )
 
-# ── 3. Wrong-folder check: typed notes outside Notebook/ ─────────────────
-# (Any note with a category wikilink that isn't in Notebook/ or root)
+# ── 3. Wrong-folder: typed notes outside Notebook/ ───────────────────────────
 for path in sorted(all_notes(skip_dirs=IGNORE_DIRS)):
     _, fm, _ = read_note(path)
-    category = fm.get("category", "")
-    if not category:
+    cat = fm.get("category", "").strip().strip('"\'')
+    if not cat or not cat.startswith("[["):
         continue
-    # Normalise
-    cat_clean = category.strip().strip('"\'')
-    if not cat_clean.startswith("[["):
-        continue
-    in_notebook = path.parent == notebook_dir
-    in_root = path.parent == VAULT
+    in_notebook = path.parent == NOTEBOOK_DIR
+    in_root     = path.parent == VAULT
     if not in_notebook and not in_root:
-        # Report but don't auto-move (user said they want to handle root manually)
         issues["wrong_folder"].append(
-            (path, f"category {cat_clean} but lives in {path.parent.relative_to(VAULT)}/")
+            (path, f"category {cat} but lives in {path.parent.relative_to(VAULT)}/")
         )
 
-# Deduplicate wrong_folder (tag-conversion step may have already added some)
-seen = set()
-deduped = []
-for item in issues["wrong_folder"]:
-    if item[0] not in seen:
-        seen.add(item[0])
-        deduped.append(item)
-issues["wrong_folder"] = deduped
-
-# ── 4. ID conflict check ──────────────────────────────────────────────────
+# ── 4. ID conflicts ───────────────────────────────────────────────────────────
 id_to_paths = defaultdict(list)
 for path in sorted(all_notes(skip_dirs=IGNORE_DIRS | {"Daily Notes"})):
     _, fm, _ = read_note(path)
@@ -233,31 +232,40 @@ for path in sorted(all_notes(skip_dirs=IGNORE_DIRS | {"Daily Notes"})):
     if note_id:
         id_to_paths[note_id].append(path)
 
-for note_id, paths in id_to_paths.items():
+for note_id, paths in sorted(id_to_paths.items()):
     if len(paths) > 1:
         for p in paths:
-            issues["id_conflict"].append((p, f"id={note_id} shared with {len(paths)-1} other note(s)"))
+            issues["id_conflict"].append(
+                (p, f"id={note_id!r} shared by {len(paths)} notes")
+            )
 
-# ── 5. Missing ID ─────────────────────────────────────────────────────────
+# ── 5. Missing ID ─────────────────────────────────────────────────────────────
 for path in sorted(all_notes(skip_dirs=IGNORE_DIRS | {"Daily Notes"})):
     _, fm, _ = read_note(path)
     note_id = fm.get("id", "").strip()
     if not note_id:
-        issues["missing_id"].append((path, "no id field"))
+        issues["missing_id"].append((path, ""))
 
-# ── 6. Missing daily_note link ────────────────────────────────────────────
+# ── 6. Missing daily_note ─────────────────────────────────────────────────────
+# Also exclude vault-root daily notes (YYYY-MM-DD Weekday.md in root)
 for path in sorted(all_notes(skip_dirs=IGNORE_DIRS | {"Daily Notes"})):
+    if path.parent == VAULT and DAILY_NOTE_PATTERN.match(path.name):
+        continue  # current daily note in root — self-referential, skip
     _, fm, _ = read_note(path)
     dn = fm.get("daily_note", "").strip()
     if not dn:
         issues["missing_daily_note"].append((path, "no daily_note field"))
     elif "[[" not in dn:
-        issues["missing_daily_note"].append((path, f"daily_note not a wikilink: {dn!r}"))
+        issues["missing_daily_note"].append(
+            (path, f"daily_note not a wikilink: {dn!r}")
+        )
+
 
 # ─── Output ──────────────────────────────────────────────────────────────────
 
-def rel(p):
+def rel(p: Path) -> str:
     return str(p.relative_to(VAULT))
+
 
 lines = []
 
@@ -266,9 +274,9 @@ if fixes_applied:
     for f in fixes_applied:
         lines.append(f"  - {f}")
 
-if issues["wrong_folder_conflict"]:
+if issues["move_conflict"]:
     lines.append("\n## ⚠️  Move conflicts (needs manual attention)")
-    for p, detail in issues["wrong_folder_conflict"]:
+    for p, detail in issues["move_conflict"]:
         lines.append(f"  - {rel(p)}: {detail}")
 
 if issues["wrong_folder"]:
@@ -283,7 +291,7 @@ if issues["id_conflict"]:
 
 if issues["missing_id"]:
     lines.append("\n## 🔴 Missing ID")
-    for p, detail in issues["missing_id"]:
+    for p, _ in issues["missing_id"]:
         lines.append(f"  - {rel(p)}")
 
 if issues["missing_daily_note"]:
