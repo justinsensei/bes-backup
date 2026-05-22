@@ -31,7 +31,12 @@ LOOKBACK_START=$(date -d "$TODAY - ${LOOKBACK_HOURS} hours" +%F)
 LOOKBACK_START_SLASH=$(date -d "$TODAY - ${LOOKBACK_HOURS} hours" +%Y/%m/%d)
 ```
 
-Pass `LOOKBACK_HOURS`, `LOOKBACK_START`, and `LOOKBACK_START_SLASH` to subagents so they scope their searches to the right window.
+Pass `LOOKBACK_HOURS`, `LOOKBACK_START`, `LOOKBACK_START_SLASH`, and `LOOKBACK_ISO` (ISO 8601 datetime for Linear, e.g. `2026-05-21T00:00:00.000Z`) to subagents so they scope their searches to the right window.
+
+Compute `LOOKBACK_ISO`:
+```bash
+LOOKBACK_ISO=$(date -u -d "${LOOKBACK_HOURS} hours ago" +%Y-%m-%dT%H:%M:%S.000Z)
+```
 
 Then snapshot **all open tasks** in Todoist so you can deduplicate later. Make one call:
 
@@ -52,6 +57,10 @@ Spawn one subagent per source in a **single batch**. Each subagent returns a com
 Pass `TODAY`, `TOMORROW`, `TODAY_SLASH`, `TOMORROW_SLASH`, `WEEK_FROM_NOW`, `LOOKBACK_HOURS`, `LOOKBACK_START`, and `LOOKBACK_START_SLASH` into each subagent as verbatim substituted strings.
 
 **Budget for every subagent: ≤8 tool calls. Return partial results and stop if budget is exhausted.**
+
+Sources to cover in two batches (concurrency cap is 3):
+- **Batch 1:** Slack, Gmail, Obsidian
+- **Batch 2:** Calendar, Linear, iMessages
 
 Sources: **Slack, Gmail, Obsidian daily notes, Calendar, Linear.**
 
@@ -144,9 +153,6 @@ Sources: **Slack, Gmail, Obsidian daily notes, Calendar, Linear.**
 ---
 
 ### Subagent E — iMessages (family)
-
-- **Toolsets:** `["terminal"]`
-- **Skill:** `imessage`
 - **Goal:** Find open actions from family texts in the lookback window. Budget: 5 tool calls.
 - **Context:**
   > Read recent messages across the allowlisted iMessage chats via SSH proxy:
