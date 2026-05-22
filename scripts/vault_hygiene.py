@@ -8,6 +8,8 @@ Auto-fixes:
      and remove the tag — but ONLY for People and Organizations (low-ambiguity types).
      Projects and Meetings require the note to have a date-prefix filename (YYYY-MM-DD)
      to qualify, because #project/#meeting tags are often used loosely on non-object notes.
+  3. Add category: "[[Meetings]]" to Granola/ meeting notes (type: note or no type field)
+     that are missing it. Transcripts (type: transcript) are skipped.
 
 Reports (stdout):
   - Wrong-folder notes (typed notes not in Notebook/ or vault root)
