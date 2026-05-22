@@ -145,12 +145,13 @@ Sources: **Slack, Gmail, Obsidian daily notes, Calendar, Linear.**
   >
   > For each of the last N days matching the lookback window (starting today, <TODAY>, going back to <LOOKBACK_START>), find and read the daily note if it exists.
   >
-  > From each note, extract:
+  > From each note, extract **only**:
   > - Unchecked task items: lines matching `- [ ]` that are not marked done.
-  > - Content under headings like "Open Questions", "Blockers", "Next Steps", "TODO", "Follow-ups".
-  > - Any line that reads like a commitment or a deferred action.
+  > - Lines containing explicit first-person commitment phrases: "I need to", "I need to remember", "I have to", "I should", "I must", "don't forget", "follow up on", "remind me".
   >
-  > Skip: lines marked `- [x]` (done), headings/bullets under "Decisions Made", "Highlights", pure observations.
+  > Do NOT infer tasks from section headings, bullet points under "Open Questions" or "Blockers", or general observations. Only literal `- [ ]` items and lines with the above explicit keywords qualify.
+  >
+  > Skip: `- [x]` lines, headings, pure notes, observations, decisions, highlights.
   >
   > **Command safety:** Use the `file` toolset and `search_files` to read notes — do NOT pipe shell output into `python3 -c` / `bash` / `node -e` (scanner blocks `pipe_to_interpreter`).
   >
