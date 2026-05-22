@@ -277,6 +277,8 @@ Show a clean numbered list. Format:
 2. [Email/work] Reply to Alex about Q3 roadmap review — from Alex Chen
 3. [Obsidian/2026-05-20] Follow up on Nana's dentist appointment
 4. [Calendar] Prep for: Board review — Thu 2pm
+5. [Linear/assigned] Work on SL-204 Update onboarding copy — In Progress
+6. [Linear/triage] Triage SL-312 Crash on lesson complete
 
 ~SIMILAR~ (already in Todoist but different angle):
 5. [Email/work] Alex re: API rate limit spike — similar to existing "Investigate API latency" task
