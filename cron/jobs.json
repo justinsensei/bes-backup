@@ -94,7 +94,7 @@
       "model": null,
       "provider": null,
       "base_url": null,
-      "script": ".hermes/scripts/vault_hygiene.py",
+      "script": ".hermes/scripts/vault_hygiene_cron.py",
       "no_agent": true,
       "context_from": null,
       "schedule": {
@@ -117,7 +117,7 @@
       "last_status": null,
       "last_error": null,
       "last_delivery_error": null,
-      "deliver": "local",
+      "deliver": "telegram",
       "origin": {
         "platform": "telegram",
         "chat_id": "8612970484",
@@ -129,5 +129,5 @@
       "profile": null
     }
   ],
-  "updated_at": "2026-05-22T13:46:44.428728-04:00"
+  "updated_at": "2026-05-22T13:47:01.593941-04:00"
 }
