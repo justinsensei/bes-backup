@@ -39,12 +39,13 @@ Spawn **one `delegate_task` subagent per external source** in a single batch so 
 
 **Speed discipline:** subagents have a soft budget of **≤8 tool calls each**. If a subagent can't finish inside that, it must return what it has and exit. Tell it so explicitly in the context block ("Budget: 8 tool calls. If you exhaust it, return partial results and stop.").
 
-Today's date in vault timezone is the cutoff for every source. Pre-compute it once (`TODAY=$(date +%F)`) and pass it to each subagent verbatim — don't let subagents re-derive it. Also pre-compute Justin's Linear user-id once (see *Pre-flight*, below) and pass it too.
+The target date (TARGET_DATE) is the cutoff for every source. Pre-compute it once and pass it to each subagent verbatim — don't let subagents re-derive it. Also pre-compute Justin's Linear user-id once (see *Pre-flight*, below) and pass it too.
 
 ### Pre-flight (do once, in-context, before spawning subagents)
 
 ```bash
-TODAY=$(date +%F)                       # e.g. 2026-05-20
+# Use TARGET_DATE if passed in from cron context; otherwise default to today
+TODAY=${TARGET_DATE:-$(date +%F)}       # e.g. 2026-05-20
 TOMORROW=$(date -d "$TODAY + 1 day" +%F) # e.g. 2026-05-21
 TODAY_SLASH=$(date +%Y/%m/%d)            # Gmail wants slashes
 TOMORROW_SLASH=$(date -d "$TODAY + 1 day" +%Y/%m/%d)
