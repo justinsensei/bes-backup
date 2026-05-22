@@ -137,6 +137,47 @@ sed -i 's/Organizations/Categories/' "<vault>/Templates/New Category.md"
 
 Always `diff` the result against the source template afterward to confirm only the intended lines differ.
 
+## Category field — not required on every note
+
+Only **entity/object notes** need a `category:` field — notes that represent a real-world thing (a person, meeting, project, organization). Free-form notes (essays, journals, braindumps, reference snippets, trip notes) do not need a category and should not be forced into one. Do not flag or "fix" notes that simply lack a `category:` field.
+
+## Tag-to-category conversion
+
+Justin's old habit is to indicate a note's type with an inline tag (e.g. `#meetings`, `#people`, `#project`) instead of a `category:` frontmatter field. When you see this, it should be auto-corrected: set the `category:` frontmatter and remove the tag from the body.
+
+**Rules:**
+- Tags that unambiguously identify a type (convert always): `#people`, `#person`, `#organizations`, `#organization`
+- Tags that are frequently used loosely (only convert if filename starts with `YYYY-MM-DD`): `#meetings`, `#meeting`, `#projects`, `#project`
+- The `#project` tag in particular is often applied to notes about work topics that are NOT GTD project-object notes (e.g. `Dianne AI Workshop` had `#project` but was a workshop pre-work document, not a project). When the filename has no date prefix, leave it alone.
+- After conversion, remove the matched tag from the body.
+
+**Canonical tag-to-wikilink mapping:**
+
+| Tag | Category wikilink |
+|-----|-------------------|
+| `#people`, `#person` | `[[People]]` |
+| `#organizations`, `#organization` | `[[Organizations]]` |
+| `#meetings`, `#meeting` | `[[Meetings]]` (date-prefix filenames only) |
+| `#projects`, `#project` | `[[Projects]]` (date-prefix filenames only) |
+
+## Vault hygiene automation
+
+A hygiene script runs daily at 8am and auto-fixes structural issues. Location: `~/.hermes/scripts/vault_hygiene.py`. Wrapper (filters to red-level issues only for Telegram delivery): `~/.hermes/scripts/vault_hygiene_cron.py`.
+
+**What it auto-fixes:**
+- Misplaced daily notes: `YYYY-MM-DD Weekday.md` in `Notebook/` → moves to `Daily Notes/`
+- Tag-to-category conversions (per rules above)
+
+**What it reports (no auto-fix):**
+- Typed notes outside `Notebook/` or vault root (wrong-folder)
+- ID conflicts (two notes share the same `id`)
+- Notes missing an `id` field
+- Notes missing a `daily_note` field (as a wikilink)
+
+**Folders the script skips entirely:** `Granola/`, `Readwise/`, `Templates/`, `Daily Notes/`, `Categories/`, `.git`, `.trash`, `.cursor`, `.claude`
+
+For the full vault structural audit (folder sizes, issue catalogue, what was found and fixed), see `references/vault-audit-2026-05-22.md`.
+
 ## Entities and category notes
 
 An **entity** is any note with a `category:` frontmatter field. The canonical list of entity types lives in `<vault>/Categories/`. Each category note is itself an entity (`category: "[[Categories]]"`), including `Categories/Categories.md` which is self-referential.
