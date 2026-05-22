@@ -1,6 +1,6 @@
 ---
 name: todoist-inbox-fill
-description: "Use when Justin asks to 'fill my inbox', 'sync my tasks', 'what am I missing in Todoist', or wants open actions from external sources (Slack, Gmail, Calendar, Obsidian daily notes, iMessages) surfaced into his Todoist Inbox — without duplicating what's already there. Linear is excluded. Accepts an optional lookback window (default 48h)."
+description: "Use when Justin asks to 'fill my inbox', 'sync my tasks', 'what am I missing in Todoist', or wants open actions from external sources (Slack, Gmail, Calendar, Obsidian daily notes, iMessages, Linear) surfaced into his Todoist Inbox — without duplicating what's already there. Accepts an optional lookback window (default 48h)."
 platforms: [linux, macos]
 ---
 
