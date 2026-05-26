@@ -234,5 +234,6 @@ Justin's `bes-vault-sync` watcher auto-commits and pushes the vault to `obsidian
 - **`slack.py` and `gws_multi.py` paths vary by Hermes home.** Always resolve them using absolute paths referencing `${HERMES_HOME:-$HOME/.hermes}` (e.g. `${HERMES_HOME:-$HOME/.hermes}/skills/social-media/slack/scripts/slack.py` and `${HERMES_HOME:-$HOME/.hermes}/skills/productivity/google-workspace/scripts/gws_multi.py`) — do not hardcode `/home/justin.guest/...` and do not rely on bare `slack` in subagent `$PATH`.
 - **Gmail date format is `YYYY/MM/DD` with slashes**, not dashes. Calendar event listings use ISO. Don't mix them up.
 - **`slack` CLI defaults to read-only-ish use.** Never let a subagent post to a channel — the work-log gather is read-only by definition.
+- **`slack` script path varies by environment.** Always run the Slack tool using `python3 ${HERMES_HOME:-$HOME/.hermes}/skills/social-media/slack/scripts/slack.py search ...` to avoid `command not found` errors in subagent environments where standard PATH alias/configurations are not loaded.
 - **Calendar "all-day events" can be timezone-shifted by one day** depending on how they were created. If something looks off-by-one, double-check the event's raw start/end before flagging it as a discrepancy.
 - **Linear API key auth header has NO "Bearer" prefix** — see the linear skill if a subagent hits 401s.
