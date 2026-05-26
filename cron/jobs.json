@@ -22,15 +22,15 @@
       "schedule_display": "every 10m",
       "repeat": {
         "times": null,
-        "completed": 377
+        "completed": 378
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-20T14:56:45.812443-04:00",
-      "next_run_at": "2026-05-26T17:22:24.304132-04:00",
-      "last_run_at": "2026-05-26T17:12:24.304132-04:00",
+      "next_run_at": "2026-05-26T17:32:25.793991-04:00",
+      "last_run_at": "2026-05-26T17:22:25.793991-04:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -182,5 +182,5 @@
       "profile": null
     }
   ],
-  "updated_at": "2026-05-26T17:12:24.304235-04:00"
+  "updated_at": "2026-05-26T17:22:25.794103-04:00"
 }
