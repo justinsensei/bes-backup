@@ -78,7 +78,7 @@ Sources: **Slack, Gmail, Obsidian daily notes, Calendar, Linear, iMessages, Gran
   > Extract open actions from Slack for Justin. **Only surface messages where Justin has set a Slack reminder** — these are the clearest signal of intent to act.
   >
   > Run one search:
-  > 1. `slack search 'has:reminder after:<LOOKBACK_START>' --limit 50`
+  > 1. `python3 ${HERMES_HOME:-$HOME/.hermes}/skills/social-media/slack/scripts/slack.py search 'has:reminder after:<LOOKBACK_START>' --limit 50`
   >
   > `has:reminder` returns messages Justin flagged with Slack's native reminder feature. This is intentionally narrow — Justin sets reminders on things he means to act on, so false positives are rare.
   >
@@ -88,7 +88,7 @@ Sources: **Slack, Gmail, Obsidian daily notes, Calendar, Linear, iMessages, Gran
   >
   > **Command safety:** Do NOT pipe `slack.py` output into a language interpreter (`| python3 -c`, `| bash`, `| node -e`). The security scanner blocks these as `pipe_to_interpreter` (HIGH) and your run will halt for approval. If you need to inspect or reshape the JSON, use `jq`. Example:
   > ```bash
-  > slack search 'has:reminder after:<LOOKBACK_START>' --limit 50 \\
+  > python3 ${HERMES_HOME:-$HOME/.hermes}/skills/social-media/slack/scripts/slack.py search 'has:reminder after:<LOOKBACK_START>' --limit 50 \\
   >   | jq -r '.[] | "\\(.channel_name) | \\(.username) | \\(.permalink) | \\(.text[:200])"'
   > ```
   > For non-trivial Python, write to a tempfile and run as `python3 /tmp/foo.py` — the file boundary is what satisfies the scanner.
