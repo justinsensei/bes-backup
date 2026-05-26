@@ -18,22 +18,16 @@ Bes's scope: **everything in Todoist**. Hermes is restricted to tasks labeled `h
 
 ## Justin's Todoist model (the new shape — read this twice)
 
-As of May 2026, Justin uses **Projects as areas + actual project containers**. The structure is:
+As of May 2026, Justin uses **simple Projects to represent statuses**. The structure is:
 
-- **Top-level Projects represent areas of life:**
-  - **Work** (id `6ggxXvCWfccF6VWc`) — work tasks and work sub-projects
-  - **Home** (id `6ggxXvF79JFwgc8G`) — personal/home tasks and home sub-projects
-  - **Other** (id `6ggxXvCPPW3jCmF8`) — catch-all for tasks that don't fit Work or Home
-  - **Inbox** (id `6VGcQ7r6HW5r87j9`) — capture/triage bucket; tasks with no label go here
-  - **Now / Next / Later / Maybe** — legacy status projects, kept but currently empty; do not use for routing
-- **Actual projects (GTD sense) are nested sub-Projects** under Work or Home (e.g. "Bes Setup" under Work). See the `manage-projects` skill for the full create/update/close workflow.
-- **Loose tasks** (not part of any project) go directly into Work, Home, Other, or Inbox.
-- **Project routing rules:**
-  - Work-related task → Work project (or a sub-Project of Work if it belongs to a specific project)
-  - Personal/home task → Home project (or a sub-Project of Home)
-  - Task labeled both `work` and `home` (shouldn't happen) → Other
-  - Task with neither label → Inbox
-  - When in doubt → Inbox
+- **Top-level Projects represent status-based buckets:**
+  - **Inbox** (id `6VGcQ7r6HW5r87j9`) — capture/triage bucket; tasks with no project go here
+  - **Now** (id `6gj6m9W3hQMgpWFp`) — actionable now
+  - **Next** (id `6gj6mxchHhffC7h9`) — review daily & move as appropriate
+  - **Soon** (id `6gj6mCC4GffrVfwJ`) — review weekly & move as appropriate
+  - **Maybe Later** (id `6gj6mGwQ95rW9Hw8`) — review monthly & move as appropriate
+  - **Shopping** (id `6gh9QhMVFjJpMPr9`) — shopping list items
+- **No Work/Home/Other top-level projects or GTD sub-projects** are used under this model.
 - **Labels carry context** (area, location, person, status). Infer them from conversation even if not stated explicitly.
 
 | Label | Type | Meaning |
@@ -55,10 +49,10 @@ As of May 2026, Justin uses **Projects as areas + actual project containers**. T
 
 - "Add a task to…" / "remind me to…" / "put X on my list" → `add-tasks` (default to Inbox)
 - "What's on my plate / due today / overdue?" → `find-tasks-by-date` (start with `today`, include overdue)
-- "What's in Now / Next / Later?" → `find-tasks(projectId="<status-project-id>")`
+- "What's in Now / Next / Soon?" → `find-tasks(projectId="<status-project-id>")`
 - "Mark X done" → `complete-tasks`
 - "Reschedule X to Friday" → `reschedule-tasks` (NOT `update-tasks` — see Pitfalls)
-- "Move X to Later" / "this is blocked, push it to Later" → `update-tasks(tasks=[{id, projectId: "6ggx3QWJXR72QHQ9"}])`
+- "Move X to Soon" / "this is blocked, push it to Soon" → `update-tasks(tasks=[{id, projectId: "6gj6mCC4GffrVfwJ"}])`
 - "What did I get done this week?" → `find-completed-tasks` or `get-productivity-stats`
 - "Add a note to that task" → `add-comments` (on the task, not the project)
 - "What projects do I have?" → `find-projects` or `get-overview` (no projectId)
@@ -81,7 +75,7 @@ As of May 2026, Justin uses **Projects as areas + actual project containers**. T
 - **Actions only.** Todoist is for atomic actionable items with a state. No informational notes, FYIs, or "heads up" entries. If it isn't something Justin will do, don't add it.
 - **One concrete next action per task.** No sub-tasks-as-project-decomposition. If the work is multi-step, either (a) capture only the next concrete action and let the rest stay in Obsidian, or (b) batch-add several atomic tasks each pointing back at the same Obsidian project.
 - **Descriptions must enable getting started.** The description should give Justin everything he needs to begin the task without hunting: where the details live (email thread, Slack channel, Linear issue), direct links or URLs, relevant phone numbers or contact info, deadline if known, and Obsidian project link if applicable. One line per piece of context. If the source has a URL or permalink, always include it. The bar: could Justin open the task cold and immediately know where to go and what to do?
-- **Default project is Inbox** unless Justin names a status project (Now/Next/Later/Maybe) or the task obviously belongs in one. He sorts manually from Inbox. When in doubt, default to Inbox — being too helpful with auto-routing is worse than being too conservative.
+- **Default project is Inbox** unless Justin names a status project (Now/Next/Soon/Maybe Later) or the task obviously belongs in one. He sorts manually from Inbox. When in doubt, default to Inbox — being too helpful with auto-routing is worse than being too conservative.
 - **No App Store Connect issue emails.** Justin doesn't handle those — engineering does. Skip them when scanning email.
 
 ## Obsidian linkage convention
@@ -114,7 +108,7 @@ When scanning Obsidian daily notes or email for action items:
 ## Justin-specific conventions
 
 1. **Don't over-create.** One well-shaped task beats five fragmented sub-bullets. When in doubt, ask. Justin would rather get one clarifying question than discover 8 micro-tasks in his Inbox.
-2. **Inbox is the default destination.** Justin sorts manually into Now/Next/Later/Maybe. Don't try to be helpful by routing for him.
+2. **Inbox is the default destination.** Justin sorts manually into Now/Next/Soon/Maybe Later. Don't try to be helpful by routing for him.
 3. **Priorities default to `p4`** (Todoist's lowest / unflagged). Only set `p1`/`p2` when Justin explicitly says "urgent", "high priority", "today", or similar. P3 is mid; P4 is the unspecified default.
 4. **Create tasks when asked, no friction.** If Justin says "add X to my list", "create a task for Y", "remind me to Z" — just do it. Default destination is Inbox unless he specifies a status project. Infer labels from context (area, location, people) even if not mentioned explicitly. Don't ask for confirmation on straightforward captures — act, then confirm with one line.
 5. **Be conservative with deletes.** Use `complete-tasks` to finish a task, NOT `delete-object`. The completed-task history is useful for retrospectives.
@@ -130,7 +124,7 @@ The MCP server registers these as `mcp_todoist_<name>` (hyphens become underscor
 | Tool | Use for |
 |---|---|
 | `find-tasks-by-date` | "What's on my plate today / this week / overdue" — accepts `startDate='today'` to include overdue. Default `responsibleUserFiltering='unassignedOrMe'` is correct for a personal account. |
-| `find-tasks` | Text search, project/section/label filtering, or a saved-filter ID. Don't pass both `searchText` and `filter` — pick one. For "what's in Now/Next/Later/Maybe" use `projectId=<status-project-id>`. |
+| `find-tasks` | Text search, project/section/label filtering, or a saved-filter ID. Don't pass both `searchText` and `filter` — pick one. For "what's in Now/Next/Soon/Maybe Later" use `projectId=<status-project-id>`. |
 | `add-tasks` | Single task or batch of up to 25. Required: `content`. Common: `dueString` (natural language), `priority`, `projectId` (omit → Inbox), `description`, `labels`. |
 | `complete-tasks` | Pass `ids: [...]`. Preserves recurrence (next occurrence auto-scheduled). |
 | `reschedule-tasks` | Preserves recurrence. **Use this, NOT `update-tasks`, when moving a recurring task** (see Pitfall 1). |
@@ -151,7 +145,7 @@ The MCP server registers these as `mcp_todoist_<name>` (hyphens become underscor
 
 | Tool | Use for |
 |---|---|
-| `add-projects` / `update-projects` / `project-management` | **Don't restructure the Now/Next/Later/Maybe scheme.** Justin owns the top-level project structure. Adding a project to that hierarchy needs explicit direction. |
+| `add-projects` / `update-projects` / `project-management` | **Don't restructure the Now/Next/Soon/Maybe Later scheme.** Justin owns the top-level project structure. Adding a project to that hierarchy needs explicit direction. |
 | `add-sections` / `update-sections` / `find-sections` | Justin doesn't use sections. Do not add them. |
 | `add-labels` / `update-labels` / `find-labels` | Labels are cross-project tags. Use the existing label scheme (above); don't invent new labels without confirming with Justin. Never touch the `hermes` label. |
 | `add-filters` / `update-filters` / `find-filters` | Saved queries. Check `find-filters` for what Justin has set up. |
@@ -175,7 +169,7 @@ The MCP server registers these as `mcp_todoist_<name>` (hyphens become underscor
 
 | Tool | When |
 |---|---|
-| `get-project-health` / `analyze-project-health` | Limited value under the status-project model (Now/Next/Later/Maybe are buckets, not goal-bearing projects). Don't volunteer. |
+| `get-project-health` / `analyze-project-health` | Limited value under the status-project model (Now/Next/Soon/Maybe Later are buckets, not goal-bearing projects). Don't volunteer. |
 | `get-project-activity-stats` | Daily completion counts per project, 1-12 week window. |
 | `get-workspace-insights` | Workspace-level aggregation. Justin is on personal Pro; workspace tools are inert. |
 | `add-goals` / `find-goals` / `complete-goals` / `link-goal-tasks` | Todoist's goals layer. Don't use unless Justin asks. |
@@ -220,7 +214,7 @@ For a weekly view: `startDate="today", daysCount=7`.
 
 For "what's in Now specifically":
 ```
-find-tasks(projectId="6ggx3MPrfF5mj5PQ", limit=50)
+find-tasks(projectId="6gj6m9W3hQMgpWFp", limit=50)
 ```
 
 ### Pattern: end-of-week / retrospective
@@ -258,9 +252,9 @@ Use `reschedule-tasks`, NOT `update-tasks`:
 reschedule-tasks(tasks=[{id: "<id>", date: "2026-05-27"}])
 ```
 
-If Justin says "this is blocked — move it to Later" rather than rescheduling, that's a status-project move:
+If Justin says "this is blocked — move it to Soon / Maybe Later" rather than rescheduling, that's a status-project move:
 ```
-update-tasks(tasks=[{id: "<id>", projectId: "6ggx3QWJXR72QHQ9"}])
+update-tasks(tasks=[{id: "<id>", projectId: "6gj6mGwQ95rW9Hw8"}])
 ```
 
 `reschedule-tasks` preserves recurrence patterns; `update-tasks` with `dueString` can silently strip them (Pitfall 1).
@@ -340,9 +334,9 @@ Justin has four saved filters for temporal visibility:
 
 10. **One token, two clients (Hermes + Bes).** Both agents see the same task list. If Hermes adds a task (labeled `hermes`), Bes can find it and vice versa. Treat the task list as shared state. **Never apply, remove, or modify the `hermes` label** — that's Hermes's identity marker, not a shared signal.
 
-11. **Don't reorganize the status-project structure.** Now/Next/Later/Maybe is Justin's framework. Adding a fifth top-level project, archiving one of the four, or renaming them needs explicit direction. The same goes for sections: Justin doesn't use them under this model; don't add them.
+11. **Don't reorganize the status-project structure.** Now/Next/Soon/Maybe Later is Justin's framework. Adding a fifth top-level project, archiving one of the four, or renaming them needs explicit direction. The same goes for sections: Justin doesn't use them under this model; don't add them.
 
-12. **The Hermes agent has a deliberately narrower scope.** Hermes only writes to Inbox with the `hermes` label, and only reads tasks tagged `hermes`. If you see something in Now/Next/Later/Maybe without the `hermes` label, that's Justin's or yours. Don't assume an unlabeled task is unattended — it may be Justin's manual entry that you shouldn't touch unless directed.
+12. **The Hermes agent has a deliberately narrower scope.** Hermes only writes to Inbox with the `hermes` label, and only reads tasks tagged `hermes`. If you see something in Now/Next/Soon/Maybe Later without the `hermes` label, that's Justin's or yours. Don't assume an unlabeled task is unattended — it may be Justin's manual entry that you shouldn't touch unless directed.
 
 ## Configuration (reference)
 
@@ -367,14 +361,12 @@ On restart, look for `MCP server 'todoist' (stdio): registered 54 tool(s)` in `~
 
 ```
 Projects:
-  Inbox  6VGcQ7r6HW5r87j9
-  Work   6ggxXvCWfccF6VWc
-  Home   6ggxXvF79JFwgc8G
-  Other  6ggxXvCPPW3jCmF8
-  Now    6ggx3MPrfF5mj5PQ  (legacy, empty)
-  Next   6ggx3PCJJW2RpfRP  (legacy, empty)
-  Later  6ggx3QWJXR72QHQ9  (legacy, empty)
-  Maybe  6ggx3R92FrJ42j6C  (legacy, empty)
+  Inbox        6VGcQ7r6HW5r87j9
+  Now          6gj6m9W3hQMgpWFp
+  Next         6gj6mxchHhffC7h9
+  Soon         6gj6mCC4GffrVfwJ
+  Maybe Later  6gj6mGwQ95rW9Hw8
+  Shopping     6gh9QhMVFjJpMPr9
 
 Labels:
   hermes  2183843700  (teal — Hermes's identity marker; do not touch)
