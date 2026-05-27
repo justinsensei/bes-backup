@@ -213,6 +213,11 @@ If the poller cron or load context script fails with `invalid_grant` or a messag
 1. The OAuth credentials or user consent for `personal-main` have expired.
 2. Direct Justin to re-authenticate by running:
    ```bash
+   export GOOGLE_ACCOUNT=personal-main
    python3 ~/.hermes/skills/productivity/google-workspace/scripts/setup.py --revoke
+   python3 ~/.hermes/skills/productivity/google-workspace/scripts/setup.py --auth-url
    ```
-   And then starting the authentication steps to get a fresh token.
+   And then completing the authentication steps with the generated code:
+   ```bash
+   python3 ~/.hermes/skills/productivity/google-workspace/scripts/setup.py --auth-code <CODE>
+   ```
