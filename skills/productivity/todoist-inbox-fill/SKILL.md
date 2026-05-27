@@ -38,15 +38,11 @@ Compute `LOOKBACK_ISO`:
 LOOKBACK_ISO=$(date -u -d "${LOOKBACK_HOURS} hours ago" +%Y-%m-%dT%H:%M:%S.000Z)
 ```
 
-Then snapshot **all open tasks** in Todoist so you can deduplicate later. Make one call:
+Then snapshot **all open tasks** in Todoist so you can deduplicate later. Call both:
+1. `find-tasks-by-date(startDate="today", daysCount=7, overdueOption="include-overdue", limit=100)`
+2. `find-tasks(filter="no date", limit=100)`
 
-```
-find-tasks(filter="!date & !recurring | today | overdue | due before: <WEEK_FROM_NOW>", limit=100, responsibleUserFiltering="all")
-```
-
-This is intentionally broad — you want to know what Todoist already knows. Keep the result in-context. You'll diff against it in Step 3.
-
-> **Tip:** If the filter syntax errors, fall back to two calls: `find-tasks-by-date(startDate="today", daysCount=7, overdueOption="include-overdue", limit=100)` and `find-tasks(filter="no date", limit=100)`. Merge results.
+Merge results and keep them in-context. You'll diff against this snapshot in Step 3. This two-call method is robust and completely avoids HTTP 400 errors caused by complex Todoist search query syntax.
 
 ---
 
@@ -496,3 +492,4 @@ Once Justin responds:
 - **`gws_multi.py` path varies.** Always resolve as `${HERMES_HOME:-$HOME/.hermes}/skills/productivity/google-workspace/scripts/gws_multi.py`.
 - **Slack `--limit` flag.** The Slack CLI may not support `--limit` on all commands. If it errors, drop the flag and let it return the default count.
 - **App Store Connect emails.** These are engineering issues, not Justin's. Filter them out at the Gmail subagent stage.
+- **Never call the Todoist REST API directly (`api.todoist.com`) in custom scripts or subagents.** The sync v9 and REST v2 endpoints are deprecated (HTTP 410 / 404). Always use the native `mcp_todoist_*` tools. If a script inside `execute_code` or a background task absolutely must make raw HTTP requests, use the correct v1 path `https://api.todoist.com/api/v1/` (e.g. `/api/v1/tasks` or `/api/v1/sync` as a POST request) and include the `TODOIST_API_KEY` header.
