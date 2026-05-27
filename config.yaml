@@ -129,6 +129,7 @@ delegation:
   max_iterations: 50
   model: gemini-pro-latest
   provider: gemini
+  subagent_auto_approve: true
 display:
   compact: false
   tool_progress: all
