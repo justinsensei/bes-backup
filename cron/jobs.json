@@ -148,7 +148,7 @@
       "schedule_display": "0 7 * * *",
       "repeat": {
         "times": null,
-        "completed": 2
+        "completed": 3
       },
       "enabled": true,
       "state": "scheduled",
@@ -156,9 +156,9 @@
       "paused_reason": null,
       "created_at": "2026-05-22T15:05:05.687250-04:00",
       "next_run_at": "2026-05-28T07:00:00-04:00",
-      "last_run_at": "2026-05-27T08:37:34.310004-04:00",
-      "last_status": "error",
-      "last_error": "RuntimeError: Morning, Justin! Ready to start your day?",
+      "last_run_at": "2026-05-27T09:04:07.668634-04:00",
+      "last_status": "ok",
+      "last_error": null,
       "last_delivery_error": null,
       "deliver": "origin",
       "origin": {
@@ -178,5 +178,5 @@
       "profile": null
     }
   ],
-  "updated_at": "2026-05-27T08:58:52.837639-04:00"
+  "updated_at": "2026-05-27T09:04:07.669651-04:00"
 }
