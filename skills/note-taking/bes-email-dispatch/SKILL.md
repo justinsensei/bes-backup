@@ -90,6 +90,7 @@ For each message ID:
    | "Save as a note" / "Save this" / "Note this" / empty | Create a new note at the **root of the vault** titled from the original subject |
    | "Person note for <Name>" / "Add to <Name>'s page" / "<Name> works at <Org>" | Create or update a person note at the **root of the vault** (see Person notes below) |
    | "Add to <existing note>" / "Append to <title>" | Find the closest matching note by title; append under a dated heading **in whatever folder the note already lives in** (do not move the note) |
+   | "Please extract events ... and add to Todoist" | Extract tasks/events, parse due dates, and call `mcp_todoist_add_tasks` (usually to `inbox`). Also save the email as a default note at the root of the vault for context/archival. |
    | "Summarize and …" / free-form prose | Use judgment. The instruction is authorization to do reasonable, reversible things in the vault. |
 
 3. **Write to vault**. Vault path is `/home/justin.guest/vault` (also in `$OBSIDIAN_VAULT_PATH`). The vault syncs to Justin's Macbook via the watcher (see `vm-hermes-vault-sync` skill) — your writes show up on his iPad within a minute or two.
