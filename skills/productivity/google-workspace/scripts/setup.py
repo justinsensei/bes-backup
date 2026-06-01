@@ -72,13 +72,13 @@ TOKEN_PATH, CLIENT_SECRET_PATH, PENDING_AUTH_PATH = _resolve_account_paths()
 # ─── End multi-account support ──────────────────────────────────────────────
 
 SCOPES = [
-    # READ-ONLY SCOPES (patched by Hermes for Bes — see SKILL.md note)
+    # UPGRADED SCOPES (Drive & Calendar Write)
     "https://www.googleapis.com/auth/gmail.readonly",
-    "https://www.googleapis.com/auth/calendar.readonly",
-    "https://www.googleapis.com/auth/drive.readonly",
+    "https://www.googleapis.com/auth/calendar",
+    "https://www.googleapis.com/auth/drive",
     "https://www.googleapis.com/auth/contacts.readonly",
-    "https://www.googleapis.com/auth/spreadsheets.readonly",
-    "https://www.googleapis.com/auth/documents.readonly",
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/documents",
 ]
 
 REQUIRED_PACKAGES = ["google-api-python-client", "google-auth-oauthlib", "google-auth-httplib2"]
