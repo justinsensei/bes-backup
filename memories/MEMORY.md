@@ -13,3 +13,5 @@ During inbox fills, Justin does not want generic meeting prep tasks suggested. E
 During inbox fills, do not suggest any task for a Linear issue if any existing Todoist task already references or is linked to that same issue ID.
 §
 Justin uses Apple Notes as a "filing cabinet" for references (previously in Obsidian References/), while continuing to use Obsidian for general note-taking.
+§
+Google Calendar has write access; Bes can directly schedule events on Justin's behalf (e.g., during morning briefings or from forwarded emails) using `gws_multi.py --account <name> calendar create` instead of creating 'Add to calendar' tasks in Todoist.

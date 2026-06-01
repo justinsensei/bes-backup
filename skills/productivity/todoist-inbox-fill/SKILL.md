@@ -1,6 +1,6 @@
 ---
 name: todoist-inbox-fill
-description: "Use when Justin asks to 'fill my inbox', 'sync my tasks', 'what am I missing in Todoist', or wants open actions from external sources (Slack, Gmail, Calendar, Obsidian daily notes, iMessages, Linear) surfaced into his Todoist Inbox — without duplicating what's already there. Also detects potential calendar events and surfaces them as 'Add to calendar:' tasks. Accepts an optional lookback window (default 48h)."
+description: "Use when Justin asks to 'fill my inbox', 'sync my tasks', 'what am I missing in Todoist', or wants open actions from external sources (Slack, Gmail, Calendar, Obsidian daily notes, iMessages, Linear) surfaced into his Todoist Inbox — without duplicating what's already there. Also detects potential calendar events and surfaces them as Google Calendar event candidates to schedule directly on his behalf. Accepts an optional lookback window (default 48h)."
 platforms: [linux, macos]
 ---
 
@@ -362,24 +362,20 @@ After subagents return, filter the calendar candidates against `CALENDAR_SNAPSHO
 
 ### Calendar candidates output format
 
-Present calendar candidates in a dedicated section (Step 4 output), separate from regular inbox candidates:
+Present calendar candidates in a dedicated section (Step 4 output), separate from regular inbox candidates. Suggest a target calendar account (`work` or `personal-main`) for each candidate based on context.
 
 ```
 📅 Found N potential calendar events not yet on your calendar:
 
-1. [Slack] Sync with Maya re: sprint planning | when: Thursday 2pm | context: #product-eng
-2. [Email/work] Call with Alex | when: next Monday 10am | context: email from Alex Chen
-3. [iMessage/Nana] Dentist appointment (Jamie) | when: June 3rd | context: Nana's text
-
-Each will become: "Add to calendar: <event>" task in Todoist Inbox.
+1. [Slack] Sync with Maya re: sprint planning | when: Thursday 2pm | calendar: work | context: #product-eng
+2. [Email/work] Call with Alex | when: next Monday 10am | calendar: work | context: email from Alex Chen
+3. [iMessage/Nana] Dentist appointment (Jamie) | when: June 3rd | calendar: personal-main | context: Nana's text
 ```
 
-When Justin confirms, create tasks shaped as:
-- **content**: `Add to calendar: <event description>`
-- **description**: date/time as mentioned + source context + URL/permalink if available
-- **projectId**: omit (→ Inbox)
-- **priority**: `"p2"` if time-sensitive (within 3 days), otherwise `"p4"`
-- Add comment: source + why it was flagged
+When Justin confirms, schedule/create the events directly on the respective Google Calendar accounts (`work` or `personal-main`) using the calendar write capabilities:
+`gws_multi.py --account <name> calendar create --summary "<Summary>" --start "<Start>" --end "<End>" --location "<Location>" --description "<Description>"`
+
+Only create a Todoist "Add to calendar:" task as an exceptional fallback if Justin specifically requests it or if the event timing/date is too ambiguous to schedule directly.
 
 ---
 
@@ -411,11 +407,11 @@ Show two sections. Within the inbox section, group candidates by semantic theme 
 ```
 📅 N potential calendar events not yet on your calendar:
 
-1. [Slack] Sync with Maya re: sprint planning | when: Thu 2pm | context: #product-eng
-2. [iMessage/Nana] Jamie's dentist | when: June 3rd | context: Nana's text Tue
-3. [Email/work] Call with Alex | when: next Mon 10am | context: email from Alex Chen
+1. [Slack] Sync with Maya re: sprint planning | when: Thu 2pm | calendar: work | context: #product-eng
+2. [iMessage/Nana] Jamie's dentist | when: June 3rd | calendar: personal-main | context: Nana's text Tue
+3. [Email/work] Call with Alex | when: next Mon 10am | calendar: work | context: email from Alex Chen
 
-Which ones should I add as "Add to calendar:" tasks? (say "all", "1 3", or "skip 2")
+Which ones should I add directly to your Google Calendar? (say "all", "1 3", or "skip 2")
 ```
 
 ### Section B — Inbox tasks, batched by theme
