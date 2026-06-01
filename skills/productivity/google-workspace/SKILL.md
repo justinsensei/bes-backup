@@ -22,14 +22,16 @@ metadata:
 Gmail, Calendar, Drive, Contacts, Sheets, and Docs — through Hermes-managed OAuth and a thin CLI wrapper. When `gws` is installed, the skill uses it as the execution backend for broader Google Workspace coverage; otherwise it falls back to the bundled Python client implementation.
 
 
-> **⚠️ READ-ONLY MODE (Bes-specific customization)**
+> **⚠️ SEMI-READ-ONLY MODE (Bes-specific customization)**
 >
-> This installation of the google-workspace skill is **scoped read-only** —
-> Justin's deliberate choice for Bes. The OAuth token was authorized only with:
-> `gmail.readonly`, `calendar.readonly`, `drive.readonly`,
-> `contacts.readonly`, `spreadsheets.readonly`, `documents.readonly`.
+> This installation of the google-workspace skill is mostly **scoped read-only**, except
+> for **Google Calendar** which has **full write access** so you can schedule
+> and manage events on Justin's behalf.
 >
-> **You can use these subcommands:**
+> **You can use these write commands:**
+> - `calendar create`, `calendar delete`
+>
+> **You can use these read-only subcommands:**
 > - `gmail search`, `gmail get`, `gmail labels`
 > - `calendar list`
 > - `drive search`, `drive get`, `drive download`
@@ -37,16 +39,15 @@ Gmail, Calendar, Drive, Contacts, Sheets, and Docs — through Hermes-managed OA
 > - `sheets get`
 > - `docs get`
 >
-> **You CANNOT use these — calls will return 403:**
+> **You CANNOT use these write commands — calls will return 403:**
 > - `gmail send`, `gmail reply`, `gmail modify`
-> - `calendar create`, `calendar delete`
 > - `drive upload`, `drive create-folder`, `drive share`, `drive delete`
 > - `sheets create`, `sheets update`, `sheets append`
 > - `docs create`, `docs append`
 >
-> If Justin asks you to send mail, create an event, or modify a Drive file,
-> tell him this account is read-only and ask whether he wants to widen the
-> scope. Do not try the write call hoping it'll work — it won't.
+> If Justin asks you to send mail or modify a Drive file, tell him this account
+> is read-only for those services and ask whether he wants to widen the scope.
+> For Google Calendar, write commands will work.
 
 ## References
 
@@ -412,7 +413,7 @@ When summarizing for Justin, **always preface results with the account tag**:
 - Use a **specific account** when Justin explicitly names one ("check work email
   from Alice") or when the query is account-specific by topic (e.g. company-only
   Drive folders → `--account work`).
-- For write operations: not applicable. This install is read-only.
+- For write operations (like creating calendar events): specify the correct target account using `--account <name>` (e.g. `gws_multi.py --account work calendar create ...` or `gws_multi.py --account personal-main calendar create ...`). Do not use `--account all` for write operations.
 
 ### Legacy single-account compatibility
 
@@ -468,7 +469,7 @@ When scanning Gmail to extract action items for Todoist or similar:
 
 ## Rules
 
-1. **Never send email, create/delete calendar events, delete Drive files, share files, or modify Docs/Sheets without confirming with the user first.** Show what will be done (recipients, file IDs, content, share role) and ask for approval. For `drive delete`, prefer the default trash (reversible) over `--permanent`.
+1. **Never send email, delete Drive files, share files, or modify Docs/Sheets without confirming with the user first.** Show what will be done (recipients, file IDs, content, share role) and ask for approval. For `drive delete`, prefer the default trash (reversible) over `--permanent`. For creating/deleting calendar events, confirm with Justin first unless he explicitly instructs you to create/schedule the events on his behalf (e.g. from forwarded emails, or during the morning briefing conversation).
 2. **Check auth before first use** — run `setup.py --check`. If it fails, guide the user through setup.
 3. **Use the Gmail search syntax reference** for complex queries — load it with `skill_view("google-workspace", file_path="references/gmail-search-syntax.md")`.
 4. **Calendar times must include timezone** — always use ISO 8601 with offset (e.g., `2026-03-01T10:00:00-06:00`) or UTC (`Z`).
