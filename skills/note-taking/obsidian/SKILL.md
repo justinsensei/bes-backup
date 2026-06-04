@@ -268,4 +268,15 @@ Every note in this vault should have these fields:
 
 ## Don't manually commit
 
-Justin's `bes-vault-sync` watcher auto-commits and pushes the vault to GitHub within seconds of any write. Do **not** run `git add` / `git commit` / `git push` on the vault from within Bes — it races the watcher and creates noisy commits.
+Justin's `bes-vault-sync` watcher auto-commits and pushes the vault to GitHub within seconds of any write. Do not run `git add` / `git commit` / `git push` on the vault from within Bes — it races the watcher and creates noisy commits.
+
+## Git environment variable leakage in hooks and background scripts
+
+When writing hooks (e.g. `pre-turn.sh`) or background sync scripts (like `bes-vault-sync`) that execute Git commands on the user's vault, the script inherits the parent agent's environment variables. If the agent is tracking its own checkpoints, it sets environment variables like `GIT_DIR`, `GIT_WORK_TREE`, and `GIT_INDEX_FILE`. 
+
+These leaked environment variables redirect all Git commands in the hook/script to the agent's internal store, causing command failures such as `Cannot rebase onto multiple branches`.
+
+**Fix:** Always unset Git-specific environment variables at the top of your hooks or background scripts before performing repository operations:
+```bash
+unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_NAMESPACE GIT_ALTERNATE_OBJECT_DIRECTORIES
+```
