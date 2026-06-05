@@ -227,12 +227,10 @@ def main():
             print(json.dumps({"ok": True, "already_processed": key}))
         sys.exit(0)
         
-    if args.list_new:
-        new_items = fetch_new_brains(client)
-        print(json.dumps(new_items, indent=2))
-        sys.exit(0)
-        
-    parser.print_help()
+    # Default behavior if no specific command args are passed
+    new_items = fetch_new_brains(client)
+    print(json.dumps(new_items, indent=2))
+    sys.exit(0)
 
 if __name__ == "__main__":
     main()
