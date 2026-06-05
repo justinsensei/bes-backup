@@ -93,8 +93,8 @@ For creating People or Organization notes, load `obsidian-people-notes`. It cove
 ## Where to put new notes
 
 Notes are organized into specific lowercase directories in the vault, which align with gbrain-personal's page-type definitions:
-- **meetings/**: Contains manual meeting summaries. (Transcripts live under `sources/meetings/transcripts/`).
-  - *Third-Party Notes (e.g., Granola):* When a third-party tool saves meeting notes/transcripts into `sources/meetings/meeting_notes/`, copy or move the high-signal summary to the `meetings/` folder as `meetings/YYYY-MM-DD-kebab-case-title.md` so gbrain can index it. Enrich the frontmatter with the standard `id` and `daily_note` fields to satisfy hygiene rules.
+- **meetings/**: Contains manual/curated meeting summaries. (Raw transcripts live under `sources/meetings/transcripts/`; raw auto-summaries live under `sources/meetings/meeting_notes/`).
+- **people/**: Contains People notes.
 - **daily/**: Contains both current and archived daily notes.
 
 ### Core Policy on Raw Streams
@@ -112,6 +112,14 @@ These folders are managed by external apps with their own schemas. Never add or 
 
 - `sources/` — holds transcripts, Readwise clips, and other third-party managed integrations with separate schemas. Skipped entirely by standard required-frontmatter hygiene rules.
 - `Readwise/` — article highlights imported by the Readwise plugin. Schema: `id` (non-standard timestamp format), `daily_note` (plain string, not wikilink). Do not patch these — they get overwritten on the next sync.
+
+## Meeting Notes & Transcripts (Granola & Auto-data)
+
+To prevent vault dilution (low-signal machine data overriding curated personal knowledge), meeting files are partitioned into three distinct tiers:
+
+1. **Canonical Meeting Notes** (lives in `meetings/`): Curated, human-written, or polished meeting notes that represent verified personal knowledge. Only these files carry `category: "[[Meetings]]"` and are fully checked by standard vault hygiene.
+2. **Raw Transcripts** (lives in `sources/meetings/transcripts/`): Auto-generated full transcripts from Granola. These carry `type: transcript` and **never** get a category property.
+3. **Automated Notes / Summaries** (lives in `sources/meetings/meeting_notes/`): Raw, unmodified AI-generated summaries synced directly from Granola or other tools. These carry `type: note` and live inside `sources/` to avoid polluting the canonical `meetings/` folder. They do not undergo standard vault hygiene checks.
 
 ## Misplaced daily notes
 
