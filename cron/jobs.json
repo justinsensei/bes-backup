@@ -176,7 +176,50 @@
       ],
       "workdir": null,
       "profile": null
+    },
+    {
+      "id": "f80ca2a0293f",
+      "name": "nightly-dream-cycle",
+      "prompt": "",
+      "skills": [],
+      "skill": null,
+      "model": null,
+      "provider": null,
+      "base_url": null,
+      "script": "dream_cycle.sh",
+      "no_agent": true,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 2 * * *",
+        "display": "0 2 * * *"
+      },
+      "schedule_display": "0 2 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 0
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-06-05T16:15:58.667003-04:00",
+      "next_run_at": "2026-06-06T02:00:00-04:00",
+      "last_run_at": null,
+      "last_status": null,
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "origin",
+      "origin": {
+        "platform": "telegram",
+        "chat_id": "8612970484",
+        "chat_name": "Justin Goff",
+        "thread_id": null
+      },
+      "enabled_toolsets": null,
+      "workdir": null,
+      "profile": null
     }
   ],
-  "updated_at": "2026-06-05T16:15:44.448308-04:00"
+  "updated_at": "2026-06-05T16:15:58.667858-04:00"
 }
