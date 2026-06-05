@@ -33,6 +33,8 @@ Justin's vault convention: **current** daily notes live in the vault root; **arc
 
 Use `search_files` with `target: "files"` to locate. If neither exists, tell Justin "The daily note for TARGET_DATE doesn't exist yet." and stop (when run from cron, log the error to the briefing cache and continue).
 
+**Manual Generation on Request:** If Justin asks to generate a missing daily note for a past day, read the template from `<vault>/Templates/Daily Note.md`, substitute the Templater ID with a target-date timestamp (e.g., `YYYYMMDD080000`), write it directly to `<vault>/Daily Notes/<TARGET_DATE DayName>.md` (since it is already archived/past), and then proceed with generating and appending the work log.
+
 ## Step 3 — Gather raw material (parallel, one subagent per source)
 
 Spawn **one `delegate_task` subagent per external source** in a single batch so raw API output stays out of your context. Each subagent runs a **specific, pre-canned set of commands** — no exploration — and returns a small filtered summary (bullets, ~10–30 items max). You only see the summaries.
