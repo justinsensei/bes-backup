@@ -190,6 +190,22 @@ context to distinguish these from genuinely reminder-flagged messages.
    thread_ts).
 3. `slack thread <channel> <thread_ts> --text` for full context.
 
+**"Find and Process Justin's Brain Reactions (`🧠` to Obsidian)"**
+Justin uses a `🧠` (brain) emoji to flag Slack conversations that should be preserved in his vault as notes under `sources/slack/` (which is mapped as a `slack` page type in `gbrain-personal`).
+
+There is a dedicated cron job ("Slack Brain Note Capture") running every 2 hours that automates this workflow:
+1. Runs `fetch_slack_brains.py` to fetch messages where Justin (`U095LHMC4UW`) added a `🧠` reaction.
+2. Checks against the processed cache at `~/.hermes/processed_slack_brains.json`.
+3. If new, retrieves the full conversation context (full thread replies if it's a thread; or a chronological 11-message context window around the reacted message if it's not).
+4. Summarizes the discussion via the agent and writes it to `/home/justin.guest/vault/sources/slack/YYYY-MM-DD-slug.md`.
+5. Appends a link and one-sentence gist to today's Daily Note notepad under `## 🗒 Notepad`.
+6. Marks the message as processed using `python3 fetch_slack_brains.py --mark-processed <channel_id> <ts>`.
+
+To run the fetcher script manually to list new reactions:
+```bash
+python3 ~/.hermes/scripts/fetch_slack_brains.py
+```
+
 ## Pitfalls
 
 1. **Permalinks for users not in the channel resolve to a 404 in Slack.**
@@ -250,6 +266,8 @@ Pattern mirrors `gws_multi.py` in the google-workspace skill.
 
 - **Token**: `~/.hermes/.env` → `SLACK_USER_TOKEN`
 - **Wrapper script**: `~/.hermes/skills/social-media/slack/scripts/slack.py`
+- **Reaction note capture script**: `~/.hermes/scripts/fetch_slack_brains.py`
+- **Reaction note processed cache**: `~/.hermes/processed_slack_brains.json`
 - **Convenience symlink** (optional): `~/.local/bin/slack` → wrapper
 - **Python deps**: `slack_sdk` installed in `~/.hermes/hermes-agent/venv`
 - **Workspace home**: signlab.slack.com
