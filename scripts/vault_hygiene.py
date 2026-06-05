@@ -39,10 +39,10 @@ IGNORE_DIRS = {
     "Categories", ".git", ".trash", ".cursor", ".claude", "ustin.guest",
 }
 
-# Granola is scanned separately for category checks; skip it in general walks
-IGNORE_DIRS_WITH_GRANOLA = IGNORE_DIRS | {"Granola"}
+# Meetings is scanned separately for category checks; skip it in general walks
+IGNORE_DIRS_WITH_MEETINGS = IGNORE_DIRS | {"Meetings", "Granola"}
 
-GRANOLA_DIR = VAULT / "Granola"
+MEETINGS_DIR = VAULT / "Meetings"
 
 WEEKDAYS = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"}
 DAILY_NOTE_PATTERN = re.compile(
@@ -182,7 +182,7 @@ for path in sorted(NOTEBOOK_DIR.glob("*.md")):
             )
 
 # ── 2. Category tag → frontmatter ────────────────────────────────────────────
-for path in sorted(all_notes(skip_dirs=IGNORE_DIRS_WITH_GRANOLA)):
+for path in sorted(all_notes(skip_dirs=IGNORE_DIRS_WITH_MEETINGS)):
     text, fm, _ = read_note(path)
 
     existing_cat = fm.get("category", "").strip().strip('"\'')
