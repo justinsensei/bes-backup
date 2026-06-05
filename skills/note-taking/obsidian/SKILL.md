@@ -130,7 +130,7 @@ Daily notes are sometimes accidentally saved to folders like `inbox/` or root in
 Templates live under `<vault>/utilities/templates/` and have been massively simplified to align with gbrain-personal's prefix-driven classification. Since folder paths map automatically to page types, explicit `category: "[[CategoryName]]"` lines and tags are redundant and have been removed.
 
 The active templates are:
-1. **`daily_note.md`**: Structures the notepad, mantras, and work logs. Sets `id`.
+1. **`daily_note.md`**: Structures the daily note as a record and hub. Features a preview summary callout at the top, followed by sections for schedule & events, highlights & decisions, accomplishments, and notepad. Sets id.
 2. **`new_note.md`**: Baseline template for manual entries (concepts, people, projects, companies, etc.). Sets `id` and `daily_note`, and auto-renames to timestamp.
 3. **`new_meeting.md`**: Specialized template for meeting summaries. Sets `id` and `daily_note`, and auto-renames to date-prefix `YYYY-MM-DD`.
 
