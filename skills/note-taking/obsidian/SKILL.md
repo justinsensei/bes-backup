@@ -317,6 +317,21 @@ gbrain reinit-pglite --embedding-model <provider:model> --embedding-dimensions <
 
 ### Multi-Source Management and Constraints
 
+When adding additional directories (e.g. historical archives or secondary vaults) as separate sources to GBrain, respect these constraints:
+
+1. **Overlap Guard (No Nested Sources):** GBrain does not allow registering nested/overlapping source directories. If your main vault is `default` at `~/vault`, you cannot add a subfolder like `~/vault/sources/old-vault` as a separate source.
+   - *Workaround:* Move or clone the target folder outside of the active vault directory entirely (e.g. to `~/archive/old-vault`), then add it as a source from there.
+2. **Git Requirement:** GBrain's sync pipeline (`gbrain sync --source <id>`) requires the source path to be a git-initialized repository. Raw folders will fail during `sync.validate_repo_state`.
+   - *Workaround:* Always run `git init && git add . && git commit -m "Initial commit"` inside any newly registered raw folder before syncing.
+3. **Destructive Guard on Removal:** Running `gbrain sources remove <id>` on a source with existing data triggers a Destructive Operation Impact Preview safety block.
+   - *Workaround:* To bypass the guard and permanently cascaded-delete the source's indexed database entries, append the `--confirm-destructive` flag:
+     ```bash
+     gbrain sources remove <id> --yes --confirm-destructive
+     ```
+
+
+### Multi-Source Management and Constraints
+
 When adding additional content repositories (sources) to GBrain, be aware of these hard rules and workarounds:
 
 - **Overlap Guard (Nested Paths Blocked):** GBrain does not allow overlapping paths. Because the default source is registered at `~/vault`, you **cannot** register a subfolder (like `~/vault/sources/old-notes`) as a separate GBrain source. It will fail with `overlapping_path`.
