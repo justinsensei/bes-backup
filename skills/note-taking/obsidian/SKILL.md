@@ -94,7 +94,11 @@ For creating People or Organization notes, load `obsidian-people-notes`. It cove
 
 Notes are organized into specific lowercase directories in the vault, which align with gbrain-personal's page-type definitions:
 - **meetings/**: Contains manual meeting summaries. (Transcripts live under `sources/meetings/transcripts/`).
-- **people/**: Contains People notes.
+  - *Third-Party Notes (e.g., Granola):* When a third-party tool saves meeting notes/transcripts into `sources/meetings/meeting_notes/`, copy or move the high-signal summary to the `meetings/` folder as `meetings/YYYY-MM-DD-kebab-case-title.md` so gbrain can index it. Enrich the frontmatter with the standard `id` and `daily_note` fields to satisfy hygiene rules.
+- **daily/**: Contains both current and archived daily notes.
+
+### Core Policy on Raw Streams
+- **No Auto-Notes from Raw Streams:** Do not automatically create or add notes to the vault from raw emails, text messages, or Slack conversations. Rely strictly on daily work logs and explicit user requests to capture daily activities. This preserves vault hygiene and prevents taxonomy clutter.
 - **projects/**: Contains Project notes.
 - **companies/**: Contains Organization/Company notes.
 - **concepts/**: Contains structured concept/definition notes.
