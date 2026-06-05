@@ -52,7 +52,7 @@ The vault has Templater templates that Justin uses when he creates notes by hand
 ---
 id: "<YYYYMMDDHHmmss at write time, e.g. 20260520143157>"
 daily_note: "[[<YYYY-MM-DD dddd at write time, e.g. 2026-05-20 Wednesday>]]"
-category: "<wikilink per the table above, or omit field entirely for generic New Note>"
+category: "<We remove category since directories are MECE in GBrain>"
 ---
 ```
 
@@ -87,7 +87,7 @@ For each message ID:
 
    | Shape of instruction | Action |
    |---|---|
-   | "Save as a note" / "Save this" / "Note this" / empty | Create a new note at the **root of the vault** titled from the original subject |
+   | "Save as a note" / "Save this" / "Note this" / empty | Create a new note inside the **`inbox/` directory** titled from the original subject |
    | "Person note for <Name>" / "Add to <Name>'s page" / "<Name> works at <Org>" | Create or update a person note at the **root of the vault** (see Person notes below) |
    | "Add to <existing note>" / "Append to <title>" | Find the closest matching note by title; append under a dated heading **in whatever folder the note already lives in** (do not move the note) |
    | "Please extract events ... and add to Todoist" | Extract tasks/events, parse due dates, and call `mcp_todoist_add_tasks` (usually to `inbox`). Also save the email as a default note at the root of the vault for context/archival. |
@@ -109,8 +109,8 @@ For each message ID:
 
 **All new notes go to the root of the vault.** Justin sorts manually — pre-sorting into folders is the wrong move because it competes with his organizational flow.
 
-- **New note ("Save as note", default, or no instruction)** → root, filename `YYYY-MM-DD <Subject>.md` (subject cleaned of `Fwd:` and trimmed to ~60 chars; sanitize illegal filename characters: `/ \ : * ? " < > |`).
-- **New person note** → root, filename `<Full Name>.md`. Look for an existing match case-insensitively first; if a match exists with slightly different formatting, append to the existing one rather than creating a duplicate.
+- **New note ("Save as note", default, or no instruction)** → `inbox/`, filename `YYYY-MM-DD-subject-slug.md`.
+- **New person note** → `people/`, filename `<lowercase-fullname-slug>.md`. Look for an existing match case-insensitively first; if a match exists with slightly different formatting, append to the existing one rather than creating a duplicate.
 - **Append to an existing note** → use that note's current location, do not move it. If the title match is ambiguous (multiple plausible matches), pick the closest and mention the chosen path in the report; if no match, fall back to creating a new note at root and note that in the report.
 - **Filename collision** → if `YYYY-MM-DD <Subject>.md` already exists, append a short numeric suffix (`YYYY-MM-DD <Subject> 2.md`). Never overwrite.
 
@@ -124,13 +124,13 @@ These illustrate how to interpret instructions literally — narrow body content
 
 **Email body:** Block party announcement signed "Suzetta, 412.849.6615, suzetta.large@gmail.com."
 
-**Output → `Suzetta Large.md` at root** (assume write time = 2026-05-20 14:31:57 Wednesday):
+**Output → `people/suzetta-large.md`** (assume write time = 2026-05-20 14:31:57 Wednesday):
 
 ```markdown
 ---
 id: "20260520143157"
 daily_note: "[[2026-05-20 Wednesday]]"
-category: "[[People]]"
+# No category field needed in GBrain frontmatter
 ---
 
 Neighbor on Darlington Ave (two doors down).

@@ -18,46 +18,37 @@ See `references/note-examples.md` for real vault examples of each note type.
 
 ## Destination folder
 
-All typed notes (People and Organizations) go in **`<vault>/Notebook/`**, not the vault root.
+All typed notes go in their respective MECE folders: **`<vault>/people/`** for individuals, and **`<vault>/companies/`** for organizations, not the vault root.
 
 ## Before creating: check for an existing note
 
 Always search first:
-1. Search `<vault>/Notebook/` by filename (person's name or org name).
-2. Search contents for `category: "[[People]]"` or `category: "[[Organizations]]"` + the name.
+1. Search `<vault>/people/` or `<vault>/companies/` by filename slug.
+2. Search contents by name or slug.
 
 If a note exists, update it rather than creating a duplicate.
 
 ## Filename
 
-Use the **person's full name** or **organization's full name** as the filename:
+Use the **lowercase hyphenated slug** of the name as the filename:
 
 ```
-Karen Gaul.md
-Winchester-Thurston School.md
+karen-gaul.md
+winchester-thurston-school.md
 ```
 
 The `id` frontmatter field holds the timestamp — the filename is the name, not the timestamp. This matches every existing typed note in the vault.
 
 Use the **current wall-clock time** for `id` and `daily_note`. When creating multiple notes in one run, increment timestamp by one second per note to avoid collisions.
 
-## Frontmatter — People
+## Frontmatter — People & Organizations
+
+We remove the redundant `category` field since the directory MECE structure handles it. Scaffolding looks like:
 
 ```yaml
 ---
 id: 'YYYYMMDDHHmmss'
 daily_note: '[[YYYY-MM-DD dddd]]'
-category: "[[People]]"
----
-```
-
-## Frontmatter — Organizations
-
-```yaml
----
-id: 'YYYYMMDDHHmmss'
-daily_note: '[[YYYY-MM-DD dddd]]'
-category: "[[Organizations]]"
 ---
 ```
 
@@ -80,9 +71,26 @@ category: "[[Organizations]]"
 - `daily_note` — single-quoted wikilink: `'[[2026-05-20 Wednesday]]'`
 - `category` — double-quoted wikilink: `"[[People]]"` or `"[[Organizations]]"`
 
-## Body — People
+## Body — People & Organizations (Scaffolding Compiled Truth)
 
-Add context Justin provided (role, employer, relationships, tags). If none given, leave body empty.
+Scaffold the Compiled Truth + Timeline structures separating them with a horizontal rule `---`:
+
+```markdown
+> Executive summary: brief summary.
+
+## State
+- **Role:** role
+- **Company:** company
+- **Relationship:** Friend/Colleague
+
+## Open Threads
+- 
+
+---
+
+## Timeline
+- YYYY-MM-DD | Ingest — Context of creation.
+```
 
 Typical shape:
 ```
@@ -116,7 +124,7 @@ Use `patch` for targeted edits. Use `write_file` only if rewriting the whole not
 ## Pitfalls
 
 - **Do NOT use Templater syntax** (`<% ... %>`) — Templater only runs inside Obsidian. Resolve timestamps yourself and write literal values.
-- **Do NOT put typed notes in the vault root.** They belong in `Notebook/`.
+- **Do NOT put typed notes in the vault root.** They belong in `people/` or `companies/` as lowercase slugs.
 - **Filename ≠ timestamp.** The filename is the person's or org's name. The timestamp lives only in the `id` field.
 - **The `id` field comment "matching the filename" is wrong** — id matches the creation timestamp, filename matches the name.
 - Do not run git commands on the vault; `bes-vault-sync` auto-commits.
