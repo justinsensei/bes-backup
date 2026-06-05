@@ -33,6 +33,8 @@ For each action, Justin will include keywords and some context on the instructio
 
 If his instruction contains keywords for **both** (or if he lists them on separate lines/sentences), you must perform **both** actions!
 
+See [references/forwarding-examples.md](references/forwarding-examples.md) for concrete mockups of instruction inputs and expected tool outputs.
+
 ### Default Behavior (Fallback)
 If the instruction is empty, has no keywords, or is just "Save as a note", default to **Action 1: Add the email to his vault**.
 
