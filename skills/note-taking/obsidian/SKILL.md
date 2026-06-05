@@ -179,7 +179,7 @@ Justin's old habit is to indicate a note's type with an inline tag (e.g. `#meeti
 
 ## Vault hygiene automation
 
-A hygiene script runs daily at 8am and auto-fixes structural issues. Location: `~/.hermes/scripts/vault_hygiene.py`. Wrapper (filters to red-level issues only for Telegram delivery): `~/.hermes/scripts/vault_hygiene_cron.py`.
+A hygiene script runs daily at 8am and auto-fixes structural issues. Location: `~/.hermes/scripts/vault_hygiene.py` (or `run_tier1_hygiene.py`). Wrapper (filters to red-level issues only for Telegram delivery): `~/.hermes/scripts/vault_hygiene_cron.py`.
 
 **What it auto-fixes:**
 - Misplaced daily notes: `YYYY-MM-DD Weekday.md` in `Notebook/` → moves to `Daily Notes/`
@@ -191,7 +191,12 @@ A hygiene script runs daily at 8am and auto-fixes structural issues. Location: `
 - Notes missing an `id` field
 - Notes missing a `daily_note` field (as a wikilink)
 
-**Folders the script skips entirely:** `Granola/`, `Readwise/`, `Templates/`, `Daily Notes/`, `Categories/`, `.git`, `.trash`, `.cursor`, `.claude`
+**Folders the script skips entirely:** `Readwise/`, `Templates/`, `Daily Notes/`, `Categories/`, `.git`, `.trash`, `.cursor`, `.claude`, and any folder named `Granola` (e.g. `Logs/Granola/`) or `Copilot` (e.g. `Logs/Copilot/`) at any level of directory walk.
+
+*Implementation detail:* To prevent descending into ignored subdirectories during a directory traversal, the vault hygiene scripts filter `dirs[:]` in-place inside `os.walk` at any nested level:
+```python
+dirs[:] = [d for d in dirs if not d.startswith(".") and d not in skip]
+```
 
 For the full vault structural audit (folder sizes, issue catalogue, what was found and fixed), see `references/vault-audit-2026-05-22.md`. For the hygiene script architecture and design decisions, see `references/vault-hygiene-design.md`.
 
