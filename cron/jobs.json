@@ -99,10 +99,10 @@
       "context_from": null,
       "schedule": {
         "kind": "cron",
-        "expr": "0 6 * * *",
-        "display": "0 6 * * *"
+        "expr": "0 21 * * *",
+        "display": "0 21 * * *"
       },
-      "schedule_display": "0 6 * * *",
+      "schedule_display": "0 21 * * *",
       "repeat": {
         "times": null,
         "completed": 13
@@ -112,7 +112,7 @@
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-22T13:46:44.427033-04:00",
-      "next_run_at": "2026-06-06T06:00:00-04:00",
+      "next_run_at": "2026-06-05T21:00:00-04:00",
       "last_run_at": "2026-06-05T06:00:46.092848-04:00",
       "last_status": "ok",
       "last_error": null,
@@ -178,5 +178,5 @@
       "profile": null
     }
   ],
-  "updated_at": "2026-06-05T16:05:43.374313-04:00"
+  "updated_at": "2026-06-05T16:07:09.295721-04:00"
 }
