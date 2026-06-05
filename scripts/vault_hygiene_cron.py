@@ -29,7 +29,6 @@ RED_MARKERS = [
     "## 🔴 Missing ID",
     "## 🔴 Missing daily_note",
     "## ⚠️  Move conflicts",
-    "## ⚠️ Missing meeting notes",
 ]
 
 red_lines = []
