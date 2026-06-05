@@ -150,13 +150,10 @@ def move_file(src: Path, dst: Path):
 
 
 def all_notes(skip_dirs=None):
-    skip = skip_dirs or set()
+    skip = (skip_dirs or set()) | {"Copilot", "Granola"}
     for root, dirs, files in os.walk(VAULT):
         root_path = Path(root)
-        if root_path == VAULT:
-            dirs[:] = [d for d in dirs if d not in skip]
-        else:
-            dirs[:] = [d for d in dirs if d not in {".git", ".trash"}]
+        dirs[:] = [d for d in dirs if not d.startswith(".") and d not in skip]
         for f in sorted(files):
             if f.endswith(".md"):
                 yield root_path / f
