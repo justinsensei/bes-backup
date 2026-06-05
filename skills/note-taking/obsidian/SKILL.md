@@ -121,6 +121,13 @@ To prevent vault dilution (low-signal machine data overriding curated personal k
 2. **Raw Transcripts** (lives in `sources/meetings/transcripts/`): Auto-generated full transcripts from Granola. These carry `type: transcript` and **never** get a category property.
 3. **Automated Notes / Summaries** (lives in `sources/meetings/meeting_notes/`): Raw, unmodified AI-generated summaries synced directly from Granola or other tools. These carry `type: note` and live inside `sources/` to avoid polluting the canonical `meetings/` folder. They do not undergo standard vault hygiene checks.
 
+### Reconciling Direct Granola Syncs to `/meetings`
+When third-party tools like Granola sync notes directly to the `meetings/` folder (where the sync location cannot be altered), they land as raw files lacking essential Obsidian metadata (causing red-level alerts in standard vault hygiene reports). 
+
+To reconcile these in-place without manual intervention, run the pre-processing script before standard hygiene tasks:
+- **Reconciliation Script:** `scripts/reconcile_granola.py`
+- **What it does:** Detects raw markdown files in `meetings/` lacking frontmatter, parses the filename prefix for the date (e.g. `YYYY-MM-DD`), resolves the weekday, generates a numeric `id` timestamp based on file modification time, injects standard frontmatter (including `category: "[[Meetings]]"` and `daily_note` links), and normalizes formatting anomalies (converting raw `--` blocks or dual horizontal rules into single standard `---` boundaries).
+
 ## Misplaced daily notes
 
 Daily notes are sometimes accidentally saved to folders like `inbox/` or root instead of `daily/`. `gbrain lint --fix` automatically detects files matching `YYYY-MM-DD Weekday.md` and re-routes/moves them into `daily/`.

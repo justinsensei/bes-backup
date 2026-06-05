@@ -16,7 +16,7 @@ Justin uses Apple Notes as a "filing cabinet" for references (previously in Obsi
 §
 Google Calendar has write access; Bes can directly schedule events on Justin's behalf (e.g., during morning briefings or from forwarded emails) using `gws_multi.py --account <name> calendar create` instead of creating 'Add to calendar' tasks in Todoist.
 §
-Vault hygiene checks should ignore Copilot logs under Logs/Copilot/ and Granola logs.
+Vault hygiene ignores Copilot/Granola logs. Granola notes sync directly to /meetings and are auto-reconciled in-place via reconcile_granola.py.
 §
 Forwarded emails should not be copied to vault unless explicitly requested.
 §
