@@ -179,46 +179,42 @@ You now have 3–5 small summaries. Also do these **in-context** reads/searches 
 
 If a subagent fails (auth expired, network, hit budget, etc.), include the failure in the footer (`Slack: ERR — token expired` or `Linear: PARTIAL — hit budget`) rather than silently dropping the source. Then continue with what you have.
 
-## Step 4 — Synthesize three sections
+## Step 4 — Synthesize daily note blocks
 
-Produce a Work Log block with three section headings. Omit any section that has no real content (don't include an empty heading).
+Synthesize the gathered material into a set of clean, structured blocks matching the new "record and hub" format of the daily note.
 
-### `### Today's Highlights`
-The most important things that happened — shipped work, key conversations, decisions reached, code written, problems solved. Pull from all sources. Be specific: name the people, channels, projects, outcomes. Past tense. 6–12 bullets typically; fewer is fine if it was a quiet day. Cite the source inline only when it adds clarity, e.g. *"Resolved blocker with Maya on render pipeline (#product-leads thread)."*
+### `> [!summary] **Preview Summary**`
+Produce a highly concise, 1–2 sentence preview summary of the day's core themes, events, or main focus. This must be written in the active voice and clearly state what dominated the day (e.g., *"Spent the day debugging Clio Slack issues and celebrated Jamie's fifth-grade graduation with Kennywood rides."*).
 
-### `### Decisions Made`
-Consequential decisions only. For each, bold the decision itself; include owner if not obvious. Skip if no real decisions were made — don't promote tasks or observations into "decisions." A Linear status change is not a decision; a Slack thread where a tradeoff was settled IS.
+### `## 📅 Schedule & Events`
+Populate with chronological bullets of today's events from the Calendar subagent, integrated with links to today's meetings. Each bullet should follow this clean format:
+`- **HH:MM - HH:MM** Event Title [Account/Context]` (e.g., `[[Granola/2026-06/2026-06-04 Product meeting|Product meeting]]` or calendar events). Mark events as completed or cancelled appropriately.
 
-**Crucial attribution rule:** Never default to attributing a decision to Justin or using ambiguous passive phrasing like "Agreed to..." if the decision was actually made by a collaborator, family member, or third party. Always explicitly credit the correct decision-maker (e.g., "Jeff Galak rescheduled..." or "Anya chose...") to prevent misattribution.
+### `## 🚀 Highlights & Decisions`
+Combine your synthesized highlights, consequential decisions, and unresolved blockers/questions. Group them logically (e.g., by Project, SignLab/Personal, or key domains).
+- **Highlights:** Bullets detailing key activities and accomplishments (past tense).
+- **Decisions Made:** Consequential choices or agreements. Bold the decision itself. Never assume Justin is the owner/maker of a decision—attribute accurately (e.g., "Nana chose...", "Anya prioritized...").
+- **Open Questions / Blockers:** Unresolved items, pending replies, or stalled issues.
 
-### `### Open Questions / Blockers`
-Unresolved questions, pending actions, known blockers as of end-of-day. Includes asks Justin owes a reply to (from Slack/email), Linear issues stalled waiting on someone, calendar conflicts upcoming. Skip if none.
+### `## 🏆 Accomplishments`
+Enumerate shipped accomplishments. Group or list:
+- Completed Todoist tasks (e.g., `✓ [Project/Category] Task name`)
+- Closed Linear issues
+- Commits shipped or PRs merged
 
-Writing style: concise, specific, past tense for highlights. Match the voice of prior work logs if Justin has any (grep for `## 💼 Work Log` in the daily-notes archive to find examples).
+## Step 5 — Update the daily note
 
-## Step 5 — Append to the daily note
+Read the daily note, then replace the corresponding placeholder sections (or overwrite the old headings) while keeping the frontmatter, `#daily_note` tag, and the `## 🗒 Notepad` section (including any manual entries Justin has written) completely untouched.
 
-Use `patch` (anchored append) or `write_file` (whole-note rewrite). Append this block at the **end** of the note, preserving everything above:
+If the daily note does not contain these sections yet, convert it to the new structure.
 
-```
-# 📋 Work Log
-
-### Today's Highlights
-[bullets]
-
-### Decisions Made
-[bullets]
-
-### Open Questions / Blockers
-[bullets]
-
+At the very bottom of the note (after the notepad, or as a small footer block), append the sources attribution line:
+```markdown
 ---
 *Sources: Slack (12 msgs / 4 channels) | Linear (5 issues) | Gmail work (8 threads), personal-main (1) | Calendar (4 events / 3 accts) | Todoist (N completed, M open) | daily note + chat.*
 ```
 
-Use the **actual counts** from the subagent summaries. If a source was unavailable, mark it `ERR` with a short reason. Always include `daily note + chat` at the end.
-
-Do NOT add a separate frontmatter block. Do NOT modify anything else in the file.
+Do NOT add a separate frontmatter block. Do NOT modify any other manual content.
 
 ## Step 6 — Don't commit
 
