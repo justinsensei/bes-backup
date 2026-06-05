@@ -286,3 +286,32 @@ These leaked environment variables redirect all Git commands in the hook/script 
 ```bash
 unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_NAMESPACE GIT_ALTERNATE_OBJECT_DIRECTORIES
 ```
+
+## GBrain Integration
+
+GBrain (`gbrain`) is the personal knowledge brain CLI tool indexing and searching Justin's Obsidian vault.
+
+### Core Config
+
+Configuration resides in `~/.gbrain/config.json` (file-plane) and inside the PGLite database plane.
+
+### API Keys and Credentials
+
+- **File-plane Keys:** Configured directly in `~/.gbrain/config.json`:
+  - `openai_api_key`
+  - `anthropic_api_key`
+  - `zeroentropy_api_key`
+- **Env-only Keys:** Other keys such as `OPENROUTER_API_KEY` and `GOOGLE_GENERATIVE_AI_API_KEY` (Gemini) are read directly from `process.env`. To run gbrain with these keys, ensure the environment variables are loaded (e.g. from `~/.hermes/.env` via `set -a && source ~/.hermes/.env && gbrain ...`).
+
+### Activating or Switching Embedding Providers (PGLite)
+
+Since pgvector (WASM) cannot alter vector columns in place, the canonical path for switching embedding models on a PGLite brain is `gbrain reinit-pglite`.
+
+```bash
+gbrain reinit-pglite --embedding-model <provider:model> --embedding-dimensions <dims>
+```
+
+- This command preserves the active database as `<path>.bak`, wipes the active DB, and runs `gbrain sync` to re-import and re-embed the vault.
+- **OpenRouter Embedding:** Model is `openrouter:openai/text-embedding-3-small` with `1536` dimensions.
+- **Google Gemini Embedding:** Model is `google:gemini-embedding-001` with `768` dimensions. Requires `GOOGLE_GENERATIVE_AI_API_KEY` in the environment.
+
