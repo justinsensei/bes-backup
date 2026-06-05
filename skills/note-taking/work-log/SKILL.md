@@ -222,10 +222,10 @@ Justin's `bes-vault-sync` watcher auto-commits and pushes the vault to `obsidian
 
 ## Important behaviors
 
-- **No duplicate Work Log blocks.** If the daily note already contains `# 📋 Work Log`, **overwrite** it — replace everything from that heading to the end of the file with the newly synthesized block. Do NOT append a second one, and do NOT ask for confirmation when running autonomously (e.g. from a cron job). Only prompt Justin interactively if he is present in chat and the run was triggered manually.
-- **Omit empty sections.** A Work Log with only Highlights is better than one with empty "Decisions Made" / "Open Questions" headings.
-- **No file creation.** The only write operation is appending to the existing daily note.
-- **Skip cleanup of the daily note.** Don't reformat or tidy what Justin already wrote — the Work Log block is additive.
+- **Section Replacement Rules:** When updating the daily note, do NOT append content to the end of the file. Instead, read the file, locate the markdown headings (`## 📅 Schedule & Events`, `## 🚀 Highlights & Decisions`, `## 🏆 Accomplishments`, and the `> [!summary]` block at the top), and replace their contents with your new synthesized data.
+- **Preserve the Notepad:** Always preserve the entire content of the `## 🗒 Notepad` section (and everything inside it). Never overwrite, modify, or delete Justin's manual scratch notes.
+- **Omit empty bullets:** If a section has no content (e.g., no completed tasks), represent it with a single placeholder bullet (e.g., `- None today`) rather than deleting the section heading entirely, to preserve the note structure.
+- **No file creation.** The only write operation is updating the existing daily note.
 - **Privacy posture.** Slack DMs and personal email can be sensitive. The subagent filter steps exist for a reason — keep the synthesis at the "what Justin did / decided / owes" level, not verbatim quotes. If something looks too private to land in a vault that auto-pushes to GitHub (even a private repo), ask Justin before including it.
 - **Date precision.** "Today" means today in the vault's timezone, not UTC. Pre-compute the date once at Step 3 and pass it to every subagent. Don't trust subagents to re-derive it.
 - **Source failures are non-fatal.** If Slack auth expired or Linear is down, log it in the footer and continue. A 3-source work log is still useful.
