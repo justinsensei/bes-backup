@@ -236,6 +236,8 @@ Justin's `bes-vault-sync` watcher auto-commits and pushes the vault to `obsidian
 
 ## Pitfalls
 
+- **Direct execution script requires TARGET_DATE environment variable override.** When running `references/direct_execution.py` via python inside `execute_code()`, make sure to explicitly set `os.environ['TARGET_DATE'] = target_date` before running the script. This ensures the helper script pulls the precise targeted date instead of falling back to today or real yesterday, keeping the execution completely deterministic.
+
 - **Slack search date queries must use target date minus one day and plus one day.** Slack's `after:YYYY-MM-DD` filter is exclusive of the specified day's start, and `before:YYYY-MM-DD` is exclusive of the specified day's start. To find messages sent on `TARGET_DATE` (e.g. `2026-05-28`), you must query `after:<TARGET_DATE_MINUS_1_DAY>` (e.g. `2026-05-27`) and `before:<TARGET_DATE_PLUS_1_DAY>` (e.g. `2026-05-29`). Searching with `after:<TARGET_DATE>` or `before:<TARGET_DATE>` will exclude all messages from that day.
 
 - **Decision misattribution.** Do not assume Justin is the owner or decision-maker for calendar/email/Slack updates. Explicitly attribute decisions to the source actor (e.g. family members, teachers, or business partners) when summarizing or logging (e.g. "Jeff Galak rescheduled Simon's birthday" rather than "Agreed to reschedule...").
