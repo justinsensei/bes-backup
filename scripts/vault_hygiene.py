@@ -20,7 +20,29 @@ def reconcile_granola_meetings(vault_path):
         return
         
     print("Reconciling meetings from Granola...")
-    for path in meetings_dir.glob("*.md"):
+    
+    # Pre-scan vault for existing IDs to avoid collisions
+    existing_ids = set()
+    skip_dirs = {"Readwise", "utilities", ".git", ".trash", ".cursor", ".claude", "sources", "daily"}
+    for root, dirs, files in os.walk(vault_path):
+        dirs[:] = [d for d in dirs if not d.startswith(".") and d not in skip_dirs]
+        for f in files:
+            if not f.endswith(".md"):
+                continue
+            p = Path(root) / f
+            try:
+                content = p.read_text(encoding="utf-8", errors="replace")
+                if content.startswith("---"):
+                    end = content.find("\n---", 3)
+                    if end > 0:
+                        fm = content[3:end]
+                        id_match = re.search(r"^id:\s*[\"']?(\d+)[\"']?", fm, re.MULTILINE)
+                        if id_match:
+                            existing_ids.add(id_match.group(1).strip())
+            except Exception:
+                pass
+
+    for path in sorted(meetings_dir.glob("*.md")):
         filename = path.name
         # Match YYYY-MM-DD at start of filename
         date_match = re.match(r"^(\d{4}-\d{2}-\d{2})", filename)
@@ -74,7 +96,14 @@ def reconcile_granola_meetings(vault_path):
                 time_part = mtime_dt.strftime("%H%M%S")
             else:
                 time_part = "120000"
-            note_id = f"{date_str.replace('-', '')}{time_part}"
+                
+            candidate_id = f"{date_str.replace('-', '')}{time_part}"
+            while candidate_id in existing_ids:
+                # Increment the ID to make it unique
+                candidate_id = str(int(candidate_id) + 1)
+            
+            note_id = candidate_id
+            existing_ids.add(note_id)
             needs_update = True
             
         if not daily_note or "[[" not in daily_note:
