@@ -74,18 +74,14 @@ def reconcile_granola_meetings(vault_path):
         # Parse fields from frontmatter if it exists
         note_id = ""
         daily_note = ""
-        category = ""
         
         if has_frontmatter:
             id_match = re.search(r"^id:\s*[\"']?(\d+)[\"']?", fm_content, re.MULTILINE)
             dn_match = re.search(r"^daily_note:\s*[\"']?([^\"'\n]+)[\"']?", fm_content, re.MULTILINE)
-            cat_match = re.search(r"^category:\s*[\"']?([^\"'\n]+)[\"']?", fm_content, re.MULTILINE)
             if id_match:
                 note_id = id_match.group(1).strip()
             if dn_match:
                 daily_note = dn_match.group(1).strip()
-            if cat_match:
-                category = cat_match.group(1).strip()
                 
         needs_update = False
         
@@ -110,10 +106,6 @@ def reconcile_granola_meetings(vault_path):
             daily_note = f"[[daily/{date_str}-{weekday_lower}|{date_str} {weekday_cap}]]"
             needs_update = True
             
-        if not category or "Meetings" not in category:
-            category = "[[Meetings]]"
-            needs_update = True
-            
         # Clean body: strip leading whitespace and redundant separators
         original_body = body_content
         body_content = body_content.lstrip()
@@ -134,7 +126,7 @@ def reconcile_granola_meetings(vault_path):
             
         if needs_update:
             # Construct clean frontmatter
-            new_fm = f"---\nid: {note_id}\ndaily_note: '{daily_note}'\ncategory: \"{category}\"\n---\n"
+            new_fm = f"---\nid: {note_id}\ndaily_note: '{daily_note}'\n---\n"
             new_text = new_fm + body_content
             path.write_text(new_text, encoding="utf-8")
             print(f"  Fixed/Reconciled: {filename}")
