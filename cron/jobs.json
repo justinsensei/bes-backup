@@ -265,7 +265,52 @@
       ],
       "workdir": null,
       "profile": null
+    },
+    {
+      "id": "82b79f5dda7d",
+      "name": "weekly-accomplishments-summary",
+      "prompt": "Retrieve Justin's daily notes for the previous week (Monday through Sunday) from his Obsidian vault at `/home/justin.guest/vault/daily`. \n\nCalculate the dates for the previous week (7 days ago, Monday to Sunday). Use a Python script to locate and read the corresponding daily note files (format: `YYYY-MM-DD-weekday.md`). \n\nExtract the accomplishments, highlights, decisions, and any other relevant updates, and write a weekly summary in Bes's voice: quiet, minimal, short sentences, informal, no filler, no framing theater.\n\nDeliver the final weekly report.",
+      "skills": [
+        "obsidian"
+      ],
+      "skill": "obsidian",
+      "model": null,
+      "provider": null,
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 5 * * 1",
+        "display": "0 5 * * 1"
+      },
+      "schedule_display": "0 5 * * 1",
+      "repeat": {
+        "times": null,
+        "completed": 0
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-06-08T10:40:04.253989-04:00",
+      "next_run_at": "2026-06-15T05:00:00-04:00",
+      "last_run_at": null,
+      "last_status": null,
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "origin",
+      "origin": {
+        "platform": "telegram",
+        "chat_id": "-5142953843",
+        "chat_name": "Weekly Summary",
+        "thread_id": null
+      },
+      "enabled_toolsets": null,
+      "workdir": null,
+      "profile": null
     }
   ],
-  "updated_at": "2026-06-08T10:32:35.688219-04:00"
+  "updated_at": "2026-06-08T10:40:04.255380-04:00"
 }
