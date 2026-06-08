@@ -168,15 +168,11 @@ If Justin reacts to a message with the `🧠` (brain) emoji, use `scripts/fetch_
    private channels depending on indexing.
 
 **"What do I have reminders set on?"**
-Use `has:reminder` in a search query — this is the supported workaround
-for the missing `reminders:read` scope (see Pitfalls). It returns messages
-Justin has flagged with Slack's native reminder feature:
+Use `is:saved` (to find starred/saved messages) and `has:reminder` (as a fallback) in a search query — this is the supported workaround for the missing `reminders:read` scope (see Pitfalls). It returns messages Justin has saved or flagged with Slack's native reminder feature:
 ```bash
-slack search 'has:reminder after:2026-05-19' --limit 50
+slack search '(has:reminder OR is:saved) after:2026-05-19' --limit 50
 ```
-Note: the literal word "reminder" appearing in message *text* can
-occasionally bleed in (e.g. "Reminder: meeting at 3pm"). Use channel
-context to distinguish these from genuinely reminder-flagged messages.
+Note: the literal word "reminder" appearing in message *text* can occasionally bleed in via `has:reminder` (e.g. "Reminder: meeting at 3pm"). Use channel context to distinguish these from genuinely reminder-flagged or saved messages.
 
 **"Reply to Alice's DM"**
 1. `slack channels --type im` to find the DM channel ID for Alice's user_id.
