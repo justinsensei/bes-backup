@@ -43,7 +43,7 @@ If the target daily note does not exist, you must **automatically create it** fr
 
 Spawn **one `delegate_task` subagent per external source** in a single batch so raw API output stays out of your context. Each subagent runs a **specific, pre-canned set of commands** — no exploration — and returns a small filtered summary (bullets, ~10–30 items max). You only see the summaries.
 
-**Direct execution option (Fast-track):** Spawning 5 parallel subagents may hit the max concurrent children limit of 3. If you can, you can execute the commands directly in-context via `terminal()` and the native MCP tools (especially for Todoist). This bypasses subagent overhead, completes in seconds, and is extremely clean when parsed directly by the main agent. A Python helper script is available at `references/direct_execution.py` which fetches Slack, Linear, and Google Workspace details in a single automated step to run within `execute_code()`.
+**Direct execution option (Fast-track):** Spawning 5 parallel subagents may hit the max concurrent children limit of 3. If you can, you can execute the commands directly in-context via `terminal()` and the native MCP tools (especially for Todoist). This bypasses subagent overhead, completes in seconds, and is extremely clean when parsed directly by the main agent. A Python helper script is available at `references/direct_execution.py` which fetches Slack, Linear, Google Workspace, and Obsidian Vault git history details in a single automated step to run within `execute_code()`.
 
 **Speed discipline:** subagents have a soft budget of **≤8 tool calls each**. If a subagent can't finish inside that, it must return what it has and exit. Tell it so explicitly in the context block ("Budget: 8 tool calls. If you exhaust it, return partial results and stop.").
 
@@ -169,9 +169,20 @@ Justin's Linear user-id can be cached. First time, look it up with `{ viewer { i
 
 **What this feeds:** completed tasks → "## 🏆 Accomplishments"; incomplete due-today tasks → "## 🚀 Highlights & Decisions" (under a "Pending / Open Questions" sub-heading or bullet).
 
-### Subagent F (optional) — recent git activity
+### Subagent F — Git Activity (Obsidian Vault and Code Repos)
 
-Skip unless Justin specifically mentions code work. If you do run it: scope to repos under `~/clio-backup`, `~/bes-backup`, `~/hermes-agent` (if present), and any project repo Justin mentioned in the daily note. Use `git log --author --since=midnight --pretty` per repo. Return commits as bullets `[repo] sha — subject`. Budget: 8 tool calls.
+Always check the git history of the **Obsidian Vault** to capture notes Justin added, modified, or deleted today. This is a critical source of daily activity. Checking code repos (like `~/clio-backup`, `~/bes-backup`, or `~/hermes-agent`) is optional and should be done if Justin worked on code or mentions it.
+
+**Obsidian Vault Git check:**
+Run `git log --since="<TARGET_DATE> 00:00:00" --until="<TARGET_DATE> 23:59:59" --name-status --pretty=format:"COMMIT:%h|%an|%s"` inside `/home/justin.guest/vault` (or `OBSIDIAN_VAULT_PATH`). Filter out commits where the author is `Bes (bes-vm)` or contains `bes` to isolate Justin's manual edits.
+
+**Code repos check (optional):**
+Scope to repos under `~/clio-backup`, `~/bes-backup`, `~/hermes-agent` (if present), and any project repo Justin mentioned in the daily note. Use `git log --author --since="<TARGET_DATE> 00:00:00" --until="<TARGET_DATE> 23:59:59" --pretty` per repo.
+
+Return commits and modified files as bullets:
+- `○ [vault] Added: meetings/2026-06-08 Product meeting.md`
+- `○ [vault] Modified: notes/5-rule-freemium-20250808160844.md`
+- `[repo] sha — subject (commits)`
 
 ### After subagents return
 
@@ -215,7 +226,7 @@ If the daily note does not contain these sections yet, convert it to the new str
 At the very bottom of the note (after the notepad, or as a small footer block), append the sources attribution line:
 ```markdown
 ---
-*Sources: Slack (12 msgs / 4 channels) | Linear (5 issues) | Gmail work (8 threads), personal-main (1) | Calendar (4 events / 3 accts) | Todoist (N completed, M open) | daily note + chat.*
+*Sources: Slack (12 msgs / 4 channels) | Linear (5 issues) | Gmail work (8 threads), personal-main (1) | Calendar (4 events / 3 accts) | Todoist (N completed, M open) | vault git (X files) | daily note + chat.*
 ```
 
 Do NOT add a separate frontmatter block. Do NOT modify any other manual content.
