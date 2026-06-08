@@ -8,9 +8,7 @@ App Store Connect issue emails are not Justin's to handle — ignore them when c
 §
 Todoist is for actions only — no informational notes or FYIs. If something isn't actionable, don't capture it.
 §
-During inbox fills, Justin does not want generic meeting prep tasks suggested. Exclude standard team/internal syncs and brief chat slots unless explicit prep is required.
-§
-During inbox fills, do not suggest any task for a Linear issue if any existing Todoist task already references or is linked to that same issue ID.
+Inbox fills: exclude generic meeting prep/internal syncs, and do not suggest tasks for Linear issues already linked/referenced in Todoist.
 §
 Justin uses Apple Notes as a "filing cabinet" for references (previously in Obsidian References/), while continuing to use Obsidian for general note-taking.
 §
@@ -23,3 +21,5 @@ Forwarded emails should not be copied to vault unless explicitly requested.
 Obsidian horizontal rule: always use three hyphens `---` for a horizontal line, never two hyphens `--`.
 §
 Readwise script is at ~/sync_readwise.py. It exports highlights tagged 'vault' (case-insensitive) to vault/sources/.
+§
+Justin has abandoned gbrain and prefers growing custom agent solutions on top of Bes by selectively reusing skills.
