@@ -178,49 +178,6 @@
       "profile": null
     },
     {
-      "id": "f80ca2a0293f",
-      "name": "nightly-dream-cycle",
-      "prompt": "",
-      "skills": [],
-      "skill": null,
-      "model": null,
-      "provider": null,
-      "base_url": null,
-      "script": "dream_cycle.sh",
-      "no_agent": true,
-      "context_from": null,
-      "schedule": {
-        "kind": "cron",
-        "expr": "0 2 * * *",
-        "display": "0 2 * * *"
-      },
-      "schedule_display": "0 2 * * *",
-      "repeat": {
-        "times": null,
-        "completed": 3
-      },
-      "enabled": true,
-      "state": "scheduled",
-      "paused_at": null,
-      "paused_reason": null,
-      "created_at": "2026-06-05T16:15:58.667003-04:00",
-      "next_run_at": "2026-06-09T02:00:00-04:00",
-      "last_run_at": "2026-06-08T02:00:10.074470-04:00",
-      "last_status": "ok",
-      "last_error": null,
-      "last_delivery_error": null,
-      "deliver": "origin",
-      "origin": {
-        "platform": "telegram",
-        "chat_id": "8612970484",
-        "chat_name": "Justin Goff",
-        "thread_id": null
-      },
-      "enabled_toolsets": null,
-      "workdir": null,
-      "profile": null
-    },
-    {
       "id": "8d6cfdd42fd4",
       "name": "Slack Brain Note Capture",
       "prompt": "You are Bes, running on a scheduled cron job to process Slack conversations marked with a \ud83e\udde0 reaction by Justin.\n\nThe output of the fetcher script `fetch_slack_brains.py` is injected below:\n\n---\nIf the output is empty `[]` or has no items, stop immediately. Output absolutely nothing (or just '[SILENT]') and terminate. Do not write any files, do not edit daily notes, and do not send any message.\n\nIf there are new items, process them one by one. For each item:\n1. Synthesize a clean, high-quality, high-level summary of the conversation showing clearly \"who said what\", what concerns were raised, what suggestions were made, and what the key decisions or takeaways were.\n2. Determine the date of the conversation (from the `ts` or messages timestamps).\n3. Create an Obsidian note under `/home/justin.guest/vault/sources/slack/<YYYY-MM-DD>-<slug>.md`, where <slug> is a short, slugified version of the conversation topic.\n4. Structure the note with YAML frontmatter and markdown sections as follows:\n   ```yaml\n   ---\n   id: <timestamp_id>  # YYYYMMDDHHmmss format (e.g., 20260605120000 based on the main message's timestamp)\n   daily_note: \"[[<YYYY-MM-DD-weekday>]]\"  # e.g., [[2026-06-05-friday]]\n   original_url: \"<permalink>\"\n   channel: \"\\#<channel_name>\"\n   participants:\n     - \"<Name of participant 1>\"\n     - \"<Name of participant 2>\"\n   ---\n   ```\n\n   ```markdown\n   #source\n\n   # Slack: <Conversation Topic>\n\n   <A brief, 1-2 sentence paragraph introducing the context of this conversation.>\n\n   ## Summary of Conversation\n   - **<Participant Name>**...\n   - **<Participant Name>**...\n   - **Decision / Takeaway:** ...\n\n   ---\n   ## Verbatim Reference\n   > **<Participant Name>**: <Message text>\n   > **<Participant Name>**: <Message text>\n   ```\n5. Write the file to the vault at `/home/justin.guest/vault/sources/slack/<YYYY-MM-DD>-<slug>.md`.\n6. Update today's daily note:\n   - Today's date is determined at runtime based on the system date (e.g. `2026-06-05`).\n   - The daily note path is `/home/justin.guest/vault/daily/<YYYY-MM-DD-weekday>.md` (e.g., `/home/justin.guest/vault/daily/2026-06-05-friday.md`).\n   - If today's daily note does not exist, automatically create it from the template `/home/justin.guest/vault/utilities/templates/daily_note.md` as described in the `work-log` skill (substitute template expressions with real values).\n   - Read today's daily note, locate the `## \ud83d\uddd2 Notepad` section, and append a clean bullet inside it:\n     `* [[sources/slack/<filename>|Slack discussion]]: <One-sentence-gist of the conversation>.`\n     Keep all other content in the notepad intact. Do NOT overwrite his manual notes.\n7. Mark the conversation as processed to avoid duplicate processing:\n   - Run the command: `python3 /home/justin.guest/.hermes/scripts/fetch_slack_brains.py --mark-processed <channel_id> <ts>`\n8. Once all items are successfully written, append-to-daily-note, and marked processed, output a clear, concise summary of what was saved as your final response so it is sent to Justin on Telegram.\n\nInclude absolute file paths for all operations. Verify files exist before reading/writing. Be extremely quiet if there's nothing to process.",
@@ -312,5 +269,5 @@
       "profile": null
     }
   ],
-  "updated_at": "2026-06-08T16:27:25.698719-04:00"
+  "updated_at": "2026-06-08T16:28:19.688170-04:00"
 }

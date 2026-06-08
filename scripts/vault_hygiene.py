@@ -134,10 +134,6 @@ def reconcile_granola_meetings(vault_path):
 # 1. Reconcile raw Granola meetings from external syncing
 reconcile_granola_meetings(VAULT)
 
-# 2. Run gbrain lint --fix to auto-fix and move files
-print("Running gbrain lint...")
-subprocess.run(["gbrain", "lint", str(VAULT), "--fix"], capture_output=True, text=True)
-
 # 2. Walk the vault to detect ID conflicts, missing ID, missing daily_note
 id_to_paths = defaultdict(list)
 missing_ids = []
