@@ -117,7 +117,7 @@ These folders are managed by external apps or scripts with their own schemas. Av
 - `sources/` — holds transcripts, Readwise clips, and other third-party managed integrations. 
   - **Overwrite Pitfall:** Files here (such as Readwise exports like `sources/<slug>.md`) are generated programmatically by `sync_readwise.py` via an overwrite write (`'w'`). If the corresponding document's highlights are updated in Readwise, or if a full sync is run, any custom manual edits, tables, or sections added to these files will be **wiped out**.
   - **Best Practice:** If the user asks to modify or append to a note in `sources/`, alert them to this risk. If they insist, perform the edit but suggest copying the synthesized content to a dedicated manual note in `notes/` or `concepts/` if they want to ensure it is permanently preserved.
-- `Readwise/` — article highlights imported by the Readwise plugin. Schema: `id` (non-standard timestamp format), `daily_note` (plain string, not wikilink). Do not patch these — they get overwritten on the next sync.
+- `Readwise/` — **RETIRED & OBSOLETE**. This directory was retired and its unique contents were fully deduplicated, normalized, formatted to the standard `sources/` style, and consolidated into `sources/` on 2026-06-08. Do not re-create or use this directory.
 
 ## Meeting Notes & Transcripts (Granola & Auto-data)
 
