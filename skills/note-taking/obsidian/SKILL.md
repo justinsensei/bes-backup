@@ -111,9 +111,11 @@ Notes are organized into specific lowercase directories in the vault, which alig
 
 ## Third-party managed folders — do not touch
 
-These folders are managed by external apps with their own schemas. Never add or modify `id`, `daily_note`, or `category` fields in these (except when performing deduplication/merges on duplicates):
+These folders are managed by external apps or scripts with their own schemas. Avoid manually adding content to these files, as they are subject to being overwritten.
 
-- `sources/` — holds transcripts, Readwise clips, and other third-party managed integrations with separate schemas. Skipped entirely by standard required-frontmatter hygiene rules.
+- `sources/` — holds transcripts, Readwise clips, and other third-party managed integrations. 
+  - **Overwrite Pitfall:** Files here (such as Readwise exports like `sources/<slug>.md`) are generated programmatically by `sync_readwise.py` via an overwrite write (`'w'`). If the corresponding document's highlights are updated in Readwise, or if a full sync is run, any custom manual edits, tables, or sections added to these files will be **wiped out**.
+  - **Best Practice:** If the user asks to modify or append to a note in `sources/`, alert them to this risk. If they insist, perform the edit but suggest copying the synthesized content to a dedicated manual note in `notes/` or `concepts/` if they want to ensure it is permanently preserved.
 - `Readwise/` — article highlights imported by the Readwise plugin. Schema: `id` (non-standard timestamp format), `daily_note` (plain string, not wikilink). Do not patch these — they get overwritten on the next sync.
 
 ## Meeting Notes & Transcripts (Granola & Auto-data)
