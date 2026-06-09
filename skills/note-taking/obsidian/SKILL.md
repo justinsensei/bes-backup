@@ -105,9 +105,7 @@ Notes are organized into specific lowercase directories in the vault, which alig
 - **projects/**: Contains Project notes.
 - **companies/**: Contains Organization/Company notes.
 - **concepts/**: Contains structured, permanent concept/definition notes (timeless mental models, frameworks, business principles, and cognitive architectures, e.g., *System 1 vs System 2*, *The Five Product Risks*, *Freemium Conversion Rules*).
-- **notes/personal/**: Contains personal reflections and notes (family reflections, budgets, poetry, medical/health logs, e.g., *Qulipta dosage logs*, *birthday poem for Nana*).
-- **notes/personal/trips/**: Contains trip-specific logs and travel plans (e.g., *Telluride 2026*, *Belize 2026*).
-- **notes/**: Contains quick fleeting scratchpads, brain dumps, and tactical/specific logs (feature blueprints, project specs, meeting summaries, e.g., *PostHog specs*, and notes tagged with `#quick_note`).
+- **notes/**: Contains personal reflections, family notes, budgets, poetry, travel/trips (considered a kind of project), scratchpads, tactical logs, feature blueprints, project specs, and quick brain dumps (e.g. *PostHog specs*, *Telluride 2026*, *birthday poem for Nana*, notes tagged `#quick_note`).
 - **logs/daily/**: Contains both current and archived daily notes.
 
 ## Third-party managed folders — do not touch
