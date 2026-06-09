@@ -49,7 +49,7 @@ What is the core idea or reflection? Keep it atomic.
 ```
 
 ### Beliefs (Guiding Principles/Mental Models)
-Beliefs notes capture highly trusted, semi-permanent ideas, frameworks, and principles that shape Justin's product management playbook or personal standards.
+Beliefs notes capture highly trusted, semi-permanent ideas, frameworks, and principles that shape Justin's product management playbook or personal standards. Mature beliefs follow the structured format formalized in `Willpower is limited 20250626165159.md`:
 
 ```markdown
 ---
@@ -60,14 +60,27 @@ category: "[[Beliefs]]"
 
 # Spaced Capitalized Belief Title
 
-What is the core principle or mental model? (e.g. "Honesty over comfort", "Outcomes over outputs").
+Core thesis or definition paragraph. Concise, high-level statement of what this belief represents.
+
+Optional secondary elaboration paragraph providing deeper conceptual context or explaining the underlying mechanics.
 
 ---
 
 ## Core Tenets
-1. Tenet 1...
-2. Tenet 2...
+1. **[Tenet 1 Name]:** Concise description of the first fundamental pillar or rule supporting this belief.
+2. **[Tenet 2 Name]:** Concise description of the second pillar.
+3. **[Tenet 3 Name]:** Concise description of the third pillar.
 
 ## Application
-How is this principle applied in everyday decision-making?
+- **[Domain/Scenario A]:** Specific guideline on how this principle is put into practice in daily life, work, or decision-making.
+- **[Domain/Scenario B]:** Practical application rule or playbook instruction.
+
+---
+
+## Related
+* [[Related Note A]]
+* [[Related Note B]]
+
+## Sources
+* [[Source Note or Book Link]]
 ```
