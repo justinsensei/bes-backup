@@ -222,7 +222,7 @@ def fetch_gws_counts(target_date):
         "gmail_personal": personal_count
     }
 
-def get_gbrain_activity(vault_path, last_briefing_dt):
+def get_vault_activity(vault_path, last_briefing_dt):
     total_updated = 0
     type_counts = {}
     added_entities = {"person": [], "company": [], "concept": []}
