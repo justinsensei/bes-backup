@@ -28,76 +28,7 @@ The wind-down session runs interactively in a strict, step-by-step sequence. Wai
 
 ---
 
-### Phase 1 — Work Log Draft & Alignment
-
-Draft today's work log, align with Justin, and write it to today's daily note.
-
-1. **Calculate Dates:**
-   - Determine `TARGET_DATE` as today (e.g., `2026-06-07` in local time).
-   - Pre-compute timezone offsets dynamically to prevent UTC boundary leakage on calendar searches.
-
-2. **Gather Today's Raw Activities (Fast-track):**
-   - Run `/home/justin.guest/.hermes/skills/note-taking/work-log/references/direct_execution.py` via `terminal` (with `export TARGET_DATE=<YYYY-MM-DD>`) or `execute_code` (setting `os.environ['TARGET_DATE'] = today_date`) to pull Slack, Linear, and Google Workspace calendar/email data in seconds. Using `terminal` is the preferred bulletproof pattern since `execute_code` can be restricted by environment-level approval settings.
-   - Query Todoist live for completed tasks today (`mcp_todoist_find_completed_tasks` with `since: <TODAY>`, `until: <TODAY>`, `getBy: "completion"`) and incomplete tasks due today (`mcp_todoist_find_tasks_by_date` with `startDate: <TODAY>`).
-   - Read today's existing Obsidian daily note with `read_file` to see manual notepad entries.
-   - Search the vault for any meeting/Granola notes generated today (look in `vault/meetings/` or files containing today's date in their name).
-
-3. **Synthesize the Work Log Draft:**
-   - Synthesize the gathered material into a set of clean, structured blocks matching the standard work log format:
-     - **Preview Summary:** A highly concise, 1-2 sentence active-voice overview of the day's main focus.
-     - **📅 Schedule & Events:** Chronological bullet list of meetings and events.
-     - **🚀 Highlights & Decisions:** Synthesized highlights, bolded decisions (with accurate attribution), and open questions/blockers.
-     - **🏆 Accomplishments:** Completed Todoist tasks, closed Linear issues, or git commits.
-
-4. **Present the Draft to Justin:**
-   - Deliver the formatted draft in chat.
-   - Ask a short, focused question to capture offline context:
-     *"Here is the draft of today's work log. Anything else from today that isn't captured here (e.g., side-quests, offline discussions, IRL decisions)?"*
-   - **Wait for Justin's response.**
-
-5. **Write the Finalized Work Log:**
-   - Combine Justin's feedback with the draft.
-   - Find or create today's daily note in `/home/justin.guest/vault/Daily Notes/YYYY-MM-DD Weekday.md` (create from template `/home/justin.guest/vault/Utilities/Templates/daily_note.md` if missing, stripping Templater tags).
-   - Overwrite/replace the corresponding headings (`> [!summary]`, `## 📅 Schedule & Events`, `## 🚀 Highlights & Decisions`, `## 🏆 Accomplishments`) with your new synthesized content.
-   - **Crucial:** Preserve the entire content of the `## 🗒 Notepad` section (including manual text written by Justin). Never modify or delete it.
-   - Append the sources attribution footer at the very bottom.
-
----
-
-### Phase 2 — Vault Inbox Triage
-
-Help Justin empty his Obsidian "inbox" so quick notes and scratchpads land in their correct homes.
-
-1. **Scan the Inbox Directory:**
-   - List all files inside the vault inbox directory (`/home/justin.guest/vault/inbox/`) using `search_files(path='/home/justin.guest/vault/inbox', pattern='*')`.
-
-2. **Read & Classify Inbox Notes:**
-   - For each file in the inbox, read its first few lines using `read_file`.
-   - Determine its primary focus and suggest the correct target category and folder under `/home/justin.guest/vault/`:
-     - **`Contacts/`** (Category: `[[People]]` or `[[Organizations]]`) — if about a person, family member, or company/institution.
-     - **`Logs/Meetings/`** (Category: `[[Meetings]]`) — if a meeting sync, agenda, or discussion record.
-     - **`Notes/`** (Category: `[[Thoughts]]`, `[[Beliefs]]`, `[[Memory]]`, `[[Decisions]]`, `[[Projects]]`, `[[References]]`, `[[Sources]]`, or `[[Notes]]`) — if conceptual, ideas, principles, personal memories, decisions, project hubs, reference guides, or raw notes.
-
-3. **Present Triage Options to Justin:**
-   - List the inbox notes and your suggested folder movements in a clean, numbered list:
-     ```
-     📥 N items in your vault inbox:
-     1. `Nana pride 20260607093335.md` → move to `Contacts/` (Category: `[[People]]`) (Notes on Nana and Pride event)
-     2. `Jamie lawn 20260607093304.md` → move to `Contacts/` (Category: `[[People]]`) (Notes on Jamie mowing the lawn)
-     3. `20260605162856.md` → move to `Notes/` (Category: `[[Thoughts]]`) (Quick thought on...)
-     ...
-     Shall I move these as suggested, or would you like to route them differently?
-     ```
-   - **Wait for Justin's response.**
-
-4. **Execute the Movements:**
-   - Move the confirmed files to their target directories (creating directories if needed).
-   - If a file is renamed to fit a naming convention, let Justin know.
-   - If any bidirectional links or mentions exist, make sure they remain valid.
-
----
-
-### Phase 3 — Log Candidates
+### Phase 1 — Log Candidates
 
 Present potential log candidates (active Slack conversations and noteworthy primary-category emails from the last 36-48 hours) that Justin hasn't tagged with `🧠` or forwarded to Bes, but that are highly worthy of being turned into logs in his vault.
 
@@ -163,15 +94,15 @@ If Justin selects any:
        `python3 /home/justin.guest/.hermes/scripts/fetch_source_candidates.py --mark-email-processed <thread_id>`
    - Report the log(s) successfully saved.
 
-If no candidates are found, skip this phase entirely and proceed to Phase 4.
+If no candidates are found, skip this phase entirely and proceed to Phase 2.
 
 ---
 
-### Phase 4 — Discovered Contacts & Organizations
+### Phase 2 — Discovered Contacts & Organizations
 
 Present any discovered contacts or organizations (unresolved wikilinks found by the `check_vault_signals.py` script) from today's cache file (`discovered_contacts` field).
 
-If no discovered contacts are found in the cache, skip this phase entirely and proceed to Phase 5.
+If no discovered contacts are found in the cache, skip this phase entirely and proceed to Phase 3.
 
 Format:
 ```
@@ -217,9 +148,11 @@ If Justin selects any:
      ```
 3. Report success and confirm creation.
 
+If no discovered contacts are found, proceed to Phase 3.
+
 ---
 
-### Phase 5 — Source Review
+### Phase 3 — Source Review
 
 Review persistent reference sources, articles, or transcripts added or updated today.
 
@@ -234,8 +167,77 @@ Review persistent reference sources, articles, or transcripts added or updated t
 
 3. **Present & Check Action Items:**
    - Ask if Justin has any thoughts on these sources or wants to capture any action items from them into Todoist:
-     *"Any highlights you want to turn into Todoist tasks, or shall we move to tomorrow's calendar?"*
+     *"Any highlights you want to turn into Todoist tasks, or shall we move to vault inbox triage?"*
    - **Wait for Justin's response.**
+
+---
+
+### Phase 4 — Vault Inbox Triage
+
+Help Justin empty his Obsidian "inbox" so quick notes and scratchpads land in their correct homes.
+
+1. **Scan the Inbox Directory:**
+   - List all files inside the vault inbox directory (`/home/justin.guest/vault/inbox/`) using `search_files(path='/home/justin.guest/vault/inbox', pattern='*')`.
+
+2. **Read & Classify Inbox Notes:**
+   - For each file in the inbox, read its first few lines using `read_file`.
+   - Determine its primary focus and suggest the correct target category and folder under `/home/justin.guest/vault/`:
+     - **`Contacts/`** (Category: `[[People]]` or `[[Organizations]]`) — if about a person, family member, or company/institution.
+     - **`Logs/Meetings/`** (Category: `[[Meetings]]`) — if a meeting sync, agenda, or discussion record.
+     - **`Notes/`** (Category: `[[Thoughts]]`, `[[Beliefs]]`, `[[Memory]]`, `[[Decisions]]`, `[[Projects]]`, `[[References]]`, `[[Sources]]`, or `[[Notes]]`) — if conceptual, ideas, principles, personal memories, decisions, project hubs, reference guides, or raw notes.
+
+3. **Present Triage Options to Justin:**
+   - List the inbox notes and your suggested folder movements in a clean, numbered list:
+     ```
+     📥 N items in your vault inbox:
+     1. `Nana pride 20260607093335.md` → move to `Contacts/` (Category: `[[People]]`) (Notes on Nana and Pride event)
+     2. `Jamie lawn 20260607093304.md` → move to `Contacts/` (Category: `[[People]]`) (Notes on Jamie mowing the lawn)
+     3. `20260605162856.md` → move to `Notes/` (Category: `[[Thoughts]]`) (Quick thought on...)
+     ...
+     Shall I move these as suggested, or would you like to route them differently?
+     ```
+   - **Wait for Justin's response.**
+
+4. **Execute the Movements:**
+   - Move the confirmed files to their target directories (creating directories if needed).
+   - If a file is renamed to fit a naming convention, let Justin know.
+   - If any bidirectional links or mentions exist, make sure they remain valid.
+
+---
+
+### Phase 5 — Work Log Draft & Alignment
+
+Draft today's work log, align with Justin, and write it to today's daily note. This step runs towards the end of the wind-down so that any activities, contact creations, log files, or inbox triage completed during previous steps are fully incorporated, ensuring the work log captures the final state of play for the day.
+
+1. **Calculate Dates:**
+   - Determine `TARGET_DATE` as today (e.g., `2026-06-07` in local time).
+   - Pre-compute timezone offsets dynamically to prevent UTC boundary leakage on calendar searches.
+
+2. **Gather Today's Raw Activities (Fast-track):**
+   - Run `/home/justin.guest/.hermes/skills/note-taking/work-log/references/direct_execution.py` via `terminal` (with `export TARGET_DATE=<YYYY-MM-DD>`) or `execute_code` (setting `os.environ['TARGET_DATE'] = today_date`) to pull Slack, Linear, and Google Workspace calendar/email data in seconds. Using `terminal` is the preferred bulletproof pattern since `execute_code` can be restricted by environment-level approval settings.
+   - Query Todoist live for completed tasks today (`mcp_todoist_find_completed_tasks` with `since: <TODAY>`, `until: <TODAY>`, `getBy: "completion"`) and incomplete tasks due today (`mcp_todoist_find_tasks_by_date` with `startDate: <TODAY>`).
+   - Read today's existing Obsidian daily note with `read_file` to see manual notepad entries.
+   - Search the vault for any meeting/Granola notes generated today (look in `vault/meetings/` or files containing today's date in their name).
+
+3. **Synthesize the Work Log Draft:**
+   - Synthesize the gathered material into a set of clean, structured blocks matching the standard work log format:
+     - **Preview Summary:** A highly concise, 1-2 sentence active-voice overview of the day's main focus.
+     - **📅 Schedule & Events:** Chronological bullet list of meetings and events.
+     - **🚀 Highlights & Decisions:** Synthesized highlights, bolded decisions (with accurate attribution), and open questions/blockers.
+     - **🏆 Accomplishments:** Completed Todoist tasks, closed Linear issues, or git commits.
+
+4. **Present the Draft to Justin:**
+   - Deliver the formatted draft in chat.
+   - Ask a short, focused question to capture offline context:
+     *"Here is the draft of today's work log. Anything else from today that isn't captured here (e.g., side-quests, offline discussions, IRL decisions)?"*
+   - **Wait for Justin's response.**
+
+5. **Write the Finalized Work Log:**
+   - Combine Justin's feedback with the draft.
+   - Find or create today's daily note in `/home/justin.guest/vault/Daily Notes/YYYY-MM-DD Weekday.md` (create from template `/home/justin.guest/vault/Utilities/Templates/daily_note.md` if missing, stripping Templater tags).
+   - Overwrite/replace the corresponding headings (`> [!summary]`, `## 📅 Schedule & Events`, `## 🚀 Highlights & Decisions`, `## 🏆 Accomplishments`) with your new synthesized content.
+   - **Crucial:** Preserve the entire content of the `## 🗒 Notepad` section (including manual text written by Justin). Never modify or delete it.
+   - Append the sources attribution footer at the very bottom.
 
 ---
 
