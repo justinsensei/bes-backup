@@ -86,6 +86,7 @@ To avoid naive categorization, distinguish clearly between the five main types u
 
 ### 3. Beliefs (`[[Beliefs]]`) — Axioms & Playbook Principles
 * **Criteria**: Guiding, core axioms of your professional or personal playbook—hard-won convictions that shape your actions and how you see the world (e.g. *Problems first solutions second*, *Velocity vs speed*, *Digital hoarding kills Zettelkasten*).
+* **Boundary**: More theoretical or speculative analytical reflections (e.g. *Ai at zero marginal cost*) belong in `[[Thoughts]]` rather than `[[Beliefs]]`.
 * **Pass Rule**: During bulk triage sweeps, do NOT spend time fleshing out, grooming, or elaborating on Beliefs. Focus strictly on correct categorization.
 
 ### 4. Concepts (`[[Concepts]]`) — Others' Theories & Models
@@ -93,9 +94,14 @@ To avoid naive categorization, distinguish clearly between the five main types u
 
 ### 5. Notes (`[[Notes]]`) — Fleeting & Operational Records
 * **Criteria**: Highly temporal, transient, or fleeting tactical operations, specific API troubleshooting logs, tool setup scripts, meeting agendas, temporary schedules, or software configurations (e.g. *Claude vs Perplexity*, *Lovable subscription*, *Ski season dates*).
+* **Product Briefs & Sketches**: Early product concepts, software feature briefs, and technical strategy sketches (e.g. *Bestie product concept*, *Bestie tech strategy sketch*, *On ADHD productivity apps*) should be kept in `[[Notes]]` rather than up-promoted to Concepts, Thoughts, or Projects.
 * **Rule**: Keep these in `category: "[[Notes]]"`. They are ephemeral, factual logs that do not represent concepts or deep strategic reflections.
 
-### 6. Empty Stubs & Obsolete Drafts (Active Pruning)
+### 6. Projects (`[[Projects]]`) — Active & Bounded Efforts
+* **Criteria**: Hubs tracking active, bounded, multi-step efforts (like LLC shutdowns, career transitions, home renovations, and major software launches).
+* **Trips**: Bounded, multi-step travel events (like *Belize 2026*), even if completed, should be classified as `[[Projects]]` rather than Memories or Notes.
+
+### 7. Empty Stubs & Obsolete Drafts (Active Pruning)
 * **Rule**: Do not try to categorize empty placeholder notes, incomplete stubs, or obsolete structural outlines (e.g. *Discovering the right problems*, *My note taking system* stubs). Proactively propose deleting them from the filesystem.
 
 ---
