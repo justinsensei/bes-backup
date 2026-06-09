@@ -231,59 +231,7 @@ After presenting and handling any movements, wait for acknowledgment before Phas
 
 ---
 
-### Phase 5 — Discovered Contacts & Organizations
-
-Present any discovered contacts or organizations (unresolved wikilinks found by the `check_vault_signals.py` script) from today's cache file (`discovered_contacts` field).
-
-If no discovered contacts are found in the cache, skip this phase entirely and proceed to Phase 6.
-
-Format:
-```
-👤 N discovered contact / organization candidates:
-
-**People**
-1. [Name] — first mentioned in [[context_file]]
-
-**Organizations**
-2. [Name] — first mentioned in [[context_file]]
-...
-
-Would you like me to create contact notes for any of these? (e.g. "yes, 1 as organization", "create 2", or "skip")
-```
-
-If Justin selects any:
-1. For each selected item, create a new file in `/home/justin.guest/vault/Contacts/<Name>.md`.
-2. Format the contact note following these strict standards:
-   * Frontmatter:
-     ```yaml
-     ---
-     id: <timestamp_id> # YYYYMMDDHHmmss format based on current time
-     daily_note: "[[<YYYY-MM-DD Weekday>]]" # e.g. [[2026-06-09 Tuesday]]
-     type: <person | organization>
-     ---
-     ```
-   * Markdown body:
-     ```markdown
-     > Executive summary: Briefing for <Name>.
-
-     ## State
-     - **Role:** 
-     - **Company:** 
-     - **Relationship:** 
-
-     ## Open Threads
-     - 
-
-     ---
-
-     ## Timeline
-     - <Date> | Discovered — Mentioned in [[<context_file_relative_path_no_ext>|<context_file_title>]].
-     ```
-3. Report success and confirm creation.
-
----
-
-### Phase 6 — Inbox candidates
+### Phase 5 — Inbox candidates
 
 Present the action-item candidates from `inbox_candidates.action_items`.
 
@@ -309,7 +257,7 @@ Once Justin confirms → batch-add to Todoist Inbox with comments.
 
 ---
 
-### Phase 7 — Daily Thought
+### Phase 6 — Daily Thought
 
 Present a random note (the Daily Thought) from the Thoughts (Opinions), Beliefs, or Sources categories. This should ideally be loaded from the cache file's `"daily_thought"` field. If the cache is missing this field, select a random `.md` file with `category: "[[Thoughts]]"`, `category: "[[Beliefs]]"`, or `category: "[[Sources]]"` from the vault, and display its title, category, and full content.
 
@@ -327,7 +275,7 @@ Would you like to make any edits to this note, or are we set for today?
 
 If Justin requests an edit to the note, use the `patch` or `write_file` tool to apply his changes, and confirm.
 
-After Phase 7 is complete, proceed to the "After all phases" wrap-up.
+After Phase 6 is complete, proceed to the "After all phases" wrap-up.
 
 ---
 
