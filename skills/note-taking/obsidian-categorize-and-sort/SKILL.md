@@ -84,22 +84,43 @@ When handling bulk classification or cleanups (e.g., triaging hundreds of legacy
 
 ## Classification Guidelines & Ambiguities
 
-To avoid incorrect or naive categorization, always differentiate between the following note types:
+To avoid incorrect or naive categorization, always classify notes into exactly one of these five core sub-categories under `/Notes/`:
 
-### 1. Conceptual/Methodology Notes vs. Logs
+### 1. Notes (Fleeting & Operational)
+* **Definition:** Fleeting, operational, short-lived, or troubleshooting logs (e.g., *Obsidian Claude use cases*, *Claude Obsidian issues*, *Zettelkasten updates*).
+* **Rule:** If the content is highly transactional, temporary, or serves as a fleeting reference/work-log, keep it as `category: "[[Notes]]"` and set `reviewed: true`.
+
+### 2. Thoughts (Subjective & Evolving)
+* **Definition:** Evolving personal opinions, subjective reflections, career thoughts, and strategic or methodological critiques (e.g., *Product vs development methodologies*, *Second Brain critiques*, *Swim in the morning*).
+* **Rule:** Put personal reflections and subjective, fluid ideas here under `category: "[[Thoughts]]"`.
+
+### 3. Beliefs (Axioms & Playbook Principles)
+* **Definition:** Core, durable guiding principles or playbook axioms that govern action and shape how you see the world (e.g., *Problems first solutions second*, *Velocity vs speed*, *Digital hoarding kills Zettelkasten*, *Common habit loop mistakes*).
+* **Rule:** Use `category: "[[Beliefs]]"` for hard-won, structured convictions that represent your professional or personal operating principles. No need to flesh out/elaborate new Beliefs immediately during bulk triage passes.
+
+### 4. Concepts (Others' Models)
+* **Definition:** Summaries and breakdowns of other people's models, frameworks, theories, or book/article insights (e.g., *Continuous interviewing*, *User story maps*, *Expert generalists*).
+* **Rule:** Use `category: "[[Concepts]]"` when documenting external thought leadership or objective conceptual models designed by others.
+
+### 5. References (Objective Lookups)
+* **Definition:** Permanent objective data, glossaries, taxonomies, standard cheat sheets, and structural lookup lists (e.g., *SignLab glossary*, *The five product risks*, *API Agent Stack Cheat Sheet*).
+* **Rule:** Use `category: "[[References]]"` for permanent, highly functional, objective lookup documents.
+
+### 6. Empty Stubs & Obsolete Drafts (Active Pruning)
+* **Rule:** Actively prune and delete empty placeholder notes, incomplete stubs, or obsolete structural outlines (e.g. *Discovering the right problems*, *My note taking system* stubs) rather than trying to classify them. Delete them from the filesystem.
+
+---
+
+### Additional Boundary Distinctions
+
+#### A. Conceptual/Methodology Notes vs. Logs
 * **Linguistic Overlap:** Notes discussing "meetings," "interviews," "syncs," or "conversations" as general methodologies or abstract concepts (e.g., *Zettelkasten for product development*, *Continuous interviewing*) must stay in `/Notes/` under `category: "[[Notes]]"`. Do not naively sort them into `/Logs/Meetings/` just because their title matches keywords.
 * **Meeting Prep/Agendas:** Personal talking points or draft agendas written *prior* to a meeting represent personal planning files and should reside in `/Notes/` (as `[[Notes]]` or `[[Memories]]`). Only actual collaborative records of conversations/outcomes belong in `/Logs/Meetings/` as `[[Meetings]]`.
 
-### 2. Interaction Logs vs. Contact Profiles
+#### B. Interaction Logs vs. Contact Profiles
 * **Interaction Logs:** A quick note recording a specific interaction (e.g., "Emailed Andrew Novak about room design") contains a person's name in the title but is transactional and belongs in `/Notes/` (under `category: "[[Notes]]"` or `category: "[[Memories]]"`).
 * **Contact Profiles:** Only actual profiles, bios, or contact directories (e.g., `/Contacts/Andrew novak.md`) belong in `/Contacts/` under `category: "[[People]]"`.
 * *Exception:* Contact details imported or synced into `/sources/` from external systems should be migrated to `/Contacts/` under `category: "[[People]]"`.
-
-### 3. Subjective Thoughts vs. Objective Concepts
-* **Personal Reflections / Nuances between Thoughts, Beliefs, and Concepts:**
-  * **`[[Beliefs]]`**: Standardized, high-conviction product heuristics, proven playbook mistakes to avoid (e.g., *Common habit loop mistakes*), strict lifestyle constraints (e.g., *Keep the phone bricked*), and durable design/systems axioms. These are highly operational and directly govern active decision-making.
-  * **`[[Thoughts]]`**: Subjective, fluid, or evolving personal reflections, general routines (*Swim in the morning*), reading habits/philosophies (*You don't understand a book unless you've broken the spine*), and intellectual provocations.
-  * **`[[Concepts]]`**: Reserved strictly for *other people's* thinking (e.g., summarizing specific authors, models, or books) where you are capturing the source's framework rather than stating a fully adopted personal axiom.
 
 ---
 
