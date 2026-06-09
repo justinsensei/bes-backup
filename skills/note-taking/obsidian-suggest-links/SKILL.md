@@ -1,16 +1,16 @@
 ---
-name: obsidian-serendipity-links
+name: obsidian-suggest-links
 description: Core skill to suggest and establish conceptual links among Thoughts and Beliefs using a randomized or seeded serendipity engine, then write approved connections back to Obsidian notes.
 version: 1.0.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, link-suggestions, serendipity, notes, thoughts, beliefs]
+    tags: [obsidian, link-suggestions, suggest-links, notes, thoughts, beliefs]
     related_skills: [obsidian, obsidian-graph-enrichment, obsidian-thoughts-beliefs]
 ---
 
-# Obsidian: Serendipity Links
+# Obsidian: Suggest Links
 
 ## Overview
 This skill provides a randomized/seeded discovery mechanism to help Justin surface surprising cross-connections between existing ideas (`Thoughts` and `Beliefs`) in his vault. It runs an interactive loop where the agent samples notes, pitches exactly 5 candidate connections matching the link hierarchy, and updates the notes with any approved links.
@@ -29,15 +29,15 @@ Suggested links must strictly follow the unidirectional hierarchy defined in `ob
 ## Execution Modes
 
 ### 1. Manual / On-Demand Invocation
-- **Triggers:** Justin asks to "run serendipity links", "suggest new connections", or "spark some ideas".
-- **Step 1:** Run `python3 ~/.hermes/skills/note-taking/obsidian-serendipity-links/scripts/suggest_connections.py` to sample 12–15 notes.
+- **Triggers:** Justin asks to "suggest links", "suggest new connections", or "spark some ideas".
+- **Step 1:** Run `python3 ~/.hermes/skills/note-taking/obsidian-suggest-links/scripts/suggest_connections.py` to sample 12–15 notes.
 - **Step 2:** Analyze the sampled notes and pitch exactly 5 connection candidates (see "Pitch Format" below).
 - **Step 3:** Prompt Justin to choose which ones to approve.
 - **Step 4:** For each approved link, write it to the source note (see "Writing Approved Links" below).
 - **Step 5:** Ask Justin if he would like to run another loop.
 
 ### 2. Passing a Seed Topic
-- **Triggers:** Justin says "suggest connections around [topic]" or "run serendipity links for [topic]".
+- **Triggers:** Justin says "suggest connections around [topic]" or "suggest links for [topic]".
 - **Step 1:** Run `suggest_connections.py --seed "[topic]"` to pull 6 topic-matching notes mixed with 6 completely random notes.
 - **Step 2:** Pitch exactly 5 connection candidates that bridge the seed topic with other ideas.
 - **Step 3:** Follow the same approval and writing flow, then ask if they want to run another loop.
@@ -85,4 +85,3 @@ When Justin approves one or more links, update the source note using `patch`:
   2. Merge any new thoughts, tenets, or details from the current conversation directly into it.
   3. Ensure all incoming and outgoing links to and from the previous notes are fully preserved and updated to point to this canonical note.
   4. Delete the duplicate or redundant notes immediately to keep the vault clean.
-
