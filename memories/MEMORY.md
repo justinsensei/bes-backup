@@ -20,7 +20,7 @@ Forwarded emails should not be copied to vault unless explicitly requested.
 §
 Obsidian horizontal rule: always use three hyphens `---` for a horizontal line, never two hyphens `--`.
 §
-Readwise script is at ~/sync_readwise.py. It exports highlights tagged 'vault' (case-insensitive) to vault/sources/.
+Readwise script is at ~/sync_readwise.py. It exports highlights tagged 'vault' (case-insensitive) to vault/Logs/Readwise/.
 §
 Justin has abandoned gbrain and prefers growing custom agent solutions on top of Bes by selectively reusing skills.
 §
