@@ -135,7 +135,18 @@ When performing large-scale triage or classification sweeps (e.g., sorting notes
 
 ---
 
-## Common Pitfalls
+## Batch Triage Operations
+
+When triaging or categorizing large numbers of notes in manual batches (e.g. batches of 10):
+1. **Running Metrics**: Always calculate and display the total number of remaining notes left to review (excluding the current batch) at the start of your response.
+2. **Tabular Design**:
+   - Keep comparison tables highly compact and direct.
+   - Do NOT include redundant columns (e.g., if all notes currently being processed have the same starting category like `[[Notes]]`, do not include a "Current Category" column).
+3. **Progress Tracking**: Initialize a temporary progress tracking property in frontmatter, such as `reviewed: false`. Set it to `reviewed: true` when updating the note's category.
+4. **Taxonomy & Pruning Guidelines**:
+   - **Fleeting/Operational Logs**: Classify fleeting, operational, transient, or highly temporary notes (e.g., troubleshooting logs, API downtime notes, quick daily reminders, or brief plans) under the default `[[Notes]]` category (simply mark `reviewed: true` without changing the category link).
+   - **Obsolete/Incomplete Notes**: Proactively identify and propose the deletion of obsolete, duplicate, or blank notes rather than forcing them into a taxonomy category. Delete them from the filesystem once the user approves.
+
 ## Common Pitfalls
 - **Multiple Categories:** Never assign multiple categories to a single note. Every note gets **exactly one** category.
 - **Leaking Inbox:** Do not leave notes in `inbox/` once categorized. All processed notes must reside in their taxonomy folders.
