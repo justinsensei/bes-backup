@@ -63,6 +63,16 @@ The 7AM cron writes `~/.hermes/morning-briefing/YYYY-MM-DD.json` with this struc
     "path": "Notes/Thoughts on fatphobia 20260128135845.md",
     "title": "Thoughts on Fatphobia",
     "category": "Opinions / Thoughts"
+  },
+  "discovered_contacts": {
+    "people": [
+      {
+        "name": "Jeev Sahoo",
+        "type": "person",
+        "context_file": "Logs/Meetings/2026-06-08 Product meeting.md"
+      }
+    ],
+    "organizations": []
   }
 }
 ```
