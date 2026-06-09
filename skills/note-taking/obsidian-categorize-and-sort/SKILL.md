@@ -130,8 +130,9 @@ When performing large-scale triage or classification sweeps (e.g., sorting notes
 2. **Track with Temporary State**: Add a temporary tracker like `reviewed: false` to the frontmatter of target files. Switch it to `reviewed: true` along with the category update as each batch is approved.
 3. **Establish Stable Order**: Process files chronologically using the YYYYMMDDHHmmss timestamp in their ID or filename to trace the natural evolution of thoughts.
 
-### 4. Guides/Checklists vs. Default Notes
-* **Guides and Handbooks:** Technical procedures, step-by-step migration guides, or checklists (e.g., *Mixpanel to Posthog migration guide*) should be categorized as `[[References]]` (using sub-skill `obsidian-references-sources`) rather than the default `[[Notes]]`.
+### 4. Re-usable Decision Patterns vs. Fleeting Operations
+* **References (Durable Decision Patterns & Standard Guides):** Notes that capture established, re-usable decision patterns, formulas, or permanent benchmarks (e.g., *Active user growth equation*, *5 Percent Rule for freemium*) belong in `category: "[[References]]"`.
+* **Notes (Fleeting & Operational Checklists):** Do not categorize temporary checklists, specific company setup guides, or migration plans (e.g., *Mixpanel to Posthog migration guide*) as `[[References]]`. These are fleeting, operational things and must remain under `category: "[[Notes]]"`. Ephemeral project-bound lists belong under `[[Notes]]` or `[[Projects]]`.
 
 ### 5. Re-usable Decision Patterns vs. Fleeting Operations
 * **References (`[[References]]`):** Notes that capture established, re-usable decision patterns, formulas, equations, or industry benchmarks (e.g., *5 Percent Rule for freemium*, *Active user growth equation*, *Counting any action vs just specific actions*) should be categorized as `[[References]]`.
