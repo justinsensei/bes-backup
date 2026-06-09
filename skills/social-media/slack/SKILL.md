@@ -188,21 +188,21 @@ Note: the literal word "reminder" appearing in message *text* can occasionally b
 
 ## The Brain Note-Taking System (🧠)
 
-You can capture high-quality conversation notes directly from Slack into the Obsidian vault under `sources/slack/` using the emoji `🧠` or via interactive prompts in the **Morning Briefing**.
+You can capture high-quality conversation logs directly from Slack into the Obsidian vault under `Logs/Slack/` using the emoji `🧠` or via interactive prompts in the **Morning Briefing**.
 
-### 1. Automated Note Capture (via `🧠` reaction)
+### 1. Automated Log Capture (via `🧠` reaction)
 When Justin adds a `🧠` reaction to a message:
 - A cron job (`Slack Brain Note Capture`) runs every 2 hours using the `fetch_slack_brains.py` helper.
 - If Justin (user ID `U095LHMC4UW`) reacted with `🧠`, the script fetches the entire thread (if part of one) or an 11-message context window surrounding the message.
-- It synthesizes a Markdown note inside `/home/justin.guest/vault/sources/slack/YYYY-MM-DD-slug.md` with participants, a summary of who said what, and verbatim context.
+- It synthesizes a Markdown log inside `/home/justin.guest/vault/Logs/Slack/YYYY-MM-DD-slug.md` with participants, a summary of who said what, and key decisions/takeaways. Do NOT include verbatim Slack messages; store only summaries with retrieval metadata.
 - It automatically appends a link + one-sentence gist under today's daily note `## 🗒 Notepad` section.
 - It marks the thread processed inside `~/.hermes/processed_slack_brains.json`.
 
-### 2. Manual Candidate Suggestions (Morning Briefing Phase 4.5)
+### 2. Manual Candidate Suggestions (Morning Briefing Phase 5)
 If a conversation wasn't explicitly tagged, the Morning Briefing live-scans active Slack threads from the last 36 hours for note-worthy discussions:
 - Runs `python3 ~/.hermes/scripts/fetch_slack_brains.py --list-candidates`.
 - **Candidate filters:** Requires `>= 3` messages, `>= 2` unique human participants, Justin's active participation or mention, and **no existing `🧠` reaction** (to avoid double-processing).
-- Prompts Justin with numbered candidates. If approved, it synthesizes the note, updates the daily note notepad, and marks it processed.
+- Prompts Justin with numbered candidates. If approved, it synthesizes the log, updates the daily note notepad, and marks it processed.
 
 ### 3. Managing the System Helper
 The background script lives at:
