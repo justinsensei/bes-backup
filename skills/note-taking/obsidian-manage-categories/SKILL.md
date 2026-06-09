@@ -15,8 +15,8 @@ platforms: [linux]
 ## Vault paths
 
 - Vault root: `/home/justin.guest/vault`
-- Category notes: `<vault>/Categories/<CategoryName>.md`
-- Templates: `<vault>/Templates/New <CategoryName>.md`
+- Category notes: `<vault>/utilities/categories/<CategoryName>.md`
+- Templates: `<vault>/utilities/templates/<TemplateName>.md`
 
 ---
 
@@ -24,30 +24,30 @@ platforms: [linux]
 
 ### Step 1 — Create the category note
 
-File: `<vault>/Categories/<CategoryName>.md`
+File: `<vault>/utilities/categories/<CategoryName>.md`
 
 ```yaml
 ---
 id: "YYYYMMDDHHmmss"
 daily_note: "[[YYYY-MM-DD dddd]]"
-category: "[[Categories]]"
 ---
+# <CategoryName>
+
+[Parent category: [[<ParentName>]]]
+
+<Description>
 ```
 
-Use the current wall-clock time for `id` and `daily_note`. No body content unless Justin provides some.
+Use the current wall-clock time for `id` and `daily_note`. Indicate the hierarchy if there is a parent or subcategories.
 
-### Step 2 — Create the template
+### Step 2 — Create the template (if needed)
 
-Copy the New Organization template and replace only the category line:
+If the category requires a new specific template, clone the baseline standard note template `new_note.md` in `<vault>/utilities/templates/`:
 
 ```bash
-cp "/home/justin.guest/vault/Templates/New Organization.md" \
-   "/home/justin.guest/vault/Templates/New <CategoryName>.md"
+cp "/home/justin.guest/vault/utilities/templates/new_note.md" \
+   "/home/justin.guest/vault/utilities/templates/new_<categoryname>.md"
 ```
-
-Then patch the category line to `category: "[[<CategoryName>]]"`.
-
-Verify with `diff` against New Organization.md — only the category line should differ.
 
 ### Step 3 — Offer a vault scan
 
@@ -64,8 +64,8 @@ If yes, surface candidate notes that lack a `category:` field or have a differen
 ### Step 1 — Remove the category note and template
 
 ```bash
-rm "/home/justin.guest/vault/Categories/<CategoryName>.md"
-rm "/home/justin.guest/vault/Templates/New <CategoryName>.md"
+rm "/home/justin.guest/vault/utilities/categories/<CategoryName>.md"
+rm "/home/justin.guest/vault/utilities/templates/new_<categoryname>.md"
 ```
 
 ### Step 2 — Strip the category value from vault notes

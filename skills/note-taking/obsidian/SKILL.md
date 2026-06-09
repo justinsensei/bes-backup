@@ -226,21 +226,26 @@ For the full vault structural audit (folder sizes, issue catalogue, what was fou
 
 ## Entities and category notes
 
-An **entity** is any note with a `category:` frontmatter field. The canonical list of entity types lives in `<vault>/Categories/`. Each category note is itself an entity (`category: "[[Categories]]"`), including `Categories/Categories.md` which is self-referential.
+Justin uses a structured note taxonomy where categories are represented by notes in the `<vault>/utilities/categories/` folder. Each category note defines its role in the hierarchy, its parent, and its subcategories (if any).
 
-Current entity types (each has a file in `Categories/` and a template in `utilities/templates/`):
+### Canonical Note Taxonomy (as of June 2026)
 
-| Entity type | Category note | Template |
-|---|---|---|
-| Meetings | `Categories/Meetings.md` | `utilities/templates/new_meeting.md` |
-| Organizations | `Categories/Organizations.md` | `utilities/templates/new_organization.md` |
-| People | `Categories/People.md` | `utilities/templates/new_person.md` |
-| Projects | `Categories/Projects.md` | `utilities/templates/new_project.md` |
-| Categories | `Categories/Categories.md` | `utilities/templates/new_category.md` |
+- **Contacts** (`utilities/categories/Contacts.md`): Top-level contacts category.
+  - **People** (`utilities/categories/People.md`): Individual contacts.
+  - **Organizations** (`utilities/categories/Organizations.md`): Companies and other groups.
+- **Notes** (`utilities/categories/Notes.md`): Top-level notes category.
+  - **Notes (raw)** (`utilities/categories/Notes (raw).md`): Raw, fleeting scratchpads.
+  - **References** (`utilities/categories/References.md`): Useful facts, guidelines, and lookups.
+  - **Sources** (`utilities/categories/Sources.md`): Summaries, web clips, and external articles.
+  - **Thoughts** (`utilities/categories/Thoughts.md`): Ideas, opinions, and questions.
+  - **Beliefs** (`utilities/categories/Beliefs.md`): Principles and ideas trusted enough to steer by.
+  - **Decisions** (`utilities/categories/Decisions.md`): Records of important decisions.
+  - **Projects** (`utilities/categories/Projects.md`): Hubs for ongoing work and milestones.
+- **Logs** (`utilities/categories/Logs.md`): Top-level chronological logs.
+  - **Daily Notes** (`utilities/categories/Daily Notes.md`): Daily journal logs and schedule.
+  - **Meeting Notes** (`utilities/categories/Meeting Notes.md`): Chronological summaries of discussions.
 
-When creating a note of a given type, follow that type's template. When searching for notes by category, filter by `category: "[[CategoryName]]"`.
-
-**Note:** As of a May 2026 vault audit, the category notes in `Categories/` have been confirmed to already carry `category: "[[Categories]]"` (e.g. `Categories/Meetings.md` has it). The stale claim that they lacked this field is no longer accurate.
+When referencing categories or filtering notes, use the canonical names defined in these notes. Each category note contains its standard frontmatter (`id` and `daily_note`).
 
 ### Templates (from `<vault>/utilities/templates/`)
 
