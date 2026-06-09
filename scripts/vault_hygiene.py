@@ -44,104 +44,107 @@ def reconcile_granola_meetings(vault_path):
             except Exception:
                 pass
 
-    for path in sorted(meetings_dir.glob("*.md")):
-        filename = path.name
-        # Match YYYY-MM-DD at start of filename
-        date_match = re.match(r"^(\d{4}-\d{2}-\d{2})", filename)
-        if not date_match:
-            continue
-            
-        date_str = date_match.group(1)
-        try:
-            dt = datetime.date.fromisoformat(date_str)
-            weekday_lower = dt.strftime("%A").lower()
-            weekday_cap = dt.strftime("%A")
-        except ValueError:
-            continue
-            
-        text = path.read_text(encoding="utf-8", errors="replace")
-        
-        # Check if the file has standard frontmatter
-        has_frontmatter = False
-        fm_content = ""
-        body_content = text
-        
-        if text.startswith("---"):
-            fm_end = text.find("\n---", 3)
-            if fm_end > 0:
-                has_frontmatter = True
-                fm_content = text[3:fm_end]
-                body_content = text[fm_end+4:]
+    for src_dir, is_raw in [(meetings_dir, True), (dest_dir, False)]:
+        for path in sorted(src_dir.glob("*.md")):
+            filename = path.name
+            # Match YYYY-MM-DD at start of filename
+            date_match = re.match(r"^(\d{4}-\d{2}-\d{2})", filename)
+            if not date_match:
+                continue
                 
-        # Parse fields from frontmatter if it exists
-        note_id = ""
-        daily_note = ""
-        
-        if has_frontmatter:
-            id_match = re.search(r"^id:\s*[\"']?(\d+)[\"']?", fm_content, re.MULTILINE)
-            dn_match = re.search(r"^daily_note:\s*[\"']?([^\"'\n]+)[\"']?", fm_content, re.MULTILINE)
-            if id_match:
-                note_id = id_match.group(1).strip()
-            if dn_match:
-                daily_note = dn_match.group(1).strip()
+            date_str = date_match.group(1)
+            try:
+                dt = datetime.date.fromisoformat(date_str)
+                weekday_lower = dt.strftime("%A").lower()
+                weekday_cap = dt.strftime("%A")
+            except ValueError:
+                continue
                 
-        needs_update = False
-        
-        if not note_id:
-            mtime = path.stat().st_mtime
-            mtime_dt = datetime.datetime.fromtimestamp(mtime)
-            if mtime_dt.strftime("%Y-%m-%d") == date_str:
-                time_part = mtime_dt.strftime("%H%M%S")
-            else:
-                time_part = "120000"
+            text = path.read_text(encoding="utf-8", errors="replace")
+            
+            # Check if the file has standard frontmatter
+            has_frontmatter = False
+            fm_content = ""
+            body_content = text
+            
+            if text.startswith("---"):
+                fm_end = text.find("\n---", 3)
+                if fm_end > 0:
+                    has_frontmatter = True
+                    fm_content = text[3:fm_end]
+                    body_content = text[fm_end+4:]
+                    
+            # Parse fields from frontmatter if it exists
+            note_id = ""
+            daily_note = ""
+            
+            if has_frontmatter:
+                id_match = re.search(r"^id:\s*[\"']?(\d+)[\"']?", fm_content, re.MULTILINE)
+                dn_match = re.search(r"^daily_note:\s*[\"']?([^\"'\n]+)[\"']?", fm_content, re.MULTILINE)
+                if id_match:
+                    note_id = id_match.group(1).strip()
+                if dn_match:
+                    daily_note = dn_match.group(1).strip()
+                    
+            needs_update = False
+            
+            if not note_id:
+                mtime = path.stat().st_mtime
+                mtime_dt = datetime.datetime.fromtimestamp(mtime)
+                if mtime_dt.strftime("%Y-%m-%d") == date_str:
+                    time_part = mtime_dt.strftime("%H%M%S")
+                else:
+                    time_part = "120000"
+                    
+                candidate_id = f"{date_str.replace('-', '')}{time_part}"
+                while candidate_id in existing_ids:
+                    # Increment the ID to make it unique
+                    candidate_id = str(int(candidate_id) + 1)
                 
-            candidate_id = f"{date_str.replace('-', '')}{time_part}"
-            while candidate_id in existing_ids:
-                # Increment the ID to make it unique
-                candidate_id = str(int(candidate_id) + 1)
+                note_id = candidate_id
+                existing_ids.add(note_id)
+                needs_update = True
+                
+            if not daily_note or "[[" not in daily_note:
+                daily_note = f"[[logs/daily/{date_str}-{weekday_lower}|{date_str} {weekday_cap}]]"
+                needs_update = True
+                
+            # Clean body: strip leading whitespace and redundant separators
+            original_body = body_content
+            body_content = body_content.lstrip()
             
-            note_id = candidate_id
-            existing_ids.add(note_id)
-            needs_update = True
-            
-        if not daily_note or "[[" not in daily_note:
-            daily_note = f"[[logs/daily/{date_str}-{weekday_lower}|{date_str} {weekday_cap}]]"
-            needs_update = True
-            
-        # Clean body: strip leading whitespace and redundant separators
-        original_body = body_content
-        body_content = body_content.lstrip()
-        
-        # Clean up double hyphens / horizontal rules at top of body (Granola artifact)
-        if body_content.startswith("--\n") or body_content.startswith("--\r\n"):
-            body_content = body_content.split("\n", 1)[1].lstrip()
-            needs_update = True
-        elif body_content.startswith("-- ") or body_content.startswith("--\t"):
-            body_content = body_content.split("\n", 1)[1].lstrip()
-            needs_update = True
-        elif body_content.startswith("---\n") or body_content.startswith("---\r\n"):
-            body_content = body_content.split("\n", 1)[1].lstrip()
-            needs_update = True
-            
-        if body_content != original_body:
-            needs_update = True
-            
-        # Construct clean content and write to logs/meetings/
-        new_fm = f"---\nid: {note_id}\ndaily_note: '{daily_note}'\n---\n"
-        new_text = new_fm + body_content
-        dest_path = dest_dir / filename
-        dest_path.write_text(new_text, encoding="utf-8")
-        
-        if needs_update:
-            print(f"  Fixed/Reconciled and moved: {filename}")
-        else:
-            print(f"  Moved: {filename}")
-            
-        # Delete original file
-        try:
-            path.unlink()
-        except Exception as e:
-            print(f"  Error deleting original raw file {filename}: {e}")
+            # Clean up double hyphens / horizontal rules at top of body (Granola artifact)
+            if body_content.startswith("--\n") or body_content.startswith("--\r\n"):
+                body_content = body_content.split("\n", 1)[1].lstrip()
+                needs_update = True
+            elif body_content.startswith("-- ") or body_content.startswith("--\t"):
+                body_content = body_content.split("\n", 1)[1].lstrip()
+                needs_update = True
+            elif body_content.startswith("---\n") or body_content.startswith("---\r\n"):
+                body_content = body_content.split("\n", 1)[1].lstrip()
+                needs_update = True
+                
+            if body_content != original_body:
+                needs_update = True
+                
+            if is_raw or needs_update:
+                # Construct clean frontmatter and write to dest_dir
+                new_fm = f"---\nid: {note_id}\ndaily_note: '{daily_note}'\n---\n"
+                new_text = new_fm + body_content
+                dest_path = dest_dir / filename
+                dest_path.write_text(new_text, encoding="utf-8")
+                
+                if needs_update:
+                    print(f"  Fixed/Reconciled: {filename}")
+                else:
+                    print(f"  Processed and moved: {filename}")
+                    
+                if is_raw:
+                    # Delete original file
+                    try:
+                        path.unlink()
+                    except Exception as e:
+                        print(f"  Error deleting original raw file {filename}: {e}")
 
 # 1. Reconcile raw Granola meetings from external syncing
 reconcile_granola_meetings(VAULT)
