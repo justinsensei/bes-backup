@@ -74,28 +74,26 @@ def get_existing_entities(vault_path):
                     "aliases": aliases
                 }
                 
-    # 2. Projects (from Notes/ with type: project)
-    notes_dir = os.path.join(vault_path, 'Notes')
-    if os.path.exists(notes_dir):
-        for f in os.listdir(notes_dir):
+    # 2. Projects (from Notes/Projects/)
+    projects_dir = os.path.join(vault_path, 'Notes', 'Projects')
+    if os.path.exists(projects_dir):
+        for f in os.listdir(projects_dir):
             if f.endswith('.md'):
-                file_path = os.path.join(notes_dir, f)
+                file_path = os.path.join(projects_dir, f)
                 try:
                     with open(file_path, encoding='utf-8', errors='replace') as file_obj:
                         content = file_obj.read()
-                        m_type = re.search(r'^type:\s*[\'"]?project[\'"]?', content, re.MULTILINE)
-                        if m_type:
-                            name_key = f[:-3].lower()
-                            # Clean up trailing date suffix if present in name_key
-                            # e.g., adhd treatment 2026 -> adhd treatment
-                            clean_name = re.sub(r'\s*\d{4,14}$', '', f[:-3]).lower().strip()
-                            
-                            entities[name_key] = {
-                                "path": file_path,
-                                "type": "project",
-                                "title": f[:-3],
-                                "aliases": [clean_name] if clean_name != name_key else []
-                            }
+                        name_key = f[:-3].lower()
+                        # Clean up trailing date suffix if present in name_key
+                        # e.g., adhd treatment 2026 -> adhd treatment
+                        clean_name = re.sub(r'\s*\d{4,14}$', '', f[:-3]).lower().strip()
+                        
+                        entities[name_key] = {
+                            "path": file_path,
+                            "type": "project",
+                            "title": f[:-3],
+                            "aliases": [clean_name] if clean_name != name_key else []
+                        }
                 except Exception:
                     pass
                     
