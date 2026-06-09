@@ -10,4 +10,4 @@ Pittsburgh, PA. Family: Nana Massie (wife); Sam (Gr 7 Fall '26, b.11/22/13), Jam
 §
 Accurately attribute decisions to the actual decision-maker (e.g. colleagues or family members) in work logs/summaries, rather than assuming Justin made them.
 §
-Vault taxonomy: Notes (fleeting/operational), Thoughts (opinions), Beliefs (axioms), Concepts (others), References (permanent lookups, not ephemeral). Deletes stubs. Batches of 10: show remaining count, omit "Current Category" column.
+Vault taxonomy: Notes (fleeting/operational), Thoughts (opinions), Beliefs (axioms), Concepts (others' thinking), References (permanent/reusable decision patterns, not ephemeral plans). Deletes stubs. Batches of 10: show remaining count, omit "Current Category" column.
