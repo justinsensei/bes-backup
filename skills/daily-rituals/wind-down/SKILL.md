@@ -219,13 +219,14 @@ Draft today's work log, align with Justin, and write it to today's daily note. T
    - Query Todoist live for completed tasks today (`mcp_todoist_find_completed_tasks` with `since: <TODAY>`, `until: <TODAY>`, `getBy: "completion"`) and incomplete tasks due today (`mcp_todoist_find_tasks_by_date` with `startDate: <TODAY>`).
    - Read today's existing Obsidian daily note with `read_file` to see manual notepad entries.
    - Search the vault for any meeting/Granola notes generated today (look in `vault/meetings/` or files containing today's date in their name).
+   - Read the daily briefing cache `/home/justin.guest/.hermes/morning-briefing/<YYYY-MM-DD>.json` to check the `vault_activity` field, and run a quick terminal find command over the vault to gather any high-level vault restructuring, bulk updates, or manual categorization sweeps that took place during the day.
 
 3. **Synthesize the Work Log Draft:**
    - Synthesize the gathered material into a set of clean, structured blocks matching the standard work log format:
      - **Preview Summary:** A highly concise, 1-2 sentence active-voice overview of the day's main focus.
      - **📅 Schedule & Events:** Chronological bullet list of meetings and events.
      - **🚀 Highlights & Decisions:** Synthesized highlights, bolded decisions (with accurate attribution), and open questions/blockers.
-     - **🏆 Accomplishments:** Completed Todoist tasks, closed Linear issues, or git commits.
+     - **🏆 Accomplishments:** Completed Todoist tasks, closed Linear issues, git commits, or high-level vault changes (major file movements, bulk hygiene updates, or structural cleanups).
 
 4. **Present the Draft to Justin:**
    - Deliver the formatted draft in chat.
