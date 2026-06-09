@@ -25,3 +25,5 @@ Readwise script is at ~/sync_readwise.py. It exports highlights tagged 'vault' (
 Justin has abandoned gbrain and prefers growing custom agent solutions on top of Bes by selectively reusing skills.
 §
 User prefers building modular, composable skills (e.g., modular note-taking skills) rather than massive monolithic files.
+§
+Thoughts (representing opinions), Beliefs, and Sources have replaced concepts as categories in the vault.
