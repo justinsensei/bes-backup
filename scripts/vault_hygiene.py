@@ -215,3 +215,17 @@ if lines:
     print("\n".join(lines))
 else:
     print("✅ Vault looks clean — no issues found.")
+
+# 4. Trigger semantic pointer indexing to automatically update embeddings
+print("\nTriggering semantic indexing for new/modified files...")
+try:
+    script_path = os.path.expanduser("~/.hermes/scripts/semantic_pointer.py")
+    if os.path.exists(script_path):
+        result = subprocess.run(["python3", script_path, "index"], capture_output=True, text=True, timeout=500, check=True)
+        print("✅ Semantic indexing completed.")
+        if result.stdout:
+            print(result.stdout.strip())
+    else:
+        print("⚠️ Semantic pointer script not found.")
+except Exception as e:
+    print(f"⚠️ Failed to run semantic indexing: {e}")
