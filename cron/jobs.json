@@ -160,7 +160,7 @@
       "last_status": "error",
       "last_error": "RuntimeError: Morning, Justin! Ready to start your day?",
       "last_delivery_error": null,
-      "deliver": "origin",
+      "deliver": "telegram:-4851855354",
       "origin": {
         "platform": "telegram",
         "chat_id": "8612970484",
@@ -269,5 +269,5 @@
       "profile": null
     }
   ],
-  "updated_at": "2026-06-09T09:41:00.860019-04:00"
+  "updated_at": "2026-06-09T09:44:31.238734-04:00"
 }
