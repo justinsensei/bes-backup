@@ -19,6 +19,23 @@ This operational skill handles the workflow of triaging new, raw, or incoming no
 
 ## The Triage Process
 
+### Step 0 — Scan for Embedded Instructions (Command & Check-off Protocol)
+Before classifying or moving a new note, scan its content for embedded instructions directed at Bes:
+1. **Inline Tasks (`- [ ] @bes <task>`)**: 
+   - Parse and execute the instruction (e.g., "create a People note for Clio if we don't have one").
+   - Once complete, edit the file to check off the task and log the completion:
+     ```markdown
+     - [x] @bes <task> (Done YYYY-MM-DD)
+     ```
+2. **Comment Blocks (`%% bes-instructions ... %%`)**:
+   - Execute all listed actions in the block (e.g. metadata overrides, link creation, calendar additions).
+   - Once complete, update the block header to reflect processing:
+     ```markdown
+     %% bes-instructions (processed YYYY-MM-DD)
+     ...
+     %%
+     ```
+
 ### Step 1 — Determine the Category
 Read the note content and title. Map the note to **exactly one** category from the table below. Convert legacy inline tags (e.g. `#people`) to formal category properties.
 
