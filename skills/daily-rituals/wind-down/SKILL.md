@@ -184,7 +184,7 @@ Help Justin empty his Obsidian "inbox" so quick notes and scratchpads land in th
    - Determine its primary focus and suggest the correct target category and folder under `/home/justin.guest/vault/`:
      - **`Contacts/`** (Category: `[[People]]` or `[[Organizations]]`) — if about a person, family member, or company/institution.
      - **`Logs/Meetings/`** (Category: `[[Meetings]]`) — if a meeting sync, agenda, or discussion record.
-     - **`Notes/`** (Category: `[[Thoughts]]`, `[[Beliefs]]`, `[[Memories]]`, `[[Decisions]]`, `[[Projects]]`, `[[References]]`, `[[Sources]]`, or `[[Notes]]`) — if conceptual, ideas, principles, personal memories, decisions, project hubs, reference guides, or raw notes.
+     - **`Notes/`** (Category: `[[Thoughts]]`, `[[Beliefs]]`, `[[Memories]]`, `[[Decisions]]`, `[[Projects]]`, `[[References]]`, `[[Concepts]]`, or `[[Notes]]`) — if conceptual, ideas, principles, personal memories, decisions, project hubs, reference guides, or raw notes.
 
 3. **Present Triage Options to Justin:**
    - List the inbox notes and your suggested folder movements in a clean, numbered list:
