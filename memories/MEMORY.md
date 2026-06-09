@@ -2,7 +2,7 @@ Hermes handles infrastructure & skill management for Justin's agents. Defer skil
 §
 Email: read Gmail via Google OAuth. Tokens at `~/.hermes/google_tokens/{work,personal-main,personal-junk}.json`. Cross-account wrapper: `python3 ~/.hermes/skills/productivity/google-workspace/scripts/gws_multi.py --account all|<name>|<csv> gmail search "..." --max N`. Single-account: set `HERMES_GOOGLE_TOKEN_FILE` and call `google_api.py`. Read-only. Do NOT use himalaya.
 §
-Obsidian uses capitalized folders routed by category Type: Contacts/, Notes/ (with travel & personal notes too), Logs/ (Daily/ & Meetings/), and Utilities/.
+Obsidian routes: Contacts/, Notes/, Logs/ (Meetings/Readings), Daily Notes/, Utilities/. Daily Notes are Tier 1 inputs (logs) for graph rules.
 §
 App Store Connect issue emails are not Justin's to handle — ignore them when capturing action items from email.
 §

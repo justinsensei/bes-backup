@@ -18,12 +18,13 @@ This skill governs the conventions for link directions and relationship structur
 ---
 
 ## Note Tier Hierarchy
-Justin's notes are organized into a hierarchy of permanence and synthesis. Links should flow **from less-permanent notes to more-permanent notes** (pointing upwards in synthesis):
+Justin's notes are organized into a hierarchy of permanence and synthesis. Chronological logs (including Daily Notes, Meetings, and Readings) are treated as Tier 1 raw inputs. Links should flow **from less-permanent notes to more-permanent notes** (pointing upwards in synthesis):
 
 ```
 +--------------------------------------------+
-|  Tier 1 (Raw/Ephemeral Inputs)             |
-|  - Notes, Sources, Decisions, Memories     |
+|  Tier 1 (Raw/Ephemeral Inputs / Logs)      |
+|  - Notes, Sources, Decisions, Memories,     |
+|    Daily Notes, Meetings, Readings         |
 +---------------------+----------------------+
                       | (can link to other Tier 1 notes
                       |  or pointing UPWARDS to T2 / T3)
@@ -43,8 +44,8 @@ Justin's notes are organized into a hierarchy of permanence and synthesis. Links
 
 ### The Rules of Link Direction
 
-1. **Tier 1 (Notes, Sources, Decisions, Memories):**
-   - Can link to **one another** (e.g., a Decision linking to a Source, or a Memory linking to a Note).
+1. **Tier 1 (Notes, Sources, Decisions, Memories, Daily Notes, Meetings, Readings):**
+   - Can link to **one another** (e.g., a Decision linking to a Source, or a Daily Note linking to a Note).
    - Can link to **any note below** in the hierarchy (Thoughts and Beliefs).
 2. **Tier 2 (Thoughts):**
    - Can link to **one another** (e.g., a Thought linking to another Thought).
