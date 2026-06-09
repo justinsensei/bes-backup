@@ -198,12 +198,37 @@ def scan_file_for_unresolved_links(file_path, content, entities, vault_path):
     # Find all [[Link]] matches
     # e.g., [[Jeev Sahoo]] or [[The Waldorf School]] or [[Contacts/Name]]
     links = re.findall(r'\[\[([^\]|]+)(?:\|[^\]]*)?\]\]', content)
+    
+    # Excluded folders / system categories
+    excluded_names = {
+        'notes', 'memory', 'projects', 'thoughts', 'references', 'readings', 
+        'meetings', 'people', 'organizations', 'daily notes', 'utilities', 
+        'contacts', 'sources', 'notepad', 'state'
+    }
+    
     for link in links:
         link_clean = link.strip()
         if link_clean.startswith('Contacts/'):
             link_name = link_clean[9:]
         else:
             link_name = link_clean
+            
+        link_name_lower = link_name.lower()
+        
+        # Skip system names and category names
+        if link_name_lower in excluded_names:
+            continue
+            
+        # Skip if it contains a slash / (which means it links to a specific folder/sub-note)
+        if '/' in link_name:
+            continue
+            
+        # Skip image links and binary attachments
+        if link_name_lower.endswith(('.png', '.jpg', '.jpeg', '.gif', '.pdf', '.svg', '.mp3', '.mp4')):
+            continue
+            
+        if 'pasted image' in link_name_lower or link_name_lower.startswith(('image ', 'drawing ')):
+            continue
             
         # Skip daily notes (which look like dates)
         if re.match(r'^\d{4}-\d{2}-\d{2}', link_name):
