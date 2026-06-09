@@ -44,7 +44,7 @@ If the instruction is empty, has no keywords, or is just "Save as a note", defau
 
 ### Trigger Keywords
 - Contains: `File this`, `file this`, `file`, `save this`, `save`, `archive this`
-- Or: Instruction is **empty / none** (default fallback)
+- Or: Instruction is **empty / none** (default fallback, files to `inbox/`)
 
 ### Storage Destination
 - Create a new markdown note inside the **`inbox/`** directory of his vault:
@@ -70,6 +70,41 @@ Below the frontmatter, format the note body cleanly:
 3. **Context Note:** If Justin provided an instruction or extra thoughts (e.g., "I like the idea about the flux capacitor..."), include them in a `## Context` section.
 4. **Summary:** Add a concise markdown summary of the email's content (who sent it, what it is about).
 5. **Email Content:** A `---` line or `## Email Content` header followed by the cleaned plaintext body of the forwarded email.
+
+---
+
+## Action 1b: Log Email (Save to Logs/Emails/)
+
+### Trigger Keywords
+- Contains: `log this`, `log email`, `log thread`, `save as email log`, `log`
+
+### Storage Destination
+- Create a new markdown note inside the **`Logs/Emails/`** directory of his vault:
+  `/home/justin.guest/vault/Logs/Emails/YYYY-MM-DD-subject-slug.md`
+  *(Where `YYYY-MM-DD` is the current date, and `subject-slug` is a cleaned, lowercase, hyphen-separated version of the cleaned subject).*
+
+### Note Structure & Frontmatter
+All new email log notes must start with this frontmatter format:
+
+```yaml
+---
+id: "<YYYYMMDDHHmmss at write time>"
+daily_note: "[[<YYYY-MM-DD dddd at write time>]]"
+category: "[[Emails]]"
+type: email
+original_url: "<Gmail message search link, e.g. https://mail.google.com/mail/u/0/#search/rfc822msgid:<Message-ID> or search query>"
+---
+```
+
+Below the frontmatter, format the note body cleanly:
+1. **Title:** Large H1 heading `# 📧 Email Log: [Cleaned Subject]`
+2. **Email Metadata:** Labeled key-value pairs:
+   - **From:** [Original Sender Name <Email>]
+   - **Date:** [Original Email Date]
+   - **Subject:** [Cleaned Subject]
+   - **Message ID:** [Gmail Message ID] (to fetch full email if needed)
+3. **Context Note:** If Justin provided any instruction or extra thoughts, include them in a `## Context` section.
+4. **Summary:** Add a brief summary of the entire thread (concise bullets or paragraph outlining key discussions, decisions, and action items — **do not copy the email contents verbatim**).
 
 ---
 
