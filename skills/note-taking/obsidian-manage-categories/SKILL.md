@@ -15,8 +15,8 @@ platforms: [linux]
 ## Vault paths
 
 - Vault root: `/home/justin.guest/vault`
-- Category notes: `<vault>/utilities/categories/<CategoryName>.md`
-- Templates: `<vault>/utilities/templates/new_<category_name_lowercase>.md`
+- Category notes: `<vault>/Utilities/Categories/<CategoryName>.md`
+- Templates: `<vault>/Utilities/Templates/`
 
 ---
 
