@@ -10,6 +10,6 @@ Pittsburgh, PA. Family: Nana Massie (wife); Sam (Gr 7 Fall '26, b.11/22/13), Jam
 §
 Accurately attribute decisions to the actual decision-maker (e.g. colleagues or family members) in work logs/summaries, rather than assuming Justin made them.
 §
-Keeps unstructured scratchpads (note type in notes/) distinct from structured concepts/definitions (concept type in concepts/).
+Categorizes vault notes into: Notes (fleeting logs), Thoughts (opinions), Beliefs (durable axioms), Concepts (others' models), References (lookups). Deletes stubs.
 §
 References are permanent notes for frequent lookup. Ephemeral checklists/guides/plans are Notes or Projects, not References.
