@@ -16,7 +16,7 @@ platforms: [linux]
 
 - Vault root: `/home/justin.guest/vault`
 - Category notes: `<vault>/utilities/categories/<CategoryName>.md`
-- Templates: `<vault>/utilities/templates/<TemplateName>.md`
+- Templates: `<vault>/utilities/templates/new_<category_name_lowercase>.md`
 
 ---
 
@@ -65,7 +65,7 @@ If yes, surface candidate notes that lack a `category:` field or have a differen
 
 ```bash
 rm "/home/justin.guest/vault/utilities/categories/<CategoryName>.md"
-rm "/home/justin.guest/vault/utilities/templates/new_<categoryname>.md"
+rm "/home/justin.guest/vault/utilities/templates/new_<category_name_lowercase>.md"
 ```
 
 ### Step 2 — Strip the category value from vault notes

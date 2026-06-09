@@ -96,9 +96,9 @@ For creating People or Organization notes, load `obsidian-people-notes`. It cove
 ## Where to put new notes
 
 Notes are organized into specific lowercase directories in the vault, which align with gbrain-personal's page-type definitions:
-- **meetings/**: Contains manual/curated meeting summaries. (Raw transcripts live under `sources/meetings/transcripts/`; raw auto-summaries live under `sources/meetings/meeting_notes/`).
+- **logs/meetings/**: Contains manual/curated meeting summaries. (Raw transcripts live under `sources/meetings/transcripts/`; raw auto-summaries live under `sources/meetings/meeting_notes/`).
 - **people/**: Contains People notes.
-- **daily/**: Contains both current and archived daily notes.
+- **logs/daily/**: Contains both current and archived daily notes.
 
 ### Core Policy on Raw Streams
 - **No Auto-Notes from Raw Streams:** Do not automatically create or add notes to the vault from raw emails, text messages, or Slack conversations. Rely strictly on daily work logs and explicit user requests to capture daily activities. This preserves vault hygiene and prevents taxonomy clutter.
@@ -108,7 +108,7 @@ Notes are organized into specific lowercase directories in the vault, which alig
 - **notes/personal/**: Contains personal reflections and notes (family reflections, budgets, poetry, medical/health logs, e.g., *Qulipta dosage logs*, *birthday poem for Nana*).
 - **notes/personal/trips/**: Contains trip-specific logs and travel plans (e.g., *Telluride 2026*, *Belize 2026*).
 - **notes/**: Contains quick fleeting scratchpads, brain dumps, and tactical/specific logs (feature blueprints, project specs, meeting summaries, e.g., *PostHog specs*, and notes tagged with `#quick_note`).
-- **daily/**: Contains both current and archived daily notes.
+- **logs/daily/**: Contains both current and archived daily notes.
 
 ## Third-party managed folders — do not touch
 
@@ -274,7 +274,7 @@ When Bes creates any of these notes (bypassing Templater), substitute the Templa
 Different note types follow different filename rules, defined by the template for that type:
 
 - **Default** (most notes): `[Descriptive title] YYYYMMDDHHmmss` — descriptive title followed by file-created timestamp.
-- **Daily Notes**: `YYYY-MM-DD-weekday.md` (lowercase weekday name, hyphen-separated, e.g. `2026-06-04-thursday.md`). All daily notes are stored directly inside the `daily/` directory.
+- **Daily Notes**: `YYYY-MM-DD-weekday.md` (lowercase weekday name, hyphen-separated, e.g. `2026-06-04-thursday.md`). All daily notes are stored directly inside the `logs/daily/` directory.
 - **Weekly Reviews**: `YYYY-MM-DD Weekly Review` (using the Friday date).
 - **Meeting notes**: `YYYY-MM-DD [Descriptive title]` — date prefix, then a short descriptive title.
 - **People / Organizations / Projects**: simple descriptive title, no timestamp (Templater renames to timestamp, but Bes should use a meaningful name instead). Example: `Bes Setup.md`, not `20260521094904.md`.
