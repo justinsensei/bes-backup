@@ -185,11 +185,11 @@ def fetch_note_candidates(client):
         if len(users) < 2:
             continue
             
-        # Check if Justin added a 'brain' reaction to any message in the thread
+        # Check if Justin added a jg_log or jg_decision reaction to any message in the thread
         has_brain = False
         for m in messages:
             for rxn in m.get("reactions", []):
-                if rxn.get("name") == "brain" and user_id in rxn.get("users", []):
+                if rxn.get("name") in ["jg_log", "jg_decision"] and user_id in rxn.get("users", []):
                     has_brain = True
                     break
             if has_brain:
@@ -254,14 +254,14 @@ def fetch_new_brains(client):
         if key in processed_set:
             continue
             
-        # Verify Justin added the reaction 'brain'
-        has_brain = False
+        # Verify Justin added the reaction 'jg_log' or 'jg_decision'
+        reaction_type = None
         for rxn in msg.get("reactions", []):
-            if rxn.get("name") == "brain" and user_id in rxn.get("users", []):
-                has_brain = True
+            if rxn.get("name") in ["jg_log", "jg_decision"] and user_id in rxn.get("users", []):
+                reaction_type = rxn.get("name")
                 break
         
-        if not has_brain:
+        if not reaction_type:
             continue
             
         # Retrieve context
@@ -322,7 +322,8 @@ def fetch_new_brains(client):
             "permalink": permalink,
             "is_thread": is_thread,
             "messages": cleaned_messages,
-            "reacted_message_ts": ts
+            "reacted_message_ts": ts,
+            "reaction_type": reaction_type
         })
         
     return new_brains
