@@ -1,12 +1,12 @@
 ---
 name: obsidian-graph-enrichment
-description: Principles and link hierarchy conventions for maintaining a clean note graph and tracking chronological thinking evolution in Obsidian.
-version: 1.0.0
+description: Principles and link hierarchy conventions for maintaining a clean note graph, tracking chronological thinking evolution, and using semantic AI memory integration in Obsidian.
+version: 1.1.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, link-hierarchy, graph, note-enrichment, thoughts, beliefs]
+    tags: [obsidian, link-hierarchy, graph, note-enrichment, thoughts, beliefs, semantic-search, embeddings]
     related_skills: [obsidian, obsidian-thoughts-beliefs, obsidian-notes]
 ---
 
