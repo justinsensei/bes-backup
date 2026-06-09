@@ -231,81 +231,11 @@ After presenting and handling any movements, wait for acknowledgment before Phas
 
 ---
 
-### Phase 5 — Log candidates
-
-Present potential log candidates (active Slack conversations and noteworthy primary-category emails from the last 36-48 hours) that Justin hasn't tagged with `🧠` or forwarded to Bes, but that are highly worthy of being turned into logs in his vault.
-
-Run the unified script live to fetch candidates:
-`python3 /home/justin.guest/.hermes/scripts/fetch_source_candidates.py`
-
-If candidates (Slack or Email) are found:
-- Show them with sequential numbers across both Slack and Email candidates.
-- Format:
-  ```
-  📋 N potential log candidates:
-
-  **Slack Conversations**
-  1. [\#channel-name] Topic or Preview — participants: Alice, Bob, Justin
-  2. [\#channel-name] Topic or Preview — participants: Endre, Justin
-
-  **Emails**
-  3. [Email/<account>] Subject line — from: Sender Name (Date)
-  ...
-
-  Would you like to turn any of these conversations into logs in your vault? (e.g. "yes, 1", "save 1 and 3", or "skip")
-  ```
-
-If Justin selects any:
-1. For each selected item:
-   - **For Slack conversations:**
-     - Synthesize a high-quality summary showing "who said what" clearly. Do NOT store verbatim Slack messages; store only summaries with retrieval metadata.
-     - Write to `/home/justin.guest/vault/Logs/Slack/YYYY-MM-DD - Spaced Title.md`.
-     - Structure the YAML frontmatter for Slack logs:
-       ```yaml
-       ---
-       id: <timestamp_id> # YYYYMMDDHHmmss based on first message
-       daily_note: "[[<YYYY-MM-DD Weekday>]]"
-       original_url: "<permalink>"
-       category: "[[Slack]]"
-       channel: "<channel_name>"
-       participants:
-         - "Participant Name"
-       ---
-       ```
-     - Append a link and one-sentence gist to today's daily note notepad under `## 🗒 Notepad`:
-       `* [[Logs/Slack/<filename>|Slack summary]]: <One-sentence-gist>.`
-     - Run the command to mark it processed:
-       `python3 /home/justin.guest/.hermes/scripts/fetch_slack_brains.py --mark-processed <channel_id> <ts>`
-   - **For Emails:**
-     - Synthesize a high-quality summary of the email thread showing clearly what was discussed, decided, or requested. Do NOT store verbatim email text; store only summaries with retrieval metadata.
-     - Write to `/home/justin.guest/vault/Logs/Emails/YYYY-MM-DD - Spaced Subject.md`.
-     - Structure the YAML frontmatter for email logs:
-       ```yaml
-       ---
-       id: <timestamp_id> # YYYYMMDDHHmmss based on first email
-       daily_note: "[[<YYYY-MM-DD Weekday>]]"
-       original_url: "<permalink>"
-       category: "[[Emails]]"
-       account: "<work | personal-main>"
-       participants:
-         - "Sender Name"
-       ---
-       ```
-     - Append a link and one-sentence gist to today's daily note notepad under `## 🗒 Notepad`:
-       `* [[Logs/Emails/<filename>|Email summary]]: <One-sentence-gist>.`
-     - Run the command to mark it processed:
-       `python3 /home/justin.guest/.hermes/scripts/fetch_source_candidates.py --mark-email-processed <thread_id>`
-   - Report the log(s) successfully saved.
-
-If no candidates are found, skip this phase entirely and proceed to Phase 6.
-
----
-
-### Phase 6 — Discovered Contacts & Organizations
+### Phase 5 — Discovered Contacts & Organizations
 
 Present any discovered contacts or organizations (unresolved wikilinks found by the `check_vault_signals.py` script) from today's cache file (`discovered_contacts` field).
 
-If no discovered contacts are found in the cache, skip this phase entirely and proceed to Phase 7.
+If no discovered contacts are found in the cache, skip this phase entirely and proceed to Phase 6.
 
 Format:
 ```
@@ -353,7 +283,7 @@ If Justin selects any:
 
 ---
 
-### Phase 7 — Inbox candidates
+### Phase 6 — Inbox candidates
 
 Present the action-item candidates from `inbox_candidates.action_items`.
 
@@ -379,7 +309,7 @@ Once Justin confirms → batch-add to Todoist Inbox with comments.
 
 ---
 
-### Phase 8 — Daily Thought
+### Phase 7 — Daily Thought
 
 Present a random note (the Daily Thought) from the Thoughts (Opinions), Beliefs, or Sources categories. This should ideally be loaded from the cache file's `"daily_thought"` field. If the cache is missing this field, select a random `.md` file with `category: "[[Thoughts]]"`, `category: "[[Beliefs]]"`, or `category: "[[Sources]]"` from the vault, and display its title, category, and full content.
 
@@ -397,7 +327,7 @@ Would you like to make any edits to this note, or are we set for today?
 
 If Justin requests an edit to the note, use the `patch` or `write_file` tool to apply his changes, and confirm.
 
-After Phase 8 is complete, proceed to the "After all phases" wrap-up.
+After Phase 7 is complete, proceed to the "After all phases" wrap-up.
 
 ---
 
