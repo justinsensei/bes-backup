@@ -73,6 +73,15 @@ mv "/home/justin.guest/vault/inbox/Some Note.md" "/home/justin.guest/vault/Notes
 
 ---
 
+## Bulk Triage & Migration Protocol (Batch Processing)
+When handling bulk classification or cleanups (e.g., triaging hundreds of legacy notes):
+1. **Initialize Tracking**: Run a script to safely append a temporary `reviewed: false` property to the YAML frontmatter of all candidate files. This prevents duplicate triage and establishes a stable, queryable baseline.
+2. **Chronological Batches**: Sort the candidate notes chronologically using their 14-digit timestamp-based ID (`YYYYMMDDHHmmss`). Process them in structured, manageable batches of 10.
+3. **Interactive Proposals**: For each batch of 10, present the note titles, snippets, proposed categories, and brief rationales to the user for feedback.
+4. **Commit and Advance**: Once approved, update the frontmatter of each note (changing `reviewed: false` to `reviewed: true` and applying the new category) before relocating the files.
+
+---
+
 ## Classification Guidelines & Ambiguities
 
 To avoid incorrect or naive categorization, always differentiate between the following note types:
