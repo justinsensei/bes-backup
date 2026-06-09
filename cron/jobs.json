@@ -226,7 +226,7 @@
     {
       "id": "82b79f5dda7d",
       "name": "weekly-accomplishments-summary",
-      "prompt": "Retrieve Justin's daily notes for the previous week (Monday through Sunday) from his Obsidian vault at `/home/justin.guest/vault/logs/daily`. \\n\\nCalculate the dates for the previous week (7 days ago, Monday to Sunday). Use a Python script to locate and read the corresponding daily note files (format: `YYYY-MM-DD-weekday.md`). \\n\\nExtract the accomplishments, highlights, decisions, and any other relevant updates, and write a weekly summary in Bes's voice: quiet, minimal, short sentences, informal, no filler, no framing theater.\\n\\nDeliver the final weekly report.",
+      "prompt": "Retrieve Justin's daily notes for the previous week (Monday through Sunday) from his Obsidian vault at `/home/justin.guest/vault/Logs/Daily`. \\n\\nCalculate the dates for the previous week (7 days ago, Monday to Sunday). Use a Python script to locate and read the corresponding daily note files (format: `YYYY-MM-DD-weekday.md`). \\n\\nExtract the accomplishments, highlights, decisions, and any other relevant updates, and write a weekly summary in Bes's voice: quiet, minimal, short sentences, informal, no filler, no framing theater.\\n\\nDeliver the final weekly report.",
       "skills": [
         "obsidian"
       ],
@@ -269,5 +269,5 @@
       "profile": null
     }
   ],
-  "updated_at": "2026-06-09T05:49:57.923719-04:00"
+  "updated_at": "2026-06-09T05:59:27.122142-04:00"
 }

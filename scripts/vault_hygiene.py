@@ -18,14 +18,14 @@ def reconcile_granola_meetings(vault_path):
     meetings_dir = Path(vault_path) / "meetings"
     meetings_dir.mkdir(parents=True, exist_ok=True)
     
-    dest_dir = Path(vault_path) / "logs" / "meetings"
+    dest_dir = Path(vault_path) / "Logs" / "Meetings"
     dest_dir.mkdir(parents=True, exist_ok=True)
         
     print("Reconciling meetings from Granola...")
     
     # Pre-scan vault for existing IDs to avoid collisions
     existing_ids = set()
-    skip_dirs = {"Readwise", "utilities", ".git", ".trash", ".cursor", ".claude", "sources", "daily"}
+    skip_dirs = {"Readwise", "Utilities", ".git", ".trash", ".cursor", ".claude", "sources", "Daily"}
     for root, dirs, files in os.walk(vault_path):
         dirs[:] = [d for d in dirs if not d.startswith(".") and d not in skip_dirs]
         for f in files:
@@ -106,7 +106,7 @@ def reconcile_granola_meetings(vault_path):
                 needs_update = True
                 
             if not daily_note or "[[" not in daily_note:
-                daily_note = f"[[logs/daily/{date_str}-{weekday_lower}|{date_str} {weekday_cap}]]"
+                daily_note = f"[[Logs/Daily/{date_str}-{weekday_lower}|{date_str} {weekday_cap}]]"
                 needs_update = True
                 
             # Clean body: strip leading whitespace and redundant separators
@@ -155,7 +155,7 @@ missing_ids = []
 missing_daily_notes = []
 
 # Folders to skip for manual checks
-skip_dirs = {"Readwise", "utilities", ".git", ".trash", ".cursor", ".claude", "sources", "daily"}
+skip_dirs = {"Readwise", "Utilities", ".git", ".trash", ".cursor", ".claude", "sources", "Daily"}
 
 for root, dirs, files in os.walk(VAULT):
     dirs[:] = [d for d in dirs if not d.startswith(".") and d not in skip_dirs]

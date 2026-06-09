@@ -45,8 +45,8 @@ def find_daily_note(vault_path, target_date):
     t_dt = datetime.strptime(target_date, '%Y-%m-%d')
     weekday = t_dt.strftime('%A').lower()
     
-    # Format 1: logs/daily/2026-06-04-thursday.md or daily/2026-06-04-thursday.md
-    p1_new = os.path.join(vault_path, 'logs', 'daily', f"{target_date}-{weekday}.md")
+    # Format 1: Logs/Daily/2026-06-04-thursday.md or daily/2026-06-04-thursday.md
+    p1_new = os.path.join(vault_path, 'Logs', 'Daily', f"{target_date}-{weekday}.md")
     if os.path.exists(p1_new):
         return p1_new
     p1 = os.path.join(vault_path, 'daily', f"{target_date}-{weekday}.md")
@@ -281,11 +281,11 @@ def get_gbrain_activity(vault_path, last_briefing_dt):
             
             # Map specific directory patterns to types if untyped or default
             if ptype == "note":
-                if slug.startswith("logs/meetings/") or slug.startswith("meetings/"):
+                if slug.startswith("Logs/Meetings/") or slug.startswith("logs/meetings/") or slug.startswith("meetings/"):
                     ptype = "meeting"
-                elif slug.startswith("logs/daily/") or slug.startswith("daily/"):
+                elif slug.startswith("Logs/Daily/") or slug.startswith("logs/daily/") or slug.startswith("daily/"):
                     ptype = "daily"
-                elif slug.startswith("contacts/"):
+                elif slug.startswith("Contacts/") or slug.startswith("contacts/"):
                     ptype = "person" # default contacts to person
                 elif slug.startswith("sources/"):
                     ptype = "source"
