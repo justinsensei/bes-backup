@@ -1,16 +1,16 @@
 ---
-name: obsidian-note-promotion
+name: obsidian-suggest-promotions
 description: Suggest existing notes for promotion up the hierarchy (raw Note/Source -> Thought -> Belief) using semantic analysis, synthesize backlinked context for thoughts -> beliefs, and enforce link hygiene.
 version: 1.0.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, note-promotion, thoughts, beliefs, graph-hygiene]
+    tags: [obsidian, suggest-promotions, thoughts, beliefs, graph-hygiene]
     related_skills: [obsidian, obsidian-notes, obsidian-thoughts-beliefs, obsidian-graph-enrichment]
 ---
 
-# Obsidian: Note Promotion
+# Obsidian: Suggest Promotions
 
 ## Overview
 This skill governs the semantic evaluation and promotion of notes up Justin's unidirectional three-tier vault hierarchy:
@@ -25,7 +25,7 @@ By analyzing the depth of a note's content and its usage across the vault (via b
 ## When to Use
 - **Trigger:** Justin asks to "suggest notes for promotion", "check what needs promotion", "promote some thoughts", or "run note promotion".
 - **Rule:** Presents exactly **5 suggestions** per batch.
-- **Don't use for:** Brainstorming brand new notes (use `obsidian-suggest-new-notes` instead) or establishing horizontal connections (use `obsidian-serendipity-links` instead).
+- **Don't use for:** Brainstorming brand new notes (use `obsidian-suggest-new-notes` instead) or establishing horizontal connections (use `obsidian-suggest-links` instead).
 
 ---
 
@@ -33,7 +33,7 @@ By analyzing the depth of a note's content and its usage across the vault (via b
 
 ### Step 1: Get Promotion Candidates
 Run the candidate discovery script to pull a pool of Tier 1 and Tier 2 notes along with their backlinks:
-`python3 ~/.hermes/skills/note-taking/obsidian-note-promotion/scripts/get_promotion_candidates.py`
+`python3 ~/.hermes/skills/note-taking/obsidian-suggest-promotions/scripts/get_promotion_candidates.py`
 *(Supports a seed topic keyword if Justin specifies one: `--seed "[topic]"`).*
 
 ### Step 2: Semantic Analysis
