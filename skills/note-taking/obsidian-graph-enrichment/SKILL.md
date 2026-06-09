@@ -12,6 +12,9 @@ metadata:
 
 # Obsidian: Graph Enrichment & Link Hierarchy
 
+- **Linked References:**
+  - **[Semantic Pointer Implementation](references/semantic-pointer-implementation.md):** Tech schema, batching mechanism, and sqlite-vec reference.
+
 ## Overview
 This skill governs the conventions for link directions and relationship structures between different tiers of notes in Justin's Obsidian vault. By enforcing a unidirectional link hierarchy, we keep high-level notes clean and leverage Obsidian's native backlinks to construct effortless, zero-maintenance historical timelines of thinking.
 
