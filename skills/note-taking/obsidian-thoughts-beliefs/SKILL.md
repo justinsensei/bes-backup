@@ -97,3 +97,23 @@ Optional secondary elaboration paragraph providing deeper conceptual context or 
 - **Naming Enforcement on Reversion:** When reverting Thoughts/Beliefs back to Notes, ensure their filename includes the proper 14-digit `ID ` prefix (e.g. `20250523170601 Title.md`), utilizing the `id` field from the note's frontmatter.
 - **Do Not Push Promotion:** Never automatically or proactively migrate notes to `Thoughts` or `Beliefs` without explicit user request.
 
+---
+
+## Auditing & Reversion Workflow
+
+When performing a manual or programmatic audit to prune or downgrade category classifications:
+
+### 1. Identify Candidates
+Scan notes for high-probability "fleeting, tactical, or operational" traits:
+- Contains the `#quick_note` tag or similar fleeting markers.
+- Short body length (typically under 400-500 characters).
+- Contains checklists (`- [ ]`, `- [x]`) or todo planning indicators.
+- Contains highly transactional language (e.g., "emailed", "Slack thread link", "1-on-1 prep", "PostHog/Mixpanel telemetry tracking logs").
+
+### 2. Presentation & Batching Rules
+- **Omit Redundant Data:** Do not include a "Current Category" column or line in your proposals if all notes being evaluated share the same starting category.
+- **Flag Candidate Counts:** Inform the user of the total candidate count found across the vault first.
+- **Batching Threshold:** If there are more than 10 candidates, state the count and present them in batches of exactly 10 for user approval.
+- **Diverse Proposals:** Do not default to classifying everything as `[[Notes]]`. Proactively suggest more descriptive categories like `[[Concepts]]`, `[[References]]`, `[[Beliefs]]`, `[[Thoughts]]`, or `[[Memories]]` for entries that capture established, reusable decision patterns, theories, or milestones.
+
+
