@@ -78,6 +78,7 @@ To avoid incorrect or naive categorization, always differentiate between the fol
 ---
 
 ## Common Pitfalls
+- **Ephemeral Checklists vs. References:** Do not elevate short-term, project-specific checklists, setup plans, or migration guides to `[[References]]`. References are strictly reserved for permanent, long-term lookup documentation. Keep project-specific checklists categorized as `[[Notes]]` or `[[Projects]]`.
 - **Multiple Categories:** Never assign multiple categories to a single note. Every note gets **exactly one** category.
 - **Leaking Inbox:** Do not leave notes in `inbox/` once categorized. All processed notes must reside in their taxonomy folders.
 - **Links Verification:** moves are generally safe since Obsidian auto-resolves links by note name regardless of folder structure.

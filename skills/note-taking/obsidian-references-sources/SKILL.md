@@ -19,6 +19,14 @@ This skill governs the structure and standard templates for two categories under
 
 ---
 
+## References Definition & Boundary
+- **Permanent Value:** References are reserved for permanent, highly durable notes that have long-term lookup value (e.g., API schemas, CLI cheat sheets, organization policies, standard operating procedures) and are expected to be referred to frequently over time.
+- **Project-Bound Ephemera:** Do NOT categorize ephemeral checklists, migration plans, implementation guides, or setup lists connected to specific, time-bound projects as `[[References]]`. These should remain categorized as `[[Notes]]` or `[[Projects]]` within their project context.
+
+---
+
+---
+
 ## Folders & Categories
 - **Directory:** `/home/justin.guest/vault/Notes/` or `/home/justin.guest/vault/sources/` (automated external syncs).
 - **Categories:**
