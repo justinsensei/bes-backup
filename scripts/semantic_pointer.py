@@ -229,6 +229,12 @@ def index_vault(verbose=False, batch_size=30):
         
     print(f"Found {len(pending_files)} new/modified files to index.")
     
+    # Sort to prioritize Logs/ and Daily Notes/ (Tier 1 logs)
+    pending_files.sort(key=lambda x: (
+        0 if "Logs/" in x[0] or "Daily Notes/" in x[0] else 1,
+        x[0]
+    ))
+    
     # We process pending files in batches of `batch_size` (e.g. 30 files at a time)
     for idx_start in range(0, len(pending_files), batch_size):
         chunk_files = pending_files[idx_start:idx_start+batch_size]
