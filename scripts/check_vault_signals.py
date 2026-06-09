@@ -192,7 +192,17 @@ def scan_file_for_signals(file_path, content, entities, vault_path, event_date, 
             if success:
                 enriched_counts[ent_info['type']] = enriched_counts.get(ent_info['type'], 0) + 1
 
-def scan_file_for_unresolved_links(file_path, content, entities, vault_path):
+def get_all_vault_filenames(vault_path):
+    filenames = set()
+    skip_dirs = {".git", ".trash", ".cursor", ".claude", "_templates", "utilities", "Utilities"}
+    for root, dirs, files in os.walk(vault_path):
+        dirs[:] = [d for d in dirs if not d.startswith(".") and d not in skip_dirs]
+        for f in files:
+            if f.endswith('.md'):
+                filenames.add(f[:-3].lower())
+    return filenames
+
+def scan_file_for_unresolved_links(file_path, content, entities, vault_path, all_vault_filenames):
     discovered = []
     
     # Find all [[Link]] matches
@@ -234,8 +244,11 @@ def scan_file_for_unresolved_links(file_path, content, entities, vault_path):
         if re.match(r'^\d{4}-\d{2}-\d{2}', link_name):
             continue
             
-        # Check if exists
+        # Check if exists anywhere in vault or in entities
         link_key = link_name.lower()
+        if link_key in all_vault_filenames:
+            continue
+            
         if link_key not in entities:
             # Unresolved!
             # Basic type inference
@@ -287,6 +300,9 @@ def main():
     enriched_counts = {"person": 0, "organization": 0, "project": 0}
     all_discovered = []
     
+    # Build list of all existing vault filenames
+    all_vault_filenames = get_all_vault_filenames(vault_path)
+    
     for file_path in modified_files:
         try:
             with open(file_path, 'r', encoding='utf-8', errors='replace') as f:
@@ -298,7 +314,7 @@ def main():
             scan_file_for_signals(file_path, content, entities, vault_path, event_date, enriched_counts)
             
             # 2. Discover unresolved links as candidates
-            unresolved = scan_file_for_unresolved_links(file_path, content, entities, vault_path)
+            unresolved = scan_file_for_unresolved_links(file_path, content, entities, vault_path, all_vault_filenames)
             all_discovered.extend(unresolved)
         except Exception as e:
             print(f"Error scanning {file_path}: {e}")
