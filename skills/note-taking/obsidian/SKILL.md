@@ -95,18 +95,18 @@ For creating People or Organization notes, load `obsidian-people-notes`. It cove
 
 ## Where to put new notes
 
-Notes are organized into specific lowercase directories in the vault, which align with gbrain-personal's page-type definitions:
-- **logs/meetings/**: Contains manual/curated meeting summaries. (Raw transcripts live under `sources/meetings/transcripts/`; raw auto-summaries live under `sources/meetings/meeting_notes/`).
+Notes are organized into specific Capitalized directories in the vault, which align with gbrain-personal's page-type definitions:
+- **Logs/Meetings/**: Contains manual/curated meeting summaries. (Raw transcripts live under `sources/meetings/transcripts/`; raw auto-summaries live under `sources/meetings/meeting_notes/`).
 - **people/**: Contains People notes.
-- **logs/daily/**: Contains both current and archived daily notes.
+- **Logs/Daily/**: Contains both current and archived daily notes.
 
 ### Core Policy on Raw Streams
 - **No Auto-Notes from Raw Streams:** Do not automatically create or add notes to the vault from raw emails, text messages, or Slack conversations. Rely strictly on daily work logs and explicit user requests to capture daily activities. This preserves vault hygiene and prevents taxonomy clutter.
 - **projects/**: Contains Project notes.
 - **companies/**: Contains Organization/Company notes.
 - **concepts/**: Contains structured, permanent concept/definition notes (timeless mental models, frameworks, business principles, and cognitive architectures, e.g., *System 1 vs System 2*, *The Five Product Risks*, *Freemium Conversion Rules*).
-- **notes/**: Contains personal reflections, family notes, budgets, poetry, travel/trips (considered a kind of project), scratchpads, tactical logs, feature blueprints, project specs, and quick brain dumps (e.g. *PostHog specs*, *Telluride 2026*, *birthday poem for Nana*, notes tagged `#quick_note`).
-- **logs/daily/**: Contains both current and archived daily notes.
+- **Notes/**: Contains personal reflections, family notes, budgets, poetry, travel/trips (considered a kind of project), scratchpads, tactical logs, feature blueprints, project specs, and quick brain dumps (e.g. *PostHog specs*, *Telluride 2026*, *birthday poem for Nana*, notes tagged `#quick_note`).
+- **Logs/Daily/**: Contains both current and archived daily notes.
 
 ## Third-party managed folders — do not touch
 
