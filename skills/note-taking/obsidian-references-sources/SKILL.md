@@ -28,7 +28,7 @@ This skill governs the structure and standard templates for two categories under
 ---
 
 ## Folders & Categories
-- **Directory:** `/home/justin.guest/vault/Notes/` or `/home/justin.guest/vault/sources/` (automated external syncs).
+- **Directory:** `/home/justin.guest/vault/Notes/` or `/home/justin.guest/vault/Logs/Sources/` (automated external syncs).
 - **Categories & Naming:**
   - **References:** Standard reference notes, checklists, lookup tables.
     - Category link: `category: "[[References]]"`
@@ -36,6 +36,9 @@ This skill governs the structure and standard templates for two categories under
   - **Concepts:** Book summaries, articles, paper summaries, other people's thinking.
     - Category link: `category: "[[Concepts]]"`
     - Filename format: `ID Title.md` (e.g. `20260609120000 Spaced Title.md`).
+  - **Sources (Logs):** Raw reading notes and bibliographical information (synced from Readwise).
+    - Category link: `category: "[[Sources]]"`
+    - Filename format: `Title.md` (no timestamp prefix, e.g. `Spaced Title.md`).
 
 ---
 
