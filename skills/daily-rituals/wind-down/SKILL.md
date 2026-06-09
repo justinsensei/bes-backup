@@ -1,6 +1,6 @@
 ---
 name: wind-down
-description: "Interactive daily wrap-up: 1. Work log draft/write; 2. Vault inbox triage; 3. Log candidates; 4. Discovered contacts; 5. Source review; 6. Next day's calendar preview."
+description: "Interactive daily wrap-up: 1. Log candidates; 2. Discovered contacts; 3. Source review; 4. Vault inbox triage; 5. Work log draft/write; 6. Next day's calendar preview."
 version: 1.1.0
 author: Bes
 license: MIT
