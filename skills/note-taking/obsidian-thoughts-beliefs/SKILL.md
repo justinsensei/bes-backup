@@ -1,13 +1,13 @@
 ---
 name: obsidian-thoughts-beliefs
 description: Use when creating or recording unstructured personal reflections, emergent ideas, or core guiding beliefs and evolved concepts/thoughts under Notes/.
-version: 1.0.0
+version: 1.1.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, notes, thoughts, beliefs, mental-models]
-    related_skills: [obsidian, obsidian-notes, obsidian-graph-enrichment]
+    tags: [obsidian, notes, thoughts, beliefs, mental-models, audit]
+    related_skills: [obsidian, obsidian-notes, obsidian-graph-enrichment, obsidian-categorize-and-sort]
 ---
 
 # Obsidian: Thoughts & Beliefs Log
