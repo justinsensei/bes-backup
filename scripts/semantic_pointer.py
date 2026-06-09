@@ -407,7 +407,7 @@ def run_historical_bridge(target_file, limit=5, commit=False):
         print(f"Target note '{rel_target}' not indexed. Indexing now...")
         # Index on-demand
         try:
-            mtime = os.getmtime(abs_target)
+            mtime = os.path.getmtime(abs_target)
             with open(abs_target, "r", encoding="utf-8", errors="replace") as f:
                 content = f.read()
             file_hash = hashlib.md5(content.encode("utf-8")).hexdigest()
