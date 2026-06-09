@@ -1,18 +1,20 @@
 ---
 name: bes-slack-ingest
-description: Sync and ingest summarized Slack conversations into vault/Logs/Slack/ as markdown records.
-version: 1.0.0
+description: Capture and ingest Slack conversations as brief pointer records with a short topic description and participant list.
+version: 2.0.0
 author: Bes
 license: MIT
 metadata:
   hermes:
     tags: [slack, obsidian, ingest, logs]
-    related_skills: [obsidian, obsidian-logs, morning-briefing]
+    related_skills: [obsidian, obsidian-logs, obsidian-graph-enrichment, obsidian-vault-jam]
 ---
 
 # Bes Slack Ingest
 
-Captures, summarizes, and logs noteworthy Slack discussions, threads, or brain-dumps into your vault's `Logs/Slack/` folder. This prevents log pollution while keeping standard metadata connected.
+Captures noteworthy Slack threads and brain-dumps as lightweight pointer records inside `Logs/Slack/`. 
+
+These notes are intentionally **minimalist**. They must never contain point-by-point summaries, individual quotes, or try to capture decisions or thoughts. They function purely as a index/pointer back to Slack with a brief human-readable description.
 
 ## Synced Path
 - `/home/justin.guest/vault/Logs/Slack/YYYY-MM-DD - Spaced Title.md`
@@ -36,21 +38,31 @@ participants:
 ---
 ```
 
-Below the frontmatter, format the note body cleanly:
-1. **Title:** Large H1 heading `# 💬 Slack Thread: [Cleaned Title]`
-2. **Metadata:** Labeled key-value pairs (Channel, Date, Link, Participants)
-3. **Executive Summary:** Bulleted or paragraph summary showing key discussion highlights, consensus, and action items. Do NOT copy raw text verbatim.
-4. **Context & Outlines:** Bulleted log of who said what (synthesized, clean dialogue and thoughts)
+Below the frontmatter, the body is kept super short:
+
+```markdown
+# 💬 Slack Thread: [Cleaned Title]
+
+- **Channel:** #channel-name
+- **Date:** YYYY-MM-DD
+- **Original Thread:** [Slack Link](https://slack.com/...)
 
 ---
 
-## Key Decision Propagation (Proactive Behavior)
-If the summarized Slack conversation contains any critical product/business decisions, pivots, or explicit recommendations (such as pausing or abandoning a feature/initiative):
-1. **Highlight in Summary:** Ensure the decision is clearly highlighted and called out in the Slack note's `Executive Summary`.
-2. **Propagate to Daily Note:** Locate the active Daily Note (`Daily Notes/YYYY-MM-DD Weekday.md`) and immediately update its Notepad or Highlights section to reflect this decision (linking to the newly created Slack log note). This ensures synchronous, vault-wide alignment of operations.
+## 🎯 Topic Description
+[A brief, 2-3 sentence human-readable description of the topic discussed. Acts as a simple pointer to the conversation without listing thoughts, decisions, or individual quotes.]
+```
 
 ---
 
-## CLI Sync / Processing Command
-To retrieve candidates and process them, the background poller runs:
-- `python3 /home/justin.guest/.hermes/scripts/fetch_slack_brains.py --mark-processed <channel_id> <ts>`
+## The Creation vs. Enrichment Lifecycle
+
+### 1. Initial Creation (First Ingest)
+When a Slack brain reaction or capture is first triggered, create a **super short stub note** containing only the basic frontmatter (with initial participants found) and a temporary 1-sentence topic description placeholder.
+
+### 2. Vault Enrichment Step
+During subsequent vault enrichment runs (e.g., during Wind-Down, Morning Briefings, or an on-demand Vault Jam):
+1. Review all Slack logs created since the previous vault enrichment run.
+2. Read the source Slack thread replies if needed to refine and write a polished **2-3 sentence Topic Description**.
+3. Verify and compile the complete list of **main participants** and ensure they are added to the frontmatter `participants` list.
+4. **Enforce the Constraints:** Actively prune and remove any point-by-point summaries, individual thoughts, quotes, or decision trees that may have leaked into the logs. Keep them strictly as simple pointers.
