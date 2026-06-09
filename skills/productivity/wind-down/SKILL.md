@@ -1,12 +1,12 @@
 ---
 name: wind-down
-description: "Interactive daily wrap-up: 1. Work log draft/write; 2. Vault inbox triage; 3. Source review; 4. Next day's calendar preview; 5. Kick off gbrain dream cycle."
+description: "Interactive daily wrap-up: 1. Work log draft/write; 2. Vault inbox triage; 3. Source review; 4. Next day's calendar preview."
 version: 1.1.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [productivity, wind-down, daily-routine, work-log, inbox-triage, sources, calendar, gbrain]
+    tags: [productivity, wind-down, daily-routine, work-log, inbox-triage, sources, calendar]
     related_skills: [work-log, morning-briefing, obsidian, todoist]
 ---
 
