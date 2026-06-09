@@ -224,26 +224,38 @@ For the full vault structural audit (folder sizes, issue catalogue, what was fou
 
 ## Entities and category notes
 
-Justin uses a structured note taxonomy where categories are represented by notes in the `<vault>/utilities/categories/` folder. Each category note defines its role in the hierarchy, its parent, and its subcategories (if any).
+Justin uses a structured note taxonomy where categories are represented by notes in the `<vault>/utilities/categories/` folder. Each category note defines its folder-routing behavior using a `Type: <Folder>` property inside the category note body, which maps directly to the root-level folder of the vault.
 
-### Canonical Note Taxonomy (as of June 2026)
+### Category YAML Property Rule
+Notes must be categorized with a single `category` YAML property containing a quoted wikilink to the category representation note in `utilities/categories/`. Every note gets **exactly one** category.
 
-- **Contacts** (`utilities/categories/Contacts.md`): Top-level contacts category.
-  - **People** (`utilities/categories/People.md`): Individual contacts.
-  - **Organizations** (`utilities/categories/Organizations.md`): Companies and other groups.
-- **Notes** (`utilities/categories/Notes.md`): Top-level notes category.
-  - **Notes (raw)** (`utilities/categories/Notes (raw).md`): Raw, fleeting scratchpads.
-  - **References** (`utilities/categories/References.md`): Useful facts, guidelines, and lookups.
-  - **Sources** (`utilities/categories/Sources.md`): Summaries, web clips, and external articles.
-  - **Thoughts** (`utilities/categories/Thoughts.md`): Ideas, opinions, and questions.
-  - **Beliefs** (`utilities/categories/Beliefs.md`): Principles and ideas trusted enough to steer by.
-  - **Decisions** (`utilities/categories/Decisions.md`): Records of important decisions.
-  - **Projects** (`utilities/categories/Projects.md`): Hubs for ongoing work and milestones.
-- **Logs** (`utilities/categories/Logs.md`): Top-level chronological logs.
-  - **Daily Notes** (`utilities/categories/Daily Notes.md`): Daily journal logs and schedule.
-  - **Meeting Notes** (`utilities/categories/Meeting Notes.md`): Chronological summaries of discussions.
+Example:
+```yaml
+---
+id: "20260609053601"
+daily_note: "[[2026-06-09 Tuesday]]"
+category: "[[Thoughts]]"
+---
+```
 
-When referencing categories or filtering notes, use the canonical names defined in these notes. Each category note contains its standard frontmatter (`id` and `daily_note`).
+### Folder and Category Mapping Table
+
+| Target Folder | Target Category Link | Description / Type |
+|---|---|---|
+| `contacts/` | `category: "[[People]]"` | Individual contacts, friends, family, collaborators (`Type: Contacts`). |
+| `contacts/` | `category: "[[Organizations]]"` | Companies, schools, institutions, legal entities (`Type: Contacts`). |
+| `notes/` | `category: "[[Notes]]"` | Default category for structured, semi-structured, and raw textual notes (`Type: Notes`). |
+| `notes/` | `category: "[[References]]"` | Useful facts, cheat sheets, guidelines, checklists (`Type: Notes`). |
+| `notes/` | `category: "[[Sources]]"` | What others say (summaries, articles, web clips) (`Type: Notes`). |
+| `notes/` | `category: "[[Thoughts]]"` | Personal/ideas, current opinions, research questions (`Type: Notes`). |
+| `notes/` | `category: "[[Beliefs]]"` | Trusted models, core guiding principles (`Type: Notes`). |
+| `notes/` | `category: "[[Decisions]]"` | Team or individual decisions and reasoning logs (`Type: Notes`). |
+| `notes/` | `category: "[[Projects]]"` | Hubs for notes about ongoing work, milestones, travel/trips (`Type: Notes`). |
+| `logs/` | `category: "[[Daily Notes]]"` | Daily notes containing schedules and work logs (`Type: Logs`). |
+| `logs/` | `category: "[[Meetings]]"` | Chronological meeting agendas, summaries, outcomes (`Type: Logs`). |
+| `utilities/` | `category: "[[Categories]]"` | Category representation notes themselves, stored in `utilities/categories/` (`Type: Utilities`). |
+
+---
 
 ### Templates (from `<vault>/utilities/templates/`)
 
