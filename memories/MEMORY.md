@@ -18,12 +18,10 @@ Granola notes sync to meetings/ and are reconciled and moved to Logs/Meetings/ v
 §
 Forwarded emails should not be copied to vault unless explicitly requested.
 §
-Obsidian horizontal rule: always use three hyphens `---` for a horizontal line, never two hyphens `--`.
+Obsidian dividers: always three hyphens `---`.
 §
 Readwise script is at ~/sync_readwise.py. It exports highlights tagged 'vault' (case-insensitive) to vault/Logs/Readings/.
 §
-Justin has abandoned gbrain and prefers growing custom agent solutions on top of Bes by selectively reusing skills.
+User prefers building modular, composable skills (no monolithic files) to grow custom agent solutions on top of Bes.
 §
-User prefers building modular, composable skills (e.g., modular note-taking skills) rather than massive monolithic files.
-§
-Thoughts (representing opinions), Beliefs, and Sources have replaced concepts as categories in the vault.
+Thoughts/Beliefs/Sources replace concepts. Obsidian link hierarchy flows upward: Tier 1 (Notes/Sources/Decisions/Memories) -> Tier 2 (Thoughts) -> Tier 3 (Beliefs), using date backlinks sorting rather than prefix naming. Beliefs require Core Tenets and Application sections.
