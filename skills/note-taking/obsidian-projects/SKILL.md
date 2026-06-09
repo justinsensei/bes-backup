@@ -37,7 +37,7 @@ status: Active # Active, Complete, Dropped
 
 # Project Name / Travel Destination
 
-> Executive summary or purpose of the project/trip.
+> A high-quality, rich 2-3 sentence summary of the project's purpose, scope, or strategic value. **Do not** prefix this with "Executive summary:" or "briefing for [Project Name]". Keep it direct and informative.
 
 ## State
 - **Timeline:** Expected Start/End dates
