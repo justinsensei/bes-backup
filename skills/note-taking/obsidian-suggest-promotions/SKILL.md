@@ -1,6 +1,6 @@
 ---
 name: obsidian-suggest-promotions
-description: Suggest existing notes for promotion up the hierarchy (raw Note/Source -> Thought -> Belief) using semantic analysis, synthesize backlinked context for thoughts -> beliefs, and enforce link hygiene.
+description: Suggest existing notes for promotion up the hierarchy (raw Note/Concept -> Thought -> Belief) using semantic analysis, synthesize backlinked context for thoughts -> beliefs, and enforce link hygiene.
 version: 1.0.0
 author: Bes
 license: MIT
@@ -14,7 +14,7 @@ metadata:
 
 ## Overview
 This skill governs the semantic evaluation and promotion of notes up Justin's unidirectional three-tier vault hierarchy:
-1. **Tier 1 (Raw/Ephemeral Inputs):** `[[Notes]]`, `[[Sources]]`, `[[Decisions]]`, `[[Memories]]`
+1. **Tier 1 (Raw/Ephemeral Inputs):** `[[Notes]]`, `[[Concepts]]`, `[[Decisions]]`, `[[Memories]]`
 2. **Tier 2 (Emergent/Synthesized Thoughts):** `[[Thoughts]]`
 3. **Tier 3 (Permanent/Conviction Beliefs):** `[[Beliefs]]`
 
@@ -38,7 +38,7 @@ Run the candidate discovery script to pull a pool of Tier 1 and Tier 2 notes alo
 
 ### Step 2: Semantic Analysis
 Analyze the returned notes and their backlink snippets to choose exactly **5 promotion recommendations**:
-- **Tier 1 $\rightarrow$ Tier 2 (Note/Source $\rightarrow$ Thought):** Select notes that have transitioned from a simple copy-paste clipping or scratchpad into an active research question, opinion, or emergent theory.
+- **Tier 1 $\rightarrow$ Tier 2 (Note/Concept $\rightarrow$ Thought):** Select notes that have transitioned from a simple copy-paste clipping or scratchpad into an active research question, opinion, or emergent theory.
 - **Tier 2 $\rightarrow$ Tier 3 (Thought $\rightarrow$ Belief):** Select thoughts that represent highly trusted, stable, foundational mental models or playbooks that Justin frequently backlinks to or cites across multiple meetings or daily notes.
 
 ### Step 3: Present the Pitch
@@ -52,7 +52,7 @@ Ask Justin which promotions he wants to approve. For each approved note:
 1. **Change Category:** Use `patch` to update the YAML `category: "[[<NewCategoryName>]]"` property.
 2. **Filename & Title Adjustment:** Update the file name and H1 title to conform to the category-specific naming conventions:
    - If promoting to a **Belief** (or Reference, Project): Ensure the filename is strictly `Title.md` with no leading timestamp/ID. Rename the file and update the H1 title accordingly.
-   - If promoting to a **Thought** (or Note, Decision, Memory, Source): Ensure the filename is `ID Title.md`. Prepend the creation ID/timestamp if it was missing.
+   - If promoting to a **Thought** (or Note, Decision, Memory, Concept): Ensure the filename is `ID Title.md`. Prepend the creation ID/timestamp if it was missing.
 3. **For Thoughts $\rightarrow$ Beliefs (Tier 2 $\rightarrow$ Tier 3):**
    - Synthesize the note's original body and all backlinked meeting/daily notes context to draft a high-quality, mature structure.
    - Draft **Core Tenets** (3 numbered, actionable pillars with bolded names) and **Application** guidelines (2 bulleted scenarios with bolded context).
