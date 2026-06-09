@@ -1,6 +1,6 @@
 ---
 name: obsidian-thoughts-beliefs
-description: Use when creating or recording unstructured personal reflections, emergent ideas, or core guiding beliefs and mental models under Notes/.
+description: Use when creating or recording unstructured personal reflections, emergent ideas, or core guiding beliefs and evolved concepts/thoughts under Notes/.
 version: 1.0.0
 author: Bes
 license: MIT
@@ -13,17 +13,17 @@ metadata:
 # Obsidian: Thoughts & Beliefs Log
 
 ## Overview
-This skill governs the categorization, formatting, and capture of unstructured personal reflections, emergent product ideas (`Thoughts`), and core guiding principles or mental models (`Beliefs`).
+This skill governs the categorization, formatting, and capture of unstructured personal reflections and emergent ideas (`Thoughts`), and evolved concepts / thoughts that are durably true and shape action (`Beliefs`).
 
 ---
 
 ## Folder & Category
 - **Directory:** `/home/justin.guest/vault/Notes/`
 - **Categories & Naming:**
-  - **Thoughts:** Raw personal reflections, emergent theories, or open questions.
+  - **Thoughts:** Thoughts are *my thinking* — raw personal reflections, emergent theories, or open questions.
     - Category link: `category: "[[Thoughts]]"`
     - Filename format: `ID Title.md` (e.g. `20260609120000 Spaced Title.md`).
-  - **Beliefs:** Trusted frameworks, core guiding principles, or proven mental models.
+  - **Beliefs:** Beliefs are *evolved* concepts / thoughts — things that are durably true and shape what Justin does and how he sees the world.
     - Category link: `category: "[[Beliefs]]"`
     - Filename format: `Title.md` (no timestamp prefix, e.g. `Spaced Title.md`).
 
@@ -52,8 +52,8 @@ What is the core idea or reflection? Keep it atomic.
 - Open questions...
 ```
 
-### Beliefs (Guiding Principles/Mental Models)
-Beliefs notes capture highly trusted, semi-permanent ideas, frameworks, and principles that shape Justin's product management playbook or personal standards. Mature beliefs follow the structured format formalized in `Willpower is limited 20250626165159.md`:
+### Beliefs (Evolved Concepts/Thoughts)
+Beliefs are *evolved* concepts / thoughts — things that are durably true and that shape what Justin does and how he sees the world. Mature beliefs follow the structured format formalized in `Willpower is limited 20250626165159.md`:
 
 ```markdown
 ---

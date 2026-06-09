@@ -35,7 +35,7 @@ python3 ~/.hermes/scripts/semantic_pointer.py index
 ```
 
 ### 2. On-Demand Historical Bridging (Thought/Belief Backlinking)
-Finds the most semantically relevant archived Tier 1 logs (Meetings, Readings, Slack, Daily Notes) from the past, and appends/updates them under a clean `## Related Logs` header at the end of a newly drafted Thought or Belief note.
+Finds the most semantically relevant archived Tier 1 logs (Meetings, Sources, Slack, Daily Notes) from the past, and appends/updates them under a clean `## Related Logs` header at the end of a newly drafted Thought or Belief note.
 ```bash
 # Preview matches only
 python3 ~/.hermes/scripts/semantic_pointer.py bridge "vault/Notes/Target Note.md" --limit 5

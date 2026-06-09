@@ -21,13 +21,13 @@ This skill governs the conventions for link directions and relationship structur
 ---
 
 ## Note Tier Hierarchy
-Justin's notes are organized into a hierarchy of permanence and synthesis. Chronological logs (including Daily Notes, Meetings, and Readings) are treated as Tier 1 raw inputs. Links should flow **from less-permanent notes to more-permanent notes** (pointing upwards in synthesis):
+Justin's notes are organized into a hierarchy of permanence and synthesis. Chronological logs (including Daily Notes, Meetings, and Sources) are treated as Tier 1 raw inputs. Links should flow **from less-permanent notes to more-permanent notes** (pointing upwards in synthesis):
 
 ```
 +--------------------------------------------+
 |  Tier 1 (Raw/Ephemeral Inputs / Logs)      |
-|  - Notes, Sources, Decisions, Memories,     |
-|    Daily Notes, Meetings, Readings         |
+|  - Notes, Concepts, Decisions, Memories,    |
+|    Daily Notes, Meetings, Sources          |
 +---------------------+----------------------+
                       | (can link to other Tier 1 notes
                       |  or pointing UPWARDS to T2 / T3)
@@ -47,7 +47,7 @@ Justin's notes are organized into a hierarchy of permanence and synthesis. Chron
 
 ### The Rules of Link Direction
 
-1. **Tier 1 (Notes, Sources, Decisions, Memories, Daily Notes, Meetings, Readings):**
+1. **Tier 1 (Notes, Concepts, Decisions, Memories, Daily Notes, Meetings, Sources):**
    - Can link to **one another** (e.g., a Decision linking to a Source, or a Daily Note linking to a Note).
    - Can link to **any note below** in the hierarchy (Thoughts and Beliefs).
 2. **Tier 2 (Thoughts):**
@@ -68,7 +68,7 @@ Justin's notes are organized into a hierarchy of permanence and synthesis. Chron
 Rather than manually updating a high-level Thought or Belief to list all resources, events, or decisions associated with it:
 - Link *from* the specific Tier 1 note (e.g., a meeting log or reading clipping) *to* the high-level Thought/Belief.
 - Use Obsidian's **Backlinks Pane** on the Thought or Belief note to view the chronological evolution of that idea over time.
-- **Timeline Ordering:** No date prefixes or timestamps are required in the filenames of Tier 1 notes (Notes, Sources, Decisions, Memories) to maintain a chronological timeline. Instead, rely entirely on Obsidian's native **Backlinks pane sorting** (e.g., sorting the list by "Created time" or "Modified time") to view the chronological progression of ideas over time. This preserves clean, normal-spaced capitalized titles across the entire vault without sacrificing the temporal view.
+- **Timeline Ordering:** No date prefixes or timestamps are required in the filenames of Tier 1 notes (Notes, Concepts, Decisions, Memories) to maintain a chronological timeline. Instead, rely entirely on Obsidian's native **Backlinks pane sorting** (e.g., sorting the list by "Created time" or "Modified time") to view the chronological progression of ideas over time. This preserves clean, normal-spaced capitalized titles across the entire vault without sacrificing the temporal view.
 
 ### 2. Low-Friction Writing
 - It is always easier to link *from* what you are currently writing (the context of today's work or a newly encountered source) *to* a pre-existing stable concept. You do not need to interrupt your flow to edit a long-standing permanent note.
@@ -129,7 +129,7 @@ The Semantic Pointer is a high-performance, lightweight local semantic memory ut
 ### Key Workflows
 
 #### 1. On-Demand Historical Bridging
-When writing or reviewing a Tier 2 Thought or Tier 3 Belief note, use the Semantic Pointer to retroactively scan older Tier 1 logs (Meetings, Readings, Slack, Daily Notes) and automatically append/update a clean, markdown-compliant `## Related Logs` block at the bottom of the note:
+When writing or reviewing a Tier 2 Thought or Tier 3 Belief note, use the Semantic Pointer to retroactively scan older Tier 1 logs (Meetings, Sources, Slack, Daily Notes) and automatically append/update a clean, markdown-compliant `## Related Logs` block at the bottom of the note:
 ```bash
 python3 ~/.hermes/scripts/semantic_pointer.py bridge "vault/Notes/Target Note.md" --limit 5 --commit
 ```

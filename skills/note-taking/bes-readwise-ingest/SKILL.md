@@ -1,6 +1,6 @@
 ---
 name: bes-readwise-ingest
-description: Sync and ingest highlights from books, articles, or papers tagged 'vault' in Readwise into vault/Logs/Readings/.
+description: Sync and ingest highlights from books, articles, or papers tagged 'vault' in Readwise into vault/Logs/Sources/.
 version: 1.0.0
 author: Bes
 license: MIT
@@ -12,7 +12,7 @@ metadata:
 
 # Bes Readwise Ingest
 
-Pulls book highlights, web clips, and article annotations from your Readwise account and formats them into clean markdown reading records inside `/home/justin.guest/vault/Logs/Readings/`.
+Pulls book highlights, web clips, and article annotations from your Readwise account and formats them into clean markdown reading records inside `/home/justin.guest/vault/Logs/Sources/`.
 
 ## Trigger & Filter
 *   **Trigger:** Triggered automatically or via running the sync script.
@@ -26,7 +26,7 @@ The sync is driven by the sync script located at your home directory:
 
 ---
 
-## Readings Log Note Structure
+## Sources Log Note Structure
 
 Every Readwise synced reading note must strictly adhere to the following template:
 
@@ -34,7 +34,7 @@ Every Readwise synced reading note must strictly adhere to the following templat
 ---
 id: 'YYYYMMDDHHmmss'                 # Single-quoted string matching latest highlight's timestamp
 daily_note: "[[Daily Notes/YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]" # Standardized symmetrical daily note link
-category: "[[Readings]]"             # Quoted category wikilink
+category: "[[Sources]]"             # Quoted category wikilink
 ---
 ```
 

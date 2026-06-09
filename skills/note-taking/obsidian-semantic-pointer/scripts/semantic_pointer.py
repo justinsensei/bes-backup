@@ -467,7 +467,7 @@ def run_historical_bridge(target_file, limit=5, commit=False):
     target_emb_bytes = cursor.fetchone()[0]
     
     # We want to search for similarity ONLY across Tier 1 logs:
-    # Categories: "Meetings", "Readings", "Slack", "Daily Notes" or starting with "Logs/" or "Daily Notes/"
+    # Categories: "Meetings", "Sources", "Slack", "Daily Notes" or starting with "Logs/" or "Daily Notes/"
     # We find the top semantically dense historical matches.
     cursor.execute("""
         select 
@@ -477,7 +477,7 @@ def run_historical_bridge(target_file, limit=5, commit=False):
             vec_distance_cosine(v.embedding, ?) as distance
         from vec_documents v
         join document_cache d on v.document_path = d.path
-        where d.category in ('Meetings', 'Readings', 'Slack', 'Daily Notes')
+        where d.category in ('Meetings', 'Sources', 'Slack', 'Daily Notes')
           and d.path != ?
         order by distance
         limit ?

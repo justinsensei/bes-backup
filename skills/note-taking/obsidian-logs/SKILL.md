@@ -31,8 +31,8 @@ This skill governs the structure and navigation of chronological log notes, poin
   - Synced automatically from forwarded emails or email digests (`category: "[[Emails]]"`)
 - **Slack Directory:** `/home/justin.guest/vault/Logs/Slack/`
   - Synced automatically from captured Slack discussions or brain-dumps (`category: "[[Slack]]"`)
-- **Readings Directory:** `/home/justin.guest/vault/Logs/Readings/`
-  - Synced automatically via `sync_readwise.py` (`category: "[[Readings]]"`)
+- **Sources Directory:** `/home/justin.guest/vault/Logs/Sources/`
+  - Synced automatically via `sync_readwise.py` (`category: "[[Sources]]"`)
 
 ---
 
