@@ -1,7 +1,10 @@
 ---
 name: obsidian-manage-categories
-description: Add or delete entity categories in Justin's Obsidian vault. Covers creating/removing category notes and templates, and keeping vault notes consistent.
+description: Add or delete entity categories in Justin's Obsidian vault under the June 2026 taxonomy. Covers creating/removing category notes, folder-routing Type properties, and keeping vault notes consistent.
 platforms: [linux]
+metadata:
+  hermes:
+    related_skills: [obsidian]
 ---
 
 # Obsidian: Manage Categories
@@ -16,7 +19,6 @@ platforms: [linux]
 
 - Vault root: `/home/justin.guest/vault`
 - Category notes: `<vault>/Utilities/Categories/<CategoryName>.md`
-- Templates: `<vault>/Utilities/Templates/`
 
 ---
 
@@ -26,46 +28,44 @@ platforms: [linux]
 
 File: `<vault>/Utilities/Categories/<CategoryName>.md`
 
-```yaml
+Format:
+```markdown
 ---
 id: "YYYYMMDDHHmmss"
 daily_note: "[[YYYY-MM-DD dddd]]"
+category: "[[Categories]]"
 ---
 # <CategoryName>
 Type: <Folder>
 
-<Description>
+<Brief description of what goes in this category>
 ```
 
-Use the current wall-clock time for `id` and `daily_note`. The body must contain the H1 title of the category, followed by `Type: <Folder>` (where `<Folder>` is Contacts, Notes, Logs, or Utilities), and the category description.
-<Description>
-```
+- Use the current wall-clock time for `id` and `daily_note`.
+- Always set the `Type: <Folder>` property on line 6 (e.g. `Type: Contacts`, `Type: Notes`, or `Type: Logs`), where `<Folder>` is the capitalized root-level folder where notes of this category belong.
+- No other body content unless Justin provides some.
 
-Use the current wall-clock time for `id` and `daily_note`. Indicate the hierarchy if there is a parent or subcategories.
+### Step 2 — Offer a vault scan
 
-### Step 2 — Create the template (if applicable)
-
-If a specialized template is needed for notes in this category, copy the closest baseline template in `Utilities/Templates/` (such as `new_note.md` or `daily_note.md`) using programmatic file-copying tools rather than shell redirection to avoid Templater syntax escaping issues:
-
-```bash
-rm "/home/justin.guest/vault/Utilities/Categories/<CategoryName>.md"
-rm "/home/justin.guest/vault/Utilities/Templates/new_<category_name>.md"
-```
+After creating the category file, ask Justin:
 
 > Want me to scan the vault for notes that might belong in [[<CategoryName>]]?
 
-If yes, surface candidate notes that lack a `category:` field or have a different one and semantically match the new category. Present as candidates — do not modify anything without explicit approval.
+If yes, search for candidate notes that lack a `category:` field or have a different one and semantically match the new category. Present as candidates — do not modify anything without explicit approval.
 
 ---
 
-### Step 2 — Create the template (if applicable)
+## Deleting a category
 
-If a specialized template is needed for notes in this category, copy the closest baseline template in `Utilities/Templates/` (such as `new_note.md` or `daily_note.md`) using programmatic file-copying tools rather than shell redirection to avoid Templater syntax escaping issues:
+### Step 1 — Remove the category note
 
 ```bash
 rm "/home/justin.guest/vault/Utilities/Categories/<CategoryName>.md"
-rm "/home/justin.guest/vault/Utilities/Templates/new_<category_name>.md"
 ```
+
+### Step 2 — Strip the category value from vault notes
+
+Search for all notes that reference the deleted category:
 
 ```bash
 grep -rl 'category:.*\[\[<CategoryName>\]\]' /home/justin.guest/vault --include="*.md"
@@ -83,7 +83,8 @@ Use `patch` for targeted edits. Review the full list of affected notes before ma
 
 ## Pitfalls
 
-- Do NOT use Templater syntax in category notes — resolve timestamps to literal values.
-- Template files DO use Templater syntax — copy from an existing template rather than writing from scratch.
-- Category note filename is just the category name (e.g., `Resources.md`), no timestamp. Category notes must reside under `Utilities/Categories/` and carry a `Type: <Folder>` property inside the body defining their parent folder.
+- Do NOT use Templater syntax in category notes — resolve timestamps and dates to literal values.
+- Do NOT create category-specific templates anymore. Justin has consolidated and simplified templates to: `daily_note.md`, `new_note.md`, and `new_meeting.md` in `Utilities/Templates/`. New manual notes utilize the generic `new_note.md` template.
+- Category notes always belong to the `[[Categories]]` category (with `Type: Utilities`), which makes the `Categories.md` note itself self-referential.
+- Category note filename is just the category name (e.g. `People.md`, `Daily Notes.md`), spaced-capitalized and matching the category wikilink.
 - Do not run git commands on the vault; `bes-vault-sync` auto-commits.
