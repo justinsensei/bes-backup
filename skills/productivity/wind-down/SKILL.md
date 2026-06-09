@@ -117,9 +117,9 @@ Review persistent reference sources, articles, or transcripts added or updated t
 
 ---
 
-### Phase 4 — Tomorrow's Calendar Preview
+### Phase 4 — Tomorrow's Calendar Preview & Close-out
 
-Preview tomorrow's schedule to establish mental readiness and coordinate upcoming tasks.
+Preview tomorrow's schedule to establish mental readiness, coordinate upcoming tasks, and close out the day.
 
 1. **Fetch Tomorrow's Schedule:**
    - Calculate tomorrow's local date.
@@ -135,25 +135,10 @@ Preview tomorrow's schedule to establish mental readiness and coordinate upcomin
      - Back-to-back blocks or intense scheduling.
      - High-prep meetings or external attendees.
      - First event of the day (so he knows when his morning starts).
-   - **Wait for Justin's acknowledgment.**
 
----
-
-### Phase 5 — Kick off Gbrain Dream Cycle
-
-The final phase starts the automated overnight consolidation, keeping the "second brain" sharp.
-
-1. **Launch the Dream Cycle:**
-   - Inform Justin that you are kicking off the overnight maintenance run.
-   - Run the nightly dream cycle shell script in the background:
-     ```bash
-     bash ~/.hermes/scripts/dream_cycle.sh &
-     ```
-   - Confirm to Justin:
-     *"Overnight dream cycle is kicked off. It will run through entity sweeps, citation audits, and cross-session memory consolidation while you sleep."*
-
-2. **Close out:**
-   - End with a quiet, minimal sign-off (e.g., *"Have a good evening, Justin. See you tomorrow."*).
+3. **Close out:**
+   - Ask for Justin's acknowledgment.
+   - Once acknowledged, end with a quiet, minimal sign-off (e.g., *"Have a good evening, Justin. See you tomorrow."*).
 
 ---
 
