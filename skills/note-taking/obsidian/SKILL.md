@@ -13,7 +13,7 @@ metadata:
 # Obsidian: Core Vault Conventions & Triage Routing
 
 ## Overview
-This is the foundational skill for interacting with Justin's Obsidian vault. It defines paths, general note-creation rules, frontmatter fields, standard formatting conventions, and global note-triage routing rules. Interactive synthesis filing (durable Q&A answers) → `llm-wiki` integrate-query.
+This is the foundational skill for interacting with Justin's Obsidian vault. It defines paths, general note-creation rules, frontmatter fields, standard formatting conventions, and global note-triage routing rules. Interactive synthesis filing (durable Q&A answers) → `llm-wiki` integrate-query (saved to `inbox/` on creation).
 
 ---
 
