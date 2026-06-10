@@ -18,7 +18,7 @@ Scraps (ID) default under the vault root (/) as scratchpad. Notes are factual su
 §
 Any new contact (people or companies) created by Bes must land in /home/justin.guest/vault/inbox/. Existing contacts in Notes/Contacts/ are updated in place and never relocated.
 §
-Vault signals scan script (check_vault_signals.py) is read-only. Timelines are disabled in favor of native Obsidian Backlinks.
+Timelines are disabled in favor of native Backlinks. check_vault_signals.py is read-only, and integrate_entities.py only updates project State on decisions.
 §
 Query syntheses → inbox/ on creation via llm-wiki, printed in channel, log.md append.
 §
