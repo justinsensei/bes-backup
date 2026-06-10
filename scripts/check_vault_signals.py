@@ -304,6 +304,32 @@ def scan_file_for_unresolved_links(file_path, content, entities, vault_path, all
             
     return discovered
 
+def scan_file_for_ambiguous_mentions(file_path, content, entities, key_to_paths, ambiguous_keys, vault_path):
+    discovered = []
+    
+    # Remove pre-existing links to avoid matching inside brackets
+    content_no_links = re.sub(r'\[\[([^\]]+)\]\]', r'\1', content)
+    
+    for key in ambiguous_keys:
+        # Ignore very short/junk keys
+        if len(key.strip()) < 2 or not re.search(r'[a-zA-Z0-9]', key):
+            continue
+            
+        pattern = rf'\b{re.escape(key)}\b'
+        if re.search(pattern, content_no_links, re.IGNORECASE):
+            # Resolve candidates: names of files that share this alias
+            paths = key_to_paths[key.lower()]
+            candidates = []
+            for p in paths:
+                candidates.append(os.path.basename(p)[:-3])
+            
+            discovered.append({
+                "alias": key,
+                "context_file": os.path.relpath(file_path, vault_path),
+                "candidates": sorted(list(set(candidates)))
+            })
+    return discovered
+
 def main():
     vault_path = os.environ.get('OBSIDIAN_VAULT_PATH', '/home/justin.guest/vault')
     now_dt = datetime.now()
