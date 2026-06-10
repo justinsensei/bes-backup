@@ -1,7 +1,7 @@
 ---
 name: obsidian-people
-description: Use when creating or updating contact notes representing individual people (family, friends, colleagues) under Contacts/ with category "[[People]]".
-version: 1.0.0
+description: Use when creating or updating contact notes representing individual people (family, friends, colleagues) under Contacts/ or inbox/ with category "[[People]]".
+version: 1.1.0
 author: Bes
 license: MIT
 metadata:
@@ -18,7 +18,8 @@ This skill governs the structure and standard templates for individual person no
 ---
 
 ## Folder & Category
-- **Directory:** `/home/justin.guest/vault/Contacts/`
+- **New Contacts Landing Directory:** `/home/justin.guest/vault/inbox/`
+- **Permanent Directory:** `/home/justin.guest/vault/Contacts/`
 - **Category link:** `category: "[[People]]"`
 
 ---
@@ -26,7 +27,9 @@ This skill governs the structure and standard templates for individual person no
 ## Creation and Update Workflow
 
 ### Step 1 — Check for Duplicates
-Always search `/Contacts/` by name, first name, or common alias before writing a new note. Update the existing note rather than making a duplicate.
+Always search both `/Contacts/` and `/inbox/` by name, first name, or common alias before writing a new note.
+- If the note already exists in either folder, update the existing note in-place.
+- If the note does not exist anywhere, create a brand-new note in `/home/justin.guest/vault/inbox/`.
 
 ### Step 2 — Filename
 Use the normal capitalized, spaced full name as the filename:
