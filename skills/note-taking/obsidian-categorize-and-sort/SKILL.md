@@ -1,13 +1,30 @@
 ---
 name: obsidian-categorize-and-sort
-description: Use when triaging, organizing, or sorting legacy or incoming notes in Justin's vault by determining categories, updating frontmatter, and relocating files.
+description: Use when triaging, organizing, or sorting legacy or incoming notes in
+  Justin's vault by determining categories, updating frontmatter, and relocating files.
 version: 2.0.1
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, operations, triage, sorting, taxonomy]
-    related_skills: [obsidian, obsidian-people, obsidian-organizations, obsidian-daily-notes, obsidian-meetings, obsidian-decisions, obsidian-thoughts-beliefs, obsidian-projects, obsidian-references-sources]
+    tags:
+    - obsidian
+    - operations
+    - triage
+    - sorting
+    - taxonomy
+    related_skills:
+    - obsidian
+    - obsidian-people
+    - obsidian-organizations
+    - obsidian-daily-notes
+    - obsidian-meetings
+    - obsidian-decisions
+    - obsidian-thoughts-beliefs
+    - obsidian-projects
+    - obsidian-references-sources
+platforms:
+- linux
 ---
 
 # Obsidian Operation: Categorize and Sort Notes
@@ -50,7 +67,7 @@ Once the category is identified:
 ### Step 3 — Move the File to its Target Folder
 Identify the target folder from the table above. If the folder is different from the file's current folder (such as moving a note to `Notes/Projects/`), move the file using the filesystem.
 ```bash
-mv "/home/justin.guest/vault/Notes/Some Project.md" "/home/justin.guest/vault/Notes/Projects/Some Project.md"
+mv "${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Notes/Some Project.md" "${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Notes/Projects/Some Project.md"
 ```
 *Note: Always verify or create the target directory using `mkdir -p` before moving.*
 
@@ -109,3 +126,8 @@ When performing large-scale triage or backlog classification sweeps (e.g., in ba
 - **Leaking Inbox:** Do not leave notes in `inbox/` once categorized. All processed notes must reside in their taxonomy folders.
 - **Ephemeral Project Guides as References:** Do not categorize temporary checklists or migration guides tied to a specific project as `[[References]]`. References are reserved for permanent, long-term lookup documents. Project-bound checklists/guides belong under `[[Notes]]` or `[[Projects]]`.
 - **Links Verification:** moves are generally safe since Obsidian auto-resolves links by note name regardless of folder structure.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

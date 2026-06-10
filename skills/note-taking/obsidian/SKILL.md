@@ -1,13 +1,30 @@
 ---
 name: obsidian
-description: Core settings, paths, frontmatter schemas, baseline conventions, and note triage/sorting mapping rules for Justin's Obsidian vault.
+description: Use when working with obsidian. Core settings, paths, frontmatter schemas,
+  baseline conventions, and note triage/sorting mapping rules for Justin's Obsidian
+  vault.
 version: 1.4.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, core, conventions, paths, frontmatter, triage, sorting]
-    related_skills: [obsidian-contacts, obsidian-notes, obsidian-logs, obsidian-utilities]
+    tags:
+    - obsidian
+    - core
+    - conventions
+    - paths
+    - frontmatter
+    - triage
+    - sorting
+    related_skills:
+    - obsidian-people
+    - obsidian-organizations
+    - obsidian-notes
+    - obsidian-logs
+    - obsidian-utilities
+    - obsidian-hygiene
+platforms:
+- linux
 ---
 
 # Obsidian: Core Vault Conventions & Triage Routing
@@ -18,8 +35,8 @@ This is the foundational skill for interacting with Justin's Obsidian vault. It 
 ---
 
 ## Vault Path
-- Vault root directory: `/home/justin.guest/vault`
-- Environmental variable: `OBSIDIAN_VAULT_PATH` set in `~/.hermes/.env` (resolves to `/home/justin.guest/vault` inside VM).
+- Vault root directory: `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}`
+- Environmental variable: `OBSIDIAN_VAULT_PATH` set in `~/.hermes/.env` (resolves to `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}` inside VM).
 
 ---
 
@@ -91,5 +108,14 @@ Notes are categorized with a single `category` YAML property containing a quoted
 
 ---
 
-## Linked Utility Scripts
-- **`scripts/heal_wikilinks.py`:** Statically re-runnable python script to scan the entire vault, identify base-filename collisions, and automatically heal/simplify any full-path wikilinks down to clean shortest-path wikilinks. Runs completely dynamically and safely.
+## Linked skills for wikilink hygiene
+- Use `obsidian-suggest-links` and `obsidian-hygiene` for wikilink cleanup and vault maintenance. Follow shortest-path wikilink rules in this skill.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

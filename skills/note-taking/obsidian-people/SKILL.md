@@ -1,13 +1,22 @@
 ---
 name: obsidian-people
-description: Use when creating or updating contact notes representing individual people (family, friends, colleagues) under Contacts/ or inbox/ with category "[[People]]".
+description: Use when creating or updating contact notes representing individual people
+  (family, friends, colleagues) under Contacts/ or inbox/ with category "[[People]]".
 version: 1.1.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, contacts, people, biography]
-    related_skills: [obsidian, obsidian-contacts]
+    tags:
+    - obsidian
+    - contacts
+    - people
+    - biography
+    related_skills:
+    - obsidian
+    - obsidian-contacts
+platforms:
+- linux
 ---
 
 # Obsidian: People Contacts Management
@@ -18,8 +27,8 @@ This skill governs the structure and standard templates for individual person no
 ---
 
 ## Folder & Category
-- **New Contacts Landing Directory:** `/home/justin.guest/vault/inbox/`
-- **Permanent Directory:** `/home/justin.guest/vault/Contacts/`
+- **New Contacts Landing Directory:** `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/inbox/`
+- **Permanent Directory:** `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Contacts/`
 - **Category link:** `category: "[[People]]"`
 
 ---
@@ -28,9 +37,9 @@ This skill governs the structure and standard templates for individual person no
 
 ### Step 1 — Check for Duplicates
 Always search both `/Contacts/` and `/inbox/` by name, first name, or common alias before writing a new note.
-- **Relocation Boundary**: Only brand-new contacts created by Bes should land in `/home/justin.guest/vault/inbox/`. Never relocate or move existing contact notes already in `/home/justin.guest/vault/Contacts/` (created by Justin or prior processes) to the inbox. Always update them in-place.
+- **Relocation Boundary**: Only brand-new contacts created by Bes should land in `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/inbox/`. Never relocate or move existing contact notes already in `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Contacts/` (created by Justin or prior processes) to the inbox. Always update them in-place.
 - If the note already exists in either folder, update the existing note in-place in its current folder.
-- If the note does not exist anywhere, create a brand-new note in `/home/justin.guest/vault/inbox/`.
+- If the note does not exist anywhere, create a brand-new note in `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/inbox/`.
 
 ### Step 2 — Filename
 Use the normal capitalized, spaced full name as the filename:
@@ -72,3 +81,12 @@ Use the standard personal profile layout to compile a single, scannable source o
 - Read the existing file first to preserve layout.
 - Insert the new event chronologically at the top of the `## Timeline` section.
 - Keep the `Executive summary` and `State` fields up to date with any newly learned facts.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

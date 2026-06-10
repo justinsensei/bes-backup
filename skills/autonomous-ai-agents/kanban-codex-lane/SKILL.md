@@ -1,13 +1,26 @@
 ---
 name: kanban-codex-lane
-description: Use when a Hermes Kanban worker wants to run Codex CLI as an isolated implementation lane while Hermes keeps ownership of task lifecycle, reconciliation, testing, and handoff.
+description: Use when a Hermes Kanban worker wants to run Codex CLI as an isolated
+  implementation lane while Hermes keeps ownership of task lifecycle, reconciliation,
+  testing, and handoff.
 version: 1.0.0
 author: Hermes Agent
 license: MIT
 metadata:
   hermes:
-    tags: [kanban, codex, worktrees, autonomous-agents, prediction-market-bot]
-    related_skills: [kanban-worker, codex, hermes-agent]
+    tags:
+    - kanban
+    - codex
+    - worktrees
+    - autonomous-agents
+    - prediction-market-bot
+    related_skills: []
+    external_related_skills:
+    - kanban-worker
+    - codex
+    - hermes-agent
+platforms:
+- linux
 ---
 
 # Kanban Codex Lane

@@ -1,15 +1,25 @@
 ---
 name: imessage
-description: Read recent iMessages from a Justin-curated allowlist of 13 chats via SSH proxy to the Mac Mini host. Read-only; cannot send.
+description: Use when working with imessage. Read recent iMessages from a Justin-curated
+  allowlist of 13 chats via SSH proxy to the Mac Mini host. Read-only; cannot send.
 version: 2.0.0
 author: Hermes Agent (Bes customization)
 license: MIT
-platforms: [linux]
+platforms:
+- linux
 metadata:
   hermes:
-    tags: [iMessage, SMS, messaging, macOS, Apple, read-only, ssh-proxy]
+    tags:
+    - iMessage
+    - SMS
+    - messaging
+    - macOS
+    - Apple
+    - read-only
+    - ssh-proxy
 prerequisites:
-  commands: [ssh]
+  commands:
+  - ssh
 ---
 
 # iMessage (Bes — Read-Only Proxy)
@@ -174,3 +184,12 @@ mention Sunday in the Nana & Rosa or Nana & Kathy threads in the last 7 days."
 
 - The wrapper logs every access to `~/.local/share/bes/imsg/access.log` on the host. Justin can audit what Bes pulled and when.
 - Identical proxy pattern could be extended to other host-only macOS tools (Apple Notes via memo CLI, Apple Reminders via remindctl, FindMy, etc.) — same forced-command + allowlist shape. See `references/readonly-proxy-pattern.md` if it exists in this skill dir, otherwise extrapolate from `bes-imsg.sh` on the host.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

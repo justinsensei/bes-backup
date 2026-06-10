@@ -1,13 +1,23 @@
 ---
 name: obsidian-projects
-description: Use when creating or recording active projects, personal or team milestones, trips, or travel plans under Notes/ with category "[[Projects]]".
+description: Use when creating or recording active projects, personal or team milestones,
+  trips, or travel plans under Notes/ with category "[[Projects]]".
 version: 1.0.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, notes, projects, travel, milestones]
-    related_skills: [obsidian, obsidian-notes]
+    tags:
+    - obsidian
+    - notes
+    - projects
+    - travel
+    - milestones
+    related_skills:
+    - obsidian
+    - obsidian-notes
+platforms:
+- linux
 ---
 
 # Obsidian: Projects & Travel Hubs
@@ -18,7 +28,7 @@ This skill governs notes that act as central hubs for ongoing work initiatives, 
 ---
 
 ## Folder & Category
-- **Directory:** `/home/justin.guest/vault/Notes/Projects/`
+- **Directory:** `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Notes/Projects/`
 - **Category link:** `category: "[[Projects]]"`
 
 ---
@@ -64,3 +74,12 @@ status: Active # Active, Inactive
 - **Casing and Sync Alignment:** Match project names exactly with external task trackers (e.g. Todoist project names). Capitalize proper nouns, acronyms, and specific names (e.g. `ADHD Treatment 2026`, `AI Agents 2026 H1`, `B2C`, `K12`, `Emerald Isle 2026`), but keep general common words lowercase/sentence-case (e.g., `Ascend membership`, `B2C expansion strategy`, `K12 special ed strategy`, `Migrating old notes`).
 - Avoid blanket Title Case capitalization that could break synchronization with external lists.
 - Never prefix with dates/timestamps.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

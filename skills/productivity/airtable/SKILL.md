@@ -1,16 +1,26 @@
 ---
 name: airtable
-description: Airtable REST API via curl. Records CRUD, filters, upserts.
+description: Use when working with airtable. Airtable REST API via curl. Records CRUD,
+  filters, upserts.
 version: 1.1.0
 author: community
 license: MIT
-platforms: [linux, macos, windows]
+platforms:
+- linux
+- macos
+- windows
 prerequisites:
-  env_vars: [AIRTABLE_API_KEY]
-  commands: [curl]
+  env_vars:
+  - AIRTABLE_API_KEY
+  commands:
+  - curl
 metadata:
   hermes:
-    tags: [Airtable, Productivity, Database, API]
+    tags:
+    - Airtable
+    - Productivity
+    - Database
+    - API
     homepage: https://airtable.com/developers/web/api/introduction
 ---
 
@@ -195,8 +205,8 @@ while :; do
   URL="https://api.airtable.com/v0/$BASE_ID/$TABLE?pageSize=100"
   [ -n "$OFFSET" ] && URL="$URL&offset=$OFFSET"
   RESP=$(curl -s "$URL" -H "Authorization: Bearer $AIRTABLE_API_KEY")
-  echo "$RESP" | python3 -c 'import json,sys; d=json.load(sys.stdin); [print(r["id"], r["fields"].get("Name","")) for r in d["records"]]'
-  OFFSET=$(echo "$RESP" | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d.get("offset",""))')
+  echo "$RESP" | jq -r '.records[] | "\(.id) \(.fields.Name // "")"'
+  OFFSET=$(echo "$RESP" | jq -r '.offset // empty')
   [ -z "$OFFSET" ] && break
 done
 ```
@@ -227,3 +237,12 @@ done
 - **Pretty-print with `jq .`** (always present) rather than `jq` (optional). Only reach for `jq` when you need filtering/projection.
 - **Pagination is per-page, not global.** Airtable's 100-record cap is a hard limit; there is no way to bump it. Loop with `offset` until the field is absent.
 - **Read the `errors` array** on non-2xx responses — Airtable returns structured error codes like `AUTHENTICATION_REQUIRED`, `INVALID_PERMISSIONS`, `MODEL_ID_NOT_FOUND`, `INVALID_MULTIPLE_CHOICE_OPTIONS` that tell you exactly what's wrong.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

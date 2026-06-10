@@ -1,13 +1,20 @@
 ---
 name: baoyu-article-illustrator
-description: "Article illustrations: type × style × palette consistency."
+description: 'Use when working with baoyu article illustrator. Article illustrations:
+  type × style × palette consistency.'
 version: 1.57.0
 author: 宝玉 (JimLiu)
 license: MIT
-platforms: [linux, macos, windows]
+platforms:
+- linux
+- macos
+- windows
 metadata:
   hermes:
-    tags: [article-illustration, creative, image-generation]
+    tags:
+    - article-illustration
+    - creative
+    - image-generation
     category: creative
     homepage: https://github.com/JimLiu/baoyu-skills#baoyu-article-illustrator
 ---
@@ -205,3 +212,12 @@ Images: X/N generated
 5. **`image_generate` aspect ratios** — the tool supports `landscape`, `portrait`, and `square`. Custom ratios map to the nearest option.
 6. **`image_generate` returns a URL, not a local file** — always download via `terminal` (`curl`) before inserting local image paths into the article.
 7. **No backend selection from the agent** — `image_generate` uses whatever model the user configured (default: FAL FLUX 2 Klein 9B). Don't write `"use <model> to generate this"` into prompts expecting it to route.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

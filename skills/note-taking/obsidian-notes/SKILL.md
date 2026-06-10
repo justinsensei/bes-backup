@@ -1,13 +1,25 @@
 ---
 name: obsidian-notes
-description: Use when managing the Notes/ directory, conceptual mapping, and coordinating Thoughts, Beliefs, Decisions, Projects, References, and Concepts categories.
+description: Use when managing the Notes/ directory, conceptual mapping, and coordinating
+  Thoughts, Beliefs, Decisions, Projects, References, and Concepts categories.
 version: 1.0.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, notes, folder-conventions]
-    related_skills: [obsidian, obsidian-thoughts-beliefs, obsidian-decisions, obsidian-projects, obsidian-references-sources, obsidian-graph-enrichment]
+    tags:
+    - obsidian
+    - notes
+    - folder-conventions
+    related_skills:
+    - obsidian
+    - obsidian-thoughts-beliefs
+    - obsidian-decisions
+    - obsidian-projects
+    - obsidian-references-sources
+    - obsidian-graph-enrichment
+platforms:
+- linux
 ---
 
 # Obsidian Type: Notes Directory Conventions
@@ -18,7 +30,7 @@ This skill governs the physical structure and coordinate mapping of the `/Notes/
 ---
 
 ## Directory & Sub-skills
-- **Directory:** `/home/justin.guest/vault/Notes/`
+- **Directory:** `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Notes/`
 - **Sub-skills (Categories):**
   - **`obsidian-thoughts-beliefs`**: For raw reflections or core principles (`category: "[[Thoughts]]"` or `category: "[[Beliefs]]"`).
   - **`obsidian-decisions`**: For trade-offs, architecture decisions, and reasoning logs (`category: "[[Decisions]]"`).
@@ -46,3 +58,12 @@ As notes become less ephemeral and more authoritative, we de-emphasize the date 
 
 ### Aliases
 - Ensure complex, conceptual, or heavily-referenced notes define clean `aliases:` lists in their YAML frontmatter. This allows effortless wikilinking without typing the full exact title every time.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

@@ -1,16 +1,30 @@
 ---
 name: pixel-art
-description: "Pixel art w/ era palettes (NES, Game Boy, PICO-8)."
+description: Use when working with pixel art. Pixel art w/ era palettes (NES, Game
+  Boy, PICO-8).
 version: 2.0.0
 author: dodo-reach
 license: MIT
-platforms: [linux, macos, windows]
+platforms:
+- linux
+- macos
+- windows
 metadata:
   hermes:
-    tags: [creative, pixel-art, arcade, snes, nes, gameboy, retro, image, video]
+    tags:
+    - creative
+    - pixel-art
+    - arcade
+    - snes
+    - nes
+    - gameboy
+    - retro
+    - image
+    - video
     category: creative
     credits:
-      - "Hardware palettes and animation loops ported from Synero/pixel-art-studio (MIT) — https://github.com/Synero/pixel-art-studio"
+    - Hardware palettes and animation loops ported from Synero/pixel-art-studio (MIT)
+      — https://github.com/Synero/pixel-art-studio
 ---
 
 # Pixel Art
@@ -216,3 +230,12 @@ Quantizing before would waste error-diffusion on detail that disappears.
 Named hardware palettes and the procedural animation loops in `pixel_art_video.py`
 are ported from [pixel-art-studio](https://github.com/Synero/pixel-art-studio)
 (MIT). See `ATTRIBUTION.md` in this skill directory for details.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

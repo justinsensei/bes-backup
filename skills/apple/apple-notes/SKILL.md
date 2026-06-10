@@ -1,11 +1,20 @@
 ---
 name: apple-notes
-description: "Manage and search your Apple Notes 'filing cabinet' on the macOS host via the secure SSH proxy."
+description: Use when working with apple notes. Manage and search your Apple Notes
+  'filing cabinet' on the macOS host via the secure SSH proxy.
 version: 1.1.0
-platforms: [linux]
+platforms:
+- linux
 metadata:
   hermes:
-    tags: [Notes, Apple, macOS, filing-cabinet, proxy]
+    tags:
+    - Notes
+    - Apple
+    - macOS
+    - filing-cabinet
+    - proxy
+author: Bes
+license: MIT
 ---
 
 # Apple Notes (VM-to-Host Proxy)
@@ -66,4 +75,12 @@ When running manual `ssh mac-host-notes` commands, the SSH protocol flattens the
 - **Fails:** `ssh mac-host-notes list-notes "References/ID Docs"` (remote side sees `"References/ID"` and `"Docs"`)
 - **Succeeds:** `ssh mac-host-notes list-notes "'References/ID Docs'"`
 - **Python usage:** Always use `shlex.quote()` on each argument before passing them to the SSH command list to handle quoting automatically.
+## Common Pitfalls
 
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

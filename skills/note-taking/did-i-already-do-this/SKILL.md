@@ -1,11 +1,21 @@
 ---
 name: did-i-already-do-this
-description: Look up whether Justin has already done something he may have forgotten.
+description: Use when working with did i already do this. Look up whether Justin has
+  already done something he may have forgotten.
 triggers:
-  - "did I already do X"
-  - "have I done X"
-  - "did I send / write / finish / complete X"
-  - "did I ever X"
+- did I already do X
+- have I done X
+- did I send / write / finish / complete X
+- did I ever X
+version: 1.0.0
+author: Bes
+license: MIT
+platforms:
+- linux
+metadata:
+  hermes:
+    tags:
+    - did
 ---
 
 # Did I Already Do This?
@@ -24,3 +34,12 @@ Use `session_search` to scan past conversation transcripts. Useful if the thing 
 ## Notes
 - If nothing turns up in any of the three, say so plainly — don't speculate that it was done.
 - If you find it, report where you found it and any relevant details (date, project, note title).
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

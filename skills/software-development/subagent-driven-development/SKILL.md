@@ -1,14 +1,27 @@
 ---
 name: subagent-driven-development
-description: "Execute plans via delegate_task subagents (2-stage review)."
+description: Use when working with subagent driven development. Execute plans via
+  delegate_task subagents (2-stage review).
 version: 1.1.0
 author: Hermes Agent (adapted from obra/superpowers)
 license: MIT
-platforms: [linux, macos, windows]
+platforms:
+- linux
+- macos
+- windows
 metadata:
   hermes:
-    tags: [delegation, subagent, implementation, workflow, parallel]
-    related_skills: [writing-plans, requesting-code-review, test-driven-development]
+    tags:
+    - delegation
+    - subagent
+    - implementation
+    - workflow
+    - parallel
+    related_skills:
+    - writing-plans
+    external_related_skills:
+    - requesting-code-review
+    - test-driven-development
 ---
 
 # Subagent-Driven Development
@@ -350,3 +363,12 @@ When the orchestration involves significant context usage, long review loops, or
 - **`references/gates-taxonomy.md`** — The four canonical gate types (Pre-flight, Revision, Escalation, Abort) with behavior, recovery, and examples. Load when designing or reviewing any workflow that has validation checkpoints — use the vocabulary explicitly so each gate has defined entry, failure behavior, and resumption rules.
 
 Both references adapted from gsd-build/get-shit-done (MIT © 2025 Lex Christopherson).
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

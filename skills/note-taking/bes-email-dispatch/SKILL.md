@@ -1,12 +1,28 @@
 ---
 name: bes-email-dispatch
-description: Process an email that Justin forwarded to goff.justin+bes@gmail.com — parse the inline instruction (first line of body or subject prefix), turn the email into the right kind of Obsidian artifact (note, Person note update, append to existing note, ad-hoc judgment), and report back to Telegram. Read-only on Gmail.
+description: Use when working with bes email dispatch. Process an email that Justin
+  forwarded to goff.justin+bes@gmail.com — parse the inline instruction (first line
+  of body or subject prefix), turn the email into the right kind of Obsidian artifact
+  (note, Person note update, append to existing note, ad-hoc judgment), and report
+  back to Telegram. Read-only on Gmail.
 version: 1.2.0
-platforms: [linux, macos]
+platforms:
+- linux
+- macos
 metadata:
   hermes:
-    tags: [email, gmail, obsidian, dispatch, polling]
-    related_skills: [google-workspace, obsidian, polling-cron-agent]
+    tags:
+    - email
+    - gmail
+    - obsidian
+    - dispatch
+    - polling
+    related_skills:
+    - google-workspace
+    - obsidian
+    - bes-email-ingest
+author: Bes
+license: MIT
 ---
 
 # Bes Email Dispatch
@@ -48,7 +64,7 @@ If the instruction is empty, has no keywords, or is just "Save as a note", defau
 
 ### Storage Destination
 - Create a new markdown note inside the **`inbox/`** directory of his vault:
-  `/home/justin.guest/vault/inbox/YYYY-MM-DD-subject-slug.md`
+  `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/inbox/YYYY-MM-DD-subject-slug.md`
   *(Where `YYYY-MM-DD` is the current date or forwarded email date, and `subject-slug` is a cleaned, lowercase, hyphen-separated version of the cleaned subject).*
 
 ### Note Structure & Frontmatter
@@ -80,7 +96,7 @@ Below the frontmatter, format the note body cleanly:
 
 ### Storage Destination
 - Create a new markdown note inside the **`Logs/Emails/`** directory of his vault:
-  `/home/justin.guest/vault/Logs/Emails/YYYY-MM-DD - Spaced Subject.md`
+  `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Logs/Emails/YYYY-MM-DD - Spaced Subject.md`
   *(Where `YYYY-MM-DD` is the current date, and `Spaced Subject` is a cleaned, capitalized, spaced version of the subject).*
 
 ### Note Structure & Frontmatter
@@ -126,8 +142,8 @@ Use `mcp_todoist_add_tasks` to add a single task to Justin's Todoist **Inbox** (
 ## Other Intent Shapes (Legacy Support)
 
 If Justin explicitly uses the following phrasing, support these specific paths:
-- **Person note:** *"Person note for <Name>"* or *"<Name> works at <Org>"* → Create a brand-new Person note named `<Capitalized Spaced Full Name>.md` in `/home/justin.guest/vault/inbox/` (or update the existing note in-place if it already exists under `/Contacts/` or `/inbox/`).
-- **Company/Organization note:** *"New company <Name>"*, *"Company note for <Name>"*, or *"<Name> is a new company"* → Create a brand-new Organization note named `<Capitalized Spaced Name>.md` in `/home/justin.guest/vault/inbox/` (or update the existing note in-place if it already exists under `/Contacts/` or `/inbox/`).
+- **Person note:** *"Person note for <Name>"* or *"<Name> works at <Org>"* → Create a brand-new Person note named `<Capitalized Spaced Full Name>.md` in `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/inbox/` (or update the existing note in-place if it already exists under `/Contacts/` or `/inbox/`).
+- **Company/Organization note:** *"New company <Name>"*, *"Company note for <Name>"*, or *"<Name> is a new company"* → Create a brand-new Organization note named `<Capitalized Spaced Name>.md` in `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/inbox/` (or update the existing note in-place if it already exists under `/Contacts/` or `/inbox/`).
 - **Project note:** *"New project <Name>"*, *"Project note for <Name>"*, or *"<Name> is a new project"* → Create `<lowercase-name-slug>.md` under `projects/` using Project formatting (executive summary, Status: Active, and creation Timeline).
 - **Append to existing note:** *"Add to <note title>"*, *"Append to <note title>"*, or *"Add [content] to the <note title> note"* → Find the closest match vault-wide (the user may say "in my inbox" or guess the wrong folder, but the note often resides in its correct MECE directory like `personal/trips/` or `projects/`) and append a dated bullet point (format: `- YYYY-MM-DD | Ingest — <context/details>`).
 - **Calendar scheduling:** *"Schedule this"* or *"Add this to my calendar"* → Parse event details and call `gws_multi.py --account personal-main|work calendar create`.
@@ -144,7 +160,7 @@ For each message ID detected by the poller:
    - Create a Todoist task (`Task` / `TODO` / `to do`)
    - Or both!
 3. **Execute actions:**
-   - If filing: Generate and write the markdown note to `/home/justin.guest/vault/inbox/` or `/home/justin.guest/vault/Logs/Emails/`.
+   - If filing: Generate and write the markdown note to `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/inbox/` or `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Logs/Emails/`.
    - If creating a task: Call `mcp_todoist_add_tasks` and then `mcp_todoist_add_comments` with the email summary.
    - If both: Do both operations.
 4. **Report back:** Output a single concise line per email in your final response (for Telegram delivery):
@@ -164,3 +180,12 @@ For each message ID detected by the poller:
 ## Troubleshooting & Pitfalls
 
 - **Empty plaintext parts in HTML emails:** Some systems/senders (like Expedia transactional emails) send `multipart/alternative` messages with a nearly empty text/plain part containing only `\r\n` (whitespace). Because `google_api.py` previously checked `if not body:`, this truthy whitespace caused it to skip extracting the actual HTML content. Always ensure `google_api.py` checks `if not body.strip():` when extracting bodies to correctly fall back to the rich HTML content.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

@@ -1,13 +1,26 @@
 ---
 name: obsidian-thoughts-beliefs
-description: Use when creating or recording unstructured personal reflections, emergent ideas, or core guiding beliefs and evolved concepts/thoughts under Notes/.
+description: Use when creating or recording unstructured personal reflections, emergent
+  ideas, or core guiding beliefs and evolved concepts/thoughts under Notes/.
 version: 1.1.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, notes, thoughts, beliefs, mental-models, audit]
-    related_skills: [obsidian, obsidian-notes, obsidian-graph-enrichment, obsidian-categorize-and-sort]
+    tags:
+    - obsidian
+    - notes
+    - thoughts
+    - beliefs
+    - mental-models
+    - audit
+    related_skills:
+    - obsidian
+    - obsidian-notes
+    - obsidian-graph-enrichment
+    - obsidian-categorize-and-sort
+platforms:
+- linux
 ---
 
 # Obsidian: Thoughts & Beliefs Log
@@ -18,7 +31,7 @@ This skill governs the categorization, formatting, and capture of unstructured p
 ---
 
 ## Folder & Category
-- **Directory:** `/home/justin.guest/vault/Notes/`
+- **Directory:** `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Notes/`
 - **Categories & Naming:**
   - **Thoughts:** Thoughts are *my thinking* — raw personal reflections, emergent theories, or open questions.
     - Category link: `category: "[[Thoughts]]"`
@@ -115,5 +128,12 @@ Scan notes for high-probability "fleeting, tactical, or operational" traits:
 - **Flag Candidate Counts:** Inform the user of the total candidate count found across the vault first.
 - **Batching Threshold:** If there are more than 10 candidates, state the count and present them in batches of exactly 10 for user approval.
 - **Diverse Proposals:** Do not default to classifying everything as `[[Notes]]`. Proactively suggest more descriptive categories like `[[Concepts]]`, `[[References]]`, `[[Beliefs]]`, `[[Thoughts]]`, or `[[Memories]]` for entries that capture established, reusable decision patterns, theories, or milestones.
+## Common Pitfalls
 
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
 
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

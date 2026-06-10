@@ -1,7 +1,21 @@
 ---
 name: todoist-inbox-fill
-description: "Use when Justin asks to 'fill my inbox', 'sync my tasks', 'what am I missing in Todoist', or wants open actions from external sources (Slack, Gmail, Calendar, Obsidian daily notes, iMessages, Linear) surfaced into his Todoist Inbox — without duplicating what's already there. Also detects potential calendar events and surfaces them as Google Calendar event candidates to schedule directly on his behalf. Accepts an optional lookback window (default 48h)."
-platforms: [linux, macos]
+description: Use when Justin asks to 'fill my inbox', 'sync my tasks', 'what am I
+  missing in Todoist', or wants open actions from external sources (Slack, Gmail,
+  Calendar, Obsidian daily notes, iMessages, Linear) surfaced into his Todoist Inbox
+  — without duplicating what's already there. Also detects potential calendar events
+  and surfaces them as Google Calendar event candidates to schedule directly on his
+  behalf. Accepts an optional lookback window (default 48h).
+platforms:
+- linux
+- macos
+version: 1.0.0
+author: Bes
+license: MIT
+metadata:
+  hermes:
+    tags:
+    - todoist
 ---
 
 # 📥 Todoist Inbox Fill
@@ -138,7 +152,7 @@ Sources: **Slack, Gmail, Obsidian daily notes, Calendar, Linear, iMessages, Gran
 - **Skill:** `obsidian`
 - **Goal:** Find Next Steps assigned to Justin in recent Granola meeting notes. Budget: 8 tool calls.
 - **Context:**
-  > Vault path: resolve from env `OBSIDIAN_VAULT_PATH` (fallback: `~/Documents/Obsidian Vault`). Granola notes live under `<vault>/Granola/`, organized by month folders (`YYYY-MM/`). Each note filename starts with the meeting date (`YYYY-MM-DD`).
+  > Load `bes-granola-ingest` for vault path and Granola note layout. Scan recent meeting notes for `### Next Steps` lines assigned to Justin.
   >
   > Identify which month folders to search based on the lookback window (`<LOOKBACK_START>` to `<TODAY>`). Typically just the current month, but if the lookback crosses a month boundary, include both.
   >
@@ -263,7 +277,7 @@ Sources: **Slack, Gmail, Obsidian daily notes, Calendar, Linear, iMessages, Gran
   >
   > Skip: pure reactions ("YAYYY", "I did", "Kk"), FYIs with no ask, group chatter with no clear request directed at Justin.
   >
-  > **Command safety:** If `bes-imsg recent-all` returns JSON, parse it with `jq`, not `| python3 -c` (scanner blocks `pipe_to_interpreter`).
+  > **Command safety:** If `bes-imsg recent-all` returns JSON, parse it with `jq` — never pipe output into a python3 one-liner (scanner blocks `pipe_to_interpreter`).
   >
   > Format each candidate task:
   > `- [iMessage/<chat label>] <concise action> | from: <sender> | context: <brief quote or summary>`
@@ -477,7 +491,7 @@ Once Justin responds:
 
 ## Pitfalls
 
-- **Granola notes are in `<vault>/Granola/YYYY-MM/` month subfolders.** Filenames start with `YYYY-MM-DD`. Only lines beginning `- Justin:` (case-insensitive) under the `### Next Steps` section are action items for Justin. Everything else is noise.
+- **Granola layout and parsing:** See `bes-granola-ingest`. Only `- Justin:` lines under `### Next Steps` are action items.
 - **`delegate_task` concurrency cap is 3.** With 7 sources (Slack, Gmail, Obsidian, Calendar, Linear, iMessages, Granola), split into three batches: Batch 1 (Slack, Gmail, Obsidian), Batch 2 (Calendar, Linear, iMessages), Batch 3 (Granola). Don't try to pass more than 3 at once — it errors immediately.
 - **Linear task naming is fixed.** Do not invent task titles for Linear items. Use exactly `Work on <ID> <name>` for assigned issues and `Triage <ID> <name>` for triage issues. Strip these from the source prefix when adding to Todoist — the content field should be the bare task name, not `[Linear/assigned] Work on…`.
 - **`find-tasks` requires at least one filter.** If you call it with no args it errors. See Step 1 for the right snapshot call.
@@ -489,3 +503,12 @@ Once Justin responds:
 - **Slack `--limit` flag.** The Slack CLI may not support `--limit` on all commands. If it errors, drop the flag and let it return the default count.
 - **App Store Connect emails.** These are engineering issues, not Justin's. Filter them out at the Gmail subagent stage.
 - **Never call the Todoist REST API directly (`api.todoist.com`) in custom scripts or subagents.** The sync v9 and REST v2 endpoints are deprecated (HTTP 410 / 404). Always use the native `mcp_todoist_*` tools. If a script inside `execute_code` or a background task absolutely must make raw HTTP requests, use the correct v1 path `https://api.todoist.com/api/v1/` (e.g. `/api/v1/tasks` or `/api/v1/sync` as a POST request) and include the `TODOIST_API_KEY` header.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

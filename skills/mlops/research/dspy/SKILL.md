@@ -1,15 +1,31 @@
 ---
 name: dspy
-description: "DSPy: declarative LM programs, auto-optimize prompts, RAG."
+description: 'Use when working with dspy. DSPy: declarative LM programs, auto-optimize
+  prompts, RAG.'
 version: 1.0.0
 author: Orchestra Research
 license: MIT
-dependencies: [dspy, openai, anthropic]
-platforms: [linux, macos, windows]
+dependencies:
+- dspy
+- openai
+- anthropic
+platforms:
+- linux
+- macos
+- windows
 metadata:
   hermes:
-    tags: [Prompt Engineering, DSPy, Declarative Programming, RAG, Agents, Prompt Optimization, LM Programming, Stanford NLP, Automatic Optimization, Modular AI]
-
+    tags:
+    - Prompt Engineering
+    - DSPy
+    - Declarative Programming
+    - RAG
+    - Agents
+    - Prompt Optimization
+    - LM Programming
+    - Stanford NLP
+    - Automatic Optimization
+    - Modular AI
 ---
 
 # DSPy: Declarative Language Model Programming
@@ -590,5 +606,12 @@ for call in dspy.settings.trace:
 - `references/modules.md` - Detailed module guide (Predict, ChainOfThought, ReAct, ProgramOfThought)
 - `references/optimizers.md` - Optimization algorithms (BootstrapFewShot, MIPRO, BootstrapFinetune)
 - `references/examples.md` - Real-world examples (RAG, agents, classifiers)
+## Common Pitfalls
 
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
 
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

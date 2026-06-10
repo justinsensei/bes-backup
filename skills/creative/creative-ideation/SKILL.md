@@ -1,14 +1,22 @@
 ---
 name: ideation
 title: Creative Ideation — Constraint-Driven Project Generation
-description: "Generate project ideas via creative constraints."
+description: Use when working with ideation. Generate project ideas via creative constraints.
 version: 1.0.0
 author: SHL0MS
 license: MIT
-platforms: [linux, macos, windows]
+platforms:
+- linux
+- macos
+- windows
 metadata:
   hermes:
-    tags: [Creative, Ideation, Projects, Brainstorming, Inspiration]
+    tags:
+    - Creative
+    - Ideation
+    - Projects
+    - Brainstorming
+    - Inspiration
     category: creative
     requires_toolsets: []
 ---
@@ -150,3 +158,12 @@ After the user picks one, start building — create the project, write the code,
 ## Attribution
 
 Constraint approach inspired by [wttdotm.com/prompts.html](https://wttdotm.com/prompts.html). Adapted and expanded for software development and general-purpose ideation.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

@@ -1,8 +1,23 @@
 ---
 name: pokemon-player
-description: "Play Pokemon via headless emulator + RAM reads."
-tags: [gaming, pokemon, emulator, pyboy, gameplay, gameboy]
-platforms: [linux, macos, windows]
+description: Use when working with pokemon player. Play Pokemon via headless emulator
+  + RAM reads.
+platforms:
+- linux
+- macos
+- windows
+metadata:
+  hermes:
+    tags:
+    - gaming
+    - pokemon
+    - emulator
+    - pyboy
+    - gameplay
+    - gameboy
+version: 1.0.0
+author: Bes
+license: MIT
 ---
 # Pokemon Player
 
@@ -214,3 +229,12 @@ Then hold B to speed through attack animations and text.
 - Dialog detection via RAM is unreliable — verify with screenshots
 - Save BEFORE risky encounters
 - The tunnel URL changes each time you restart it
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

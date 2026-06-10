@@ -1,14 +1,23 @@
 ---
 name: native-mcp
-description: "MCP client: connect servers, register tools (stdio/HTTP)."
+description: 'Use when working with native mcp. MCP client: connect servers, register
+  tools (stdio/HTTP).'
 version: 1.0.0
 author: Hermes Agent
 license: MIT
-platforms: [linux, macos, windows]
+platforms:
+- linux
+- macos
+- windows
 metadata:
   hermes:
-    tags: [MCP, Tools, Integrations]
-    related_skills: [mcporter]
+    tags:
+    - MCP
+    - Tools
+    - Integrations
+    related_skills: []
+    external_related_skills:
+    - mcporter
 ---
 
 # Native MCP Client
@@ -355,3 +364,12 @@ Disable sampling for untrusted servers with `sampling: { enabled: false }`.
 - The native MCP client is independent of `mcporter` -- you can use both simultaneously
 - Server connections are persistent and shared across all conversations in the same agent process
 - Adding or removing servers requires restarting the agent (no hot-reload currently)
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

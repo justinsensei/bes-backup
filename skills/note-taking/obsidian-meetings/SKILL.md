@@ -1,13 +1,23 @@
 ---
 name: obsidian-meetings
-description: Use when creating or cleaning up chronological meeting notes and managing Granola reconciliation under Logs/Meetings/ with category "[[Meetings]]".
+description: Use when creating or cleaning up chronological meeting notes and managing
+  Granola reconciliation under Logs/Meetings/ with category "[[Meetings]]".
 version: 1.0.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, logs, meetings, granola, reconciliation]
-    related_skills: [obsidian, obsidian-logs]
+    tags:
+    - obsidian
+    - logs
+    - meetings
+    - granola
+    - reconciliation
+    related_skills:
+    - obsidian
+    - obsidian-logs
+platforms:
+- linux
 ---
 
 # Obsidian: Meetings & Granola Management
@@ -18,7 +28,7 @@ This skill governs chronological meeting notes, including formatting templates a
 ---
 
 ## Folder & Category
-- **Directory:** `/home/justin.guest/vault/Logs/Meetings/`
+- **Directory:** `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Logs/Meetings/`
 - **Category link:** `category: "[[Meetings]]"`
 
 ---
@@ -58,3 +68,12 @@ category: "[[Meetings]]"
 
 ## Ingestion & Sync Pipeline
 - **Granola Sync:** Raw transcripts and notes dropped into `/meetings/` are automatically swept and processed into your formatted Meetings directory. This ingestion logic is handled by the **`bes-granola-ingest`** skill.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

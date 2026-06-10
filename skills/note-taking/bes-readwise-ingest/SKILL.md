@@ -1,18 +1,28 @@
 ---
 name: bes-readwise-ingest
-description: Sync and ingest highlights from books, articles, or papers tagged 'vault' in Readwise into vault/Logs/Sources/.
+description: Use when working with bes readwise ingest. Sync and ingest highlights
+  from books, articles, or papers tagged 'vault' in Readwise into vault/Logs/Sources/.
 version: 1.0.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [readwise, ingest, readings, obsidian]
-    related_skills: [obsidian, obsidian-logs, obsidian-references-sources]
+    tags:
+    - readwise
+    - ingest
+    - readings
+    - obsidian
+    related_skills:
+    - obsidian
+    - obsidian-logs
+    - obsidian-references-sources
+platforms:
+- linux
 ---
 
 # Bes Readwise Ingest
 
-Pulls book highlights, web clips, and article annotations from your Readwise account and formats them into clean markdown reading records inside `/home/justin.guest/vault/Logs/Sources/`.
+Pulls book highlights, web clips, and article annotations from your Readwise account and formats them into clean markdown reading records inside `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Logs/Sources/`.
 
 ## Trigger & Filter
 *   **Trigger:** Triggered automatically or via running the sync script.
@@ -51,3 +61,12 @@ Directly below the title, provide a formal single-line citation:
 A bulleted log of extracted highlights grouped cleanly.
 - Highlight item A
 - Highlight item B
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

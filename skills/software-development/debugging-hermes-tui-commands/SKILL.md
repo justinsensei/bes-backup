@@ -1,14 +1,28 @@
 ---
 name: debugging-hermes-tui-commands
-description: "Debug Hermes TUI slash commands: Python, gateway, Ink UI."
+description: 'Use when working with debugging hermes tui commands. Debug Hermes TUI
+  slash commands: Python, gateway, Ink UI.'
 version: 1.0.0
 author: Hermes Agent
 license: MIT
-platforms: [linux, macos, windows]
+platforms:
+- linux
+- macos
+- windows
 metadata:
   hermes:
-    tags: [debugging, hermes-agent, tui, slash-commands, typescript, python]
-    related_skills: [python-debugpy, node-inspect-debugger, systematic-debugging]
+    tags:
+    - debugging
+    - hermes-agent
+    - tui
+    - slash-commands
+    - typescript
+    - python
+    related_skills: []
+    external_related_skills:
+    - python-debugpy
+    - node-inspect-debugger
+    - systematic-debugging
 ---
 
 # Debugging Hermes TUI Slash Commands
@@ -150,3 +164,12 @@ After fixing:
    - Live UI state reflects the change immediately (not just after restart)
 
 5. If the command is also gateway-available, test it from at least one messaging platform (or run the gateway tests: `scripts/run_tests.sh tests/gateway/`).
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

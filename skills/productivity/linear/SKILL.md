@@ -1,16 +1,28 @@
 ---
 name: linear
-description: "Linear: manage issues, projects, teams via GraphQL + curl."
+description: 'Use when working with linear. Linear: manage issues, projects, teams
+  via GraphQL + curl.'
 version: 1.0.0
 author: Hermes Agent
 license: MIT
-platforms: [linux, macos, windows]
+platforms:
+- linux
+- macos
+- windows
 prerequisites:
-  env_vars: [LINEAR_API_KEY]
-  commands: [curl]
+  env_vars:
+  - LINEAR_API_KEY
+  commands:
+  - curl
 metadata:
   hermes:
-    tags: [Linear, Project Management, Issues, GraphQL, API, Productivity]
+    tags:
+    - Linear
+    - Project Management
+    - Issues
+    - GraphQL
+    - API
+    - Productivity
 ---
 
 # Linear — Issue & Project Management
@@ -378,3 +390,12 @@ Combine filters with `or: [...]` for OR logic (default is AND within a filter ob
 - If `stateId` is omitted when creating issues, Linear defaults to the first backlog state
 - The `description` field supports Markdown
 - Use `jq .` or `jq` to format JSON responses for readability
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

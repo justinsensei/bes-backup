@@ -1,13 +1,28 @@
 ---
 name: wind-down
-description: "Interactive daily wrap-up: 1. Log candidates; 2. Discovered contacts; 3. Source review; 4. Vault inbox triage; 5. Work log draft/write; 6. Next day's calendar preview."
+description: 'Use when working with wind down. Interactive daily wrap-up: 1. Log candidates;
+  2. Discovered contacts; 3. Source review; 4. Vault inbox triage; 5. Work log draft/write;
+  6. Next day''s calendar preview.'
 version: 1.2.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [productivity, wind-down, daily-routine, work-log, inbox-triage, sources, calendar]
-    related_skills: [work-log, morning-briefing, obsidian, todoist]
+    tags:
+    - productivity
+    - wind-down
+    - daily-routine
+    - work-log
+    - inbox-triage
+    - sources
+    - calendar
+    related_skills:
+    - work-log
+    - morning-briefing
+    - obsidian
+    - todoist
+platforms:
+- linux
 ---
 
 # 🌅 Daily Wind-Down & Wrap-Up
@@ -33,7 +48,7 @@ The wind-down session runs interactively in a strict, step-by-step sequence. Wai
 Present potential log candidates (active Slack conversations and noteworthy primary-category emails from the last 36-48 hours) that Justin hasn't tagged with `🧠` or forwarded to Bes, but that are highly worthy of being turned into logs in his vault.
 
 Run the unified script live to fetch candidates:
-`python3 /home/justin.guest/.hermes/scripts/fetch_source_candidates.py`
+`python3 ${HERMES_HOME:-$HOME/.hermes}/scripts/fetch_source_candidates.py`
 
 If candidates (Slack or Email) are found:
 - Show them with sequential numbers across both Slack and Email candidates.
@@ -56,7 +71,7 @@ If Justin selects any:
 1. For each selected item:
    - **For Slack conversations:**
      - Synthesize a high-quality summary showing "who said what" clearly. Do NOT store verbatim Slack messages; store only summaries with retrieval metadata.
-     - Write to `/home/justin.guest/vault/Logs/Slack/YYYY-MM-DD - Spaced Title.md`.
+     - Write to `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Logs/Slack/YYYY-MM-DD - Spaced Title.md`.
      - Structure the YAML frontmatter for Slack logs:
        ```yaml
        ---
@@ -72,10 +87,10 @@ If Justin selects any:
      - Append a link and one-sentence gist to today's daily note notepad under `## 🗒 Notepad`:
        `* [[Logs/Slack/<filename>|Slack summary]]: <One-sentence-gist>.`
      - Run the command to mark it processed:
-       `python3 /home/justin.guest/.hermes/scripts/fetch_slack_brains.py --mark-processed <channel_id> <ts>`
+       `python3 ${HERMES_HOME:-$HOME/.hermes}/scripts/fetch_slack_brains.py --mark-processed <channel_id> <ts>`
    - **For Emails:**
      - Synthesize a high-quality summary of the email thread showing clearly what was discussed, decided, or requested. Do NOT store verbatim email text; store only summaries with retrieval metadata.
-     - Write to `/home/justin.guest/vault/Logs/Emails/YYYY-MM-DD - Spaced Subject.md`.
+     - Write to `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Logs/Emails/YYYY-MM-DD - Spaced Subject.md`.
      - Structure the YAML frontmatter for email logs:
        ```yaml
        ---
@@ -91,7 +106,7 @@ If Justin selects any:
      - Append a link and one-sentence gist to today's daily note notepad under `## 🗒 Notepad`:
        `* [[Logs/Emails/<filename>|Email summary]]: <One-sentence-gist>.`
      - Run the command to mark it processed:
-       `python3 /home/justin.guest/.hermes/scripts/fetch_source_candidates.py --mark-email-processed <thread_id>`
+       `python3 ${HERMES_HOME:-$HOME/.hermes}/scripts/fetch_source_candidates.py --mark-email-processed <thread_id>`
    - Report the log(s) successfully saved.
 
 If no candidates are found, skip this phase entirely and proceed to Phase 2.
@@ -119,9 +134,9 @@ Would you like me to create contact notes for any of these? (e.g. "yes, 1 as org
 ```
 
 If Justin selects any:
-1. For each selected item, check if the contact file already exists in `/home/justin.guest/vault/Contacts/<Name>.md` OR in `/home/justin.guest/vault/inbox/<Name>.md`.
+1. For each selected item, check if the contact file already exists in `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Contacts/<Name>.md` OR in `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/inbox/<Name>.md`.
 2. If the file exists in either location, do NOT overwrite or truncate it (as it contains precious history/timeline entries). Instead, patch the file in its current location to insert the standard frontmatter, executive summary, and state sections at the very top, preserving any existing content (like `## Timeline` and its entries) underneath.
-3. If the file does not exist in either location, create a new file in the inbox directory `/home/justin.guest/vault/inbox/<Name>.md` and format the contact note following these strict standards:
+3. If the file does not exist in either location, create a new file in the inbox directory `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/inbox/<Name>.md` and format the contact note following these strict standards:
    * Frontmatter:
      ```yaml
      ---
@@ -158,7 +173,7 @@ If no discovered contacts are found, proceed to Phase 3.
 Review persistent reference sources, articles, or transcripts added or updated today.
 
 1. **Find Today's Sources:**
-   - Scan `/home/justin.guest/vault/Logs/Sources/` for files modified in the last 24 hours (using `find ~/vault/Logs/Sources -mtime -1 -type f` or `search_files`).
+   - Scan `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Logs/Sources/` for files modified in the last 24 hours (using `find ~/vault/Logs/Sources -mtime -1 -type f` or `search_files`).
    - Check if any new source files contain `daily_note: "[[<TODAY_DATE> ...]]"` in their frontmatter.
 
 2. **Summarize Today's Sources:**
@@ -178,11 +193,11 @@ Review persistent reference sources, articles, or transcripts added or updated t
 Help Justin empty his Obsidian "inbox" so quick notes and scratchpads land in their correct homes.
 
 1. **Scan the Inbox Directory:**
-   - List all files inside the vault inbox directory (`/home/justin.guest/vault/inbox/`) using `search_files(path='/home/justin.guest/vault/inbox', pattern='*')`.
+   - List all files inside the vault inbox directory (`${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/inbox/`) using `search_files(path='${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/inbox', pattern='*')`.
 
 2. **Read & Classify Inbox Notes:**
    - For each file in the inbox, read its first few lines using `read_file`.
-   - Determine its primary focus and suggest the correct target category and folder under `/home/justin.guest/vault/`:
+   - Determine its primary focus and suggest the correct target category and folder under `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/`:
      - **`Contacts/`** (Category: `[[People]]` or `[[Organizations]]`) — if about a person, family member, or company/institution.
      - **`Logs/Meetings/`** (Category: `[[Meetings]]`) — if a meeting sync, agenda, or discussion record.
      - **`Notes/`** (Category: `[[Thoughts]]`, `[[Beliefs]]`, `[[Memories]]`, `[[Decisions]]`, `[[Projects]]`, `[[References]]`, `[[Concepts]]`, or `[[Notes]]`) — if conceptual, ideas, principles, personal memories, decisions, project hubs, reference guides, or raw notes.
@@ -215,11 +230,11 @@ Draft today's work log, align with Justin, and write it to today's daily note. T
    - Pre-compute timezone offsets dynamically to prevent UTC boundary leakage on calendar searches.
 
 2. **Gather Today's Raw Activities (Fast-track):**
-   - Run `/home/justin.guest/.hermes/skills/note-taking/work-log/references/direct_execution.py` via `terminal` (with `export TARGET_DATE=<YYYY-MM-DD>`) or `execute_code` (setting `os.environ['TARGET_DATE'] = today_date`) to pull Slack, Linear, and Google Workspace calendar/email data in seconds. Using `terminal` is the preferred bulletproof pattern since `execute_code` can be restricted by environment-level approval settings.
+   - Run `${HERMES_HOME:-$HOME/.hermes}/skills/note-taking/work-log/references/direct_execution.py` via `terminal` (with `export TARGET_DATE=<YYYY-MM-DD>`) or `execute_code` (setting `os.environ['TARGET_DATE'] = today_date`) to pull Slack, Linear, and Google Workspace calendar/email data in seconds. Using `terminal` is the preferred bulletproof pattern since `execute_code` can be restricted by environment-level approval settings.
    - Query Todoist live for completed tasks today (`mcp_todoist_find_completed_tasks` with `since: <TODAY>`, `until: <TODAY>`, `getBy: "completion"`) and incomplete tasks due today (`mcp_todoist_find_tasks_by_date` with `startDate: <TODAY>`).
    - Read today's existing Obsidian daily note with `read_file` to see manual notepad entries.
    - Search the vault for any meeting/Granola notes generated today (look in `vault/meetings/` or files containing today's date in their name).
-   - Read the daily briefing cache `/home/justin.guest/.hermes/morning-briefing/<YYYY-MM-DD>.json` to check the `vault_activity` field, and run a quick terminal find command over the vault to gather any high-level vault restructuring, bulk updates, or manual categorization sweeps that took place during the day.
+   - Read the daily briefing cache `${HERMES_HOME:-$HOME/.hermes}/morning-briefing/<YYYY-MM-DD>.json` to check the `vault_activity` field, and run a quick terminal find command over the vault to gather any high-level vault restructuring, bulk updates, or manual categorization sweeps that took place during the day.
 
 3. **Synthesize the Work Log Draft:**
    - Synthesize the gathered material into a set of clean, structured blocks matching the standard work log format:
@@ -236,7 +251,7 @@ Draft today's work log, align with Justin, and write it to today's daily note. T
 
 5. **Write the Finalized Work Log:**
    - Combine Justin's feedback with the draft.
-   - Find or create today's daily note in `/home/justin.guest/vault/Daily Notes/YYYY-MM-DD Weekday.md` (create from template `/home/justin.guest/vault/Utilities/Templates/daily_note.md` if missing, stripping Templater tags).
+   - Find or create today's daily note in `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Daily Notes/YYYY-MM-DD Weekday.md` (create from template `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Utilities/Templates/daily_note.md` if missing, stripping Templater tags).
    - Overwrite/replace the corresponding headings (`> [!summary]`, `## 📅 Schedule & Events`, `## 🚀 Highlights & Decisions`, `## 🏆 Accomplishments`) with your new synthesized content.
    - **Crucial:** Preserve the entire content of the `## 🗒 Notepad` section (including manual text written by Justin). Never modify or delete it.
    - Append the sources attribution footer at the very bottom.
@@ -281,3 +296,12 @@ Preview tomorrow's schedule to establish mental readiness, coordinate upcoming t
 - **Escape Slack Channels:** Always write `#channel-name` as `\#channel-name` inside the daily note so Obsidian doesn't parse it as a tag.
 - **Dynamic Timezone Offset:** When fetching calendar events, always calculate and append the local timezone offset (e.g. `-04:00` or `-05:00`) to `--start` and `--end` to prevent boundary events from leaking from yesterday or tomorrow.
 - **Git Commit Warning:** Do not manually `git add` or `git commit` any vault edits. The `bes-vault-sync` watcher will handle it immediately.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

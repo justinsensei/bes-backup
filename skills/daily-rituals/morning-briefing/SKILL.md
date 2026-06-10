@@ -1,8 +1,26 @@
 ---
 name: morning-briefing
-description: "Interactive morning briefing for Justin — runs after the 7AM cron has done background work (work log change-detection, vault hygiene Tier 1, inbox gather). Walks through a multi-phase conversation: work log highlights (including vault updates, skipped if no changes since wind-down), calendar summary, calendar event candidates, near-term task triage, general inbox candidates. Load this skill whenever Justin responds to the morning greeting or asks for his morning briefing."
-platforms: [linux]
-related_skills: [work-log, todoist-inbox-fill, obsidian-vault-hygiene, todoist]
+description: 'Use when working with morning briefing. Interactive morning briefing
+  for Justin — runs after the 7AM cron has done background work (work log change-detection,
+  vault hygiene Tier 1, inbox gather). Walks through a multi-phase conversation: work
+  log highlights (including vault updates, skipped if no changes since wind-down),
+  calendar summary, calendar event candidates, near-term task triage, general inbox
+  candidates. Load this skill whenever Justin responds to the morning greeting or
+  asks for his morning briefing.'
+platforms:
+- linux
+metadata:
+  hermes:
+    related_skills:
+    - work-log
+    - todoist-inbox-fill
+    - obsidian-hygiene
+    - todoist
+    tags:
+    - morning
+version: 1.0.0
+author: Bes
+license: MIT
 ---
 
 # 🌅 Morning Briefing
@@ -16,7 +34,7 @@ This skill governs the **interactive phase** of the morning briefing. The 7AM cr
 - **Work-day helper:** `python3.12 ~/.hermes/scripts/work_day.py <cmd> [date]`
 - **Change detector & vault activity scan:** `python3 ~/.hermes/scripts/check_morning_changes.py`
 - **Vault signals scan script:** `scripts/check_vault_signals.py` (copied to `~/.hermes/scripts/check_vault_signals.py`) — read-only scan that gathers unresolved contact candidates (active timeline enrichment is disabled in favor of native Obsidian Backlinks)
-- **Vault:** `/home/justin.guest/vault` (or `$OBSIDIAN_VAULT_PATH`)
+- **Vault:** `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}` (or `$OBSIDIAN_VAULT_PATH`)
 
 ## Entry point
 
@@ -63,7 +81,7 @@ The 7AM cron writes `~/.hermes/morning-briefing/YYYY-MM-DD.json` with this struc
   "daily_thought": {
     "path": "Notes/Thoughts on fatphobia 20260128135845.md",
     "title": "Thoughts on Fatphobia",
-    "category": "Opinions / Thoughts"
+    "category": "Thoughts"
   },
   "discovered_contacts": {
     "people": [
@@ -88,7 +106,7 @@ If the cache file doesn't exist (cron failed or hasn't run yet), run the backgro
 3. **Run the change detection script live:**
    `python3 ~/.hermes/scripts/check_morning_changes.py`
 4. **Write the recovery cache file manually:**
-   Construct and write the complete JSON cache to `/home/justin.guest/.hermes/morning-briefing/YYYY-MM-DD.json` containing the correct values for `date`, `is_work_day`, `work_log_dates`, `work_log_status` ("skipped" if the target date daily note is already fully populated, "ok" if generated), `vault_hygiene` (run `python3 run_tier1_hygiene.py` inline to get the tier1_summary), `vault_activity` parsed from step 3, and a randomly selected note under `daily_thought` (selected from Thoughts/Opinions, Beliefs, or Concepts categories in the vault).
+   Construct and write the complete JSON cache to `${HERMES_HOME:-$HOME/.hermes}/morning-briefing/YYYY-MM-DD.json` containing the correct values for `date`, `is_work_day`, `work_log_dates`, `work_log_status` ("skipped" if the target date daily note is already fully populated, "ok" if generated), `vault_hygiene` (run `python3 ${HERMES_HOME:-$HOME/.hermes}/scripts/vault_hygiene_cron.py` inline to get the tier1_summary), `vault_activity` parsed from step 3, and a randomly selected note under `daily_thought` (selected from `[[Thoughts]]`, `[[Beliefs]]`, or `[[Concepts]]` categories in the vault).
 5. **Proceed with Phase 1 presentation:**
    Present Phase 1 highlights/status based on the newly written recovery cache.
 
@@ -159,9 +177,9 @@ If the user clarifies an ambiguous mention (e.g. "I meant Linda Massie for Aunt 
 If no work log entries exist for the dates (notes missing or no Work Log section), present the vault updates, note the missing work log, and move on. Don't block on it.
 
 **If the user asks you to generate the missing daily note / work log:**
-- Gather yesterday's raw materials from Slack, Linear, GWS, and Todoist (using `/home/justin.guest/bes-backup/skills/note-taking/work-log/references/direct_execution.py` or parallel subagents).
+- Gather yesterday's raw materials from Slack, Linear, GWS, and Todoist (using `${BES_BACKUP:-$HOME/bes-backup}/skills/note-taking/work-log/references/direct_execution.py` or parallel subagents).
 - Scan for any other notes written on that date in the vault (e.g. `Notebook/Kennywood Day...` or other files with matching timestamp/daily_note fields) to capture personal context.
-- Synthesize them into a complete daily note and work log following the `work-log` skill and the `<vault>/Templates/Daily Note.md` template.
+- Synthesize them into a complete daily note and work log following the `work-log` skill and `${OBSIDIAN_VAULT_PATH}/Utilities/Templates/daily_note.md`.
 - Write the daily note to the vault archive (`Daily Notes/YYYY-MM-DD DayName.md`).
 - Update the morning briefing cache file (`~/.hermes/morning-briefing/YYYY-MM-DD.json`) to set `work_log_status: "ok"`, remove the `work_log_error`, and clear `vault_hygiene` issues if resolved.
 - Present the synthesized work log highlights and proceed to Phase 2.
@@ -339,9 +357,18 @@ US federal holidays auto-detected. Personal days off in `~/.hermes/days-off.txt`
 - **Calendar dedup is against the full 30-day snapshot** already in the cache. Don't re-fetch unless you need to.
 - **"Day off" filter applies per-phase.** Check it before each phase, not just once at the top.
 - **Vault hygiene is never blocking.** Always present it right after the work log highlights and vault updates section (Phase 1), and always frame it as "when you have a moment."
-- **Concept of the Day vs Morning Thought.** Since the migration away from gbrain, concepts no longer exist as a standalone category directory in the vault. Always select the "Morning Thought" from the superset of Thoughts, Beliefs, or Concepts categories, and represent the Thoughts category as "Opinions / Thoughts" to align with the user's preference.
+- **Concept of the Day vs Morning Thought.** Since the migration away from gbrain, concepts no longer exist as a standalone category directory in the vault. Always select the "Morning Thought" from notes with `category: "[[Thoughts]]"`, `[[Beliefs]]`, or `[[Concepts]]`.
 - **Do not read the `.env` credential file directly.** The agent running under cron cannot read `${HERMES_HOME:-$HOME/.hermes}/.env` using direct file tools (like `read_file`) due to defense-in-depth safety blocks. Always run terminal commands with `.env` sourced in the shell context (`source ${HERMES_HOME:-$HOME/.hermes}/.env && python3 ...`) or rely on the host environment, rather than attempting to read/parse the credential file.
-- **Concept of the Day directory has changed.** Following the migration away from gbrain, concept files are located in `/home/justin.guest/vault/Notes/` instead of `/home/justin.guest/vault/concepts/`. Identify them by searching for markdown files containing `type: concept` or `type: "concept"` in their frontmatter, and completely avoid querying any deprecated `concepts/` directory.
+- **Concept of the Day directory has changed.** Following the migration away from gbrain, concept files are located in `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Notes/` instead of `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/concepts/`. Identify them by searching for markdown files containing `type: concept` or `type: "concept"` in their frontmatter, and completely avoid querying any deprecated `concepts/` directory.
 - **Discrepancy in Daily Thought / Morning Thought Path:** The morning briefing cache might specify a path with the timestamp ID appended (e.g., `Notes/Thoughts on signlab k12 gtm proposal 20250808153818.md`), whereas the actual file in the vault may have the timestamp ID prepended (e.g., `Notes/20250808153818 Thoughts on signlab k12 gtm proposal.md`). If a note's path is not found directly as specified in the cache, always use `search_files` with a wildcard query containing the title or timestamp to locate the actual file before reporting it missing.
 - **Cron RuntimeError & Max Iterations:** If the background phase fails with `RuntimeError: Morning, Justin! Ready to start your day?`, this indicates the agent hit its `max_iterations` limit during the cron run. The scheduler treats the incomplete run as a failure and raises a RuntimeError containing the final generated greeting text. Optimize background execution to use as few tool calls as possible (e.g. run consolidated scripts rather than many separate queries).
 - **Python Interpreter Mismatch:** Background cron runs may use the default `python3` (which can resolve to a base environment like 3.11 lacking required packages). Always execute scripts with their matching target environments: `python3.12` for scripts requiring the `holidays` package, and `~/.hermes/hermes-agent/venv/bin/python3` for scripts requiring `slack_sdk` or other agent-specific dependencies.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

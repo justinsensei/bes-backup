@@ -1,13 +1,23 @@
 ---
 name: obsidian-daily-notes
-description: Use when creating or formatting chronological daily notes under Daily Notes/ with category "[[Daily Notes]]".
+description: Use when creating or formatting chronological daily notes under Daily
+  Notes/ with category "[[Daily Notes]]".
 version: 1.0.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, logs, daily-notes, schedule]
-    related_skills: [obsidian, obsidian-logs, work-log]
+    tags:
+    - obsidian
+    - logs
+    - daily-notes
+    - schedule
+    related_skills:
+    - obsidian
+    - obsidian-logs
+    - work-log
+platforms:
+- linux
 ---
 
 # Obsidian: Daily Notes Management
@@ -18,7 +28,7 @@ This skill governs the filename format, structure, templates, and standard secti
 ---
 
 ## Folder & Category
-- **Directory:** `/home/justin.guest/vault/Daily Notes/`
+- **Directory:** `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Daily Notes/`
 - **Category link:** `category: "[[Daily Notes]]"`
 
 ---
@@ -63,3 +73,12 @@ When executing the `work-log` skill:
 1. Fetch events from Google Calendar, Linear, Todoist, and Slack.
 2. Compile and summarize the work log.
 3. Append or update the accomplishments and schedule sections directly inside today's daily note.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

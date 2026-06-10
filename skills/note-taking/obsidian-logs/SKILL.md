@@ -1,13 +1,22 @@
 ---
 name: obsidian-logs
-description: Use when managing chronological directory structures for Daily Notes/ and Logs/Meetings/ and coordinating their sub-skills.
+description: Use when managing chronological directory structures for Daily Notes/
+  and Logs/Meetings/ and coordinating their sub-skills.
 version: 1.2.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, logs, folder-conventions]
-    related_skills: [obsidian, obsidian-daily-notes, obsidian-meetings]
+    tags:
+    - obsidian
+    - logs
+    - folder-conventions
+    related_skills:
+    - obsidian
+    - obsidian-daily-notes
+    - obsidian-meetings
+platforms:
+- linux
 ---
 
 # Obsidian Type: Chronological Directory Conventions
@@ -23,15 +32,15 @@ This skill governs the structure and navigation of chronological log notes, poin
 ---
 
 ## Directories & Sub-skills
-- **Daily Notes Directory:** `/home/justin.guest/vault/Daily Notes/`
+- **Daily Notes Directory:** `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Daily Notes/`
   - Sub-skill: **`obsidian-daily-notes`** (`category: "[[Daily Notes]]"`)
-- **Meetings Directory:** `/home/justin.guest/vault/Logs/Meetings/`
+- **Meetings Directory:** `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Logs/Meetings/`
   - Sub-skill: **`obsidian-meetings`** (`category: "[[Meetings]]"`)
-- **Emails Directory:** `/home/justin.guest/vault/Logs/Emails/`
+- **Emails Directory:** `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Logs/Emails/`
   - Synced automatically from forwarded emails or email digests (`category: "[[Emails]]"`)
-- **Slack Directory:** `/home/justin.guest/vault/Logs/Slack/`
+- **Slack Directory:** `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Logs/Slack/`
   - Synced automatically from captured Slack discussions or brain-dumps (`category: "[[Slack]]"`)
-- **Sources Directory:** `/home/justin.guest/vault/Logs/Sources/`
+- **Sources Directory:** `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Logs/Sources/`
   - Synced automatically via `sync_readwise.py` (`category: "[[Sources]]"`)
 
 ---
@@ -43,3 +52,12 @@ This skill governs the structure and navigation of chronological log notes, poin
   - Meetings, Emails, and Slack Logs: `YYYY-MM-DD - Spaced Title.md` (e.g. `2026-06-09 - SignLab Product Alignment.md`, `2026-06-09 - Product Feedback on Free to Play.md`).
 - **Linking to Daily Notes:** Every chronological log file must link back to its creation day in its YAML `daily_note:` property.
 - **Archive Raw Logs:** Never leave raw files in the root `/meetings/` folder. Ensure the automated hygiene script pre-processes and moves them to `/Logs/Meetings/`.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

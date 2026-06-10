@@ -1,11 +1,23 @@
 ---
 name: webhook-subscriptions
-description: "Webhook subscriptions: event-driven agent runs."
+description: 'Use when working with webhook subscriptions. Webhook subscriptions:
+  event-driven agent runs.'
 version: 1.1.0
-platforms: [linux, macos, windows]
+platforms:
+- linux
+- macos
+- windows
 metadata:
   hermes:
-    tags: [webhook, events, automation, integrations, notifications, push]
+    tags:
+    - webhook
+    - events
+    - automation
+    - integrations
+    - notifications
+    - push
+author: Bes
+license: MIT
 ---
 
 # Webhook Subscriptions
@@ -202,3 +214,12 @@ If webhooks aren't working:
 4. **Signature mismatch?** Verify the secret in your service matches the one from `hermes webhook list`. GitHub sends `X-Hub-Signature-256`, GitLab sends `X-Gitlab-Token`.
 5. **Firewall/NAT?** The webhook URL must be reachable from the service. For local development, use a tunnel (ngrok, cloudflared).
 6. **Wrong event type?** Check `--events` filter matches what the service sends. Use `hermes webhook test <name>` to verify the route works.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

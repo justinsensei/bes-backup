@@ -1,13 +1,21 @@
 ---
 name: baoyu-comic
-description: "Knowledge comics (知识漫画): educational, biography, tutorial."
+description: 'Use when working with baoyu comic. Knowledge comics (知识漫画): educational,
+  biography, tutorial.'
 version: 1.56.1
 author: 宝玉 (JimLiu)
 license: MIT
-platforms: [linux, macos, windows]
+platforms:
+- linux
+- macos
+- windows
 metadata:
   hermes:
-    tags: [comic, knowledge-comic, creative, image-generation]
+    tags:
+    - comic
+    - knowledge-comic
+    - creative
+    - image-generation
     homepage: https://github.com/JimLiu/baoyu-skills#baoyu-comic
 ---
 
@@ -245,3 +253,12 @@ Full step-by-step workflow (analysis, storyboard, review gates, regeneration var
 - **Steps 4/6 conditional** - only if user requested in Step 2
 - **Step 7.1 character sheet** - recommended for multi-page comics, optional for simple presets. The PNG is a review/regeneration aid; page prompts (written in Step 5) use the text descriptions in `characters/characters.md`, not the PNG. `image_generate` does not accept images as visual input
 - **Strip secrets** — scan source content for API keys, tokens, or credentials before writing any output file
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

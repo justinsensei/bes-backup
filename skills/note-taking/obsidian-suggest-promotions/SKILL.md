@@ -1,13 +1,27 @@
 ---
 name: obsidian-suggest-promotions
-description: Suggest existing notes for promotion up the hierarchy (raw Note/Concept -> Thought -> Belief) using semantic analysis, synthesize backlinked context for thoughts -> beliefs, and enforce link hygiene.
+description: Use when working with obsidian suggest promotions. Suggest existing notes
+  for promotion up the hierarchy (raw Note/Concept -> Thought -> Belief) using semantic
+  analysis, synthesize backlinked context for thoughts -> beliefs, and enforce link
+  hygiene.
 version: 1.0.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, suggest-promotions, thoughts, beliefs, graph-hygiene]
-    related_skills: [obsidian, obsidian-notes, obsidian-thoughts-beliefs, obsidian-graph-enrichment]
+    tags:
+    - obsidian
+    - suggest-promotions
+    - thoughts
+    - beliefs
+    - graph-hygiene
+    related_skills:
+    - obsidian
+    - obsidian-notes
+    - obsidian-thoughts-beliefs
+    - obsidian-graph-enrichment
+platforms:
+- linux
 ---
 
 # Obsidian: Suggest Promotions

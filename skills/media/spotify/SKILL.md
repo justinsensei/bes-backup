@@ -1,16 +1,34 @@
 ---
 name: spotify
-description: "Spotify: play, search, queue, manage playlists and devices."
+description: 'Use when working with spotify. Spotify: play, search, queue, manage
+  playlists and devices.'
 version: 1.0.0
 author: Hermes Agent
 license: MIT
-platforms: [linux, macos, windows]
+platforms:
+- linux
+- macos
+- windows
 prerequisites:
-  tools: [spotify_playback, spotify_devices, spotify_queue, spotify_search, spotify_playlists, spotify_albums, spotify_library]
+  tools:
+  - spotify_playback
+  - spotify_devices
+  - spotify_queue
+  - spotify_search
+  - spotify_playlists
+  - spotify_albums
+  - spotify_library
 metadata:
   hermes:
-    tags: [spotify, music, playback, playlists, media]
-    related_skills: [gif-search]
+    tags:
+    - spotify
+    - music
+    - playback
+    - playlists
+    - media
+    related_skills: []
+    external_related_skills:
+    - gif-search
 ---
 
 # Spotify
@@ -133,3 +151,12 @@ Entity types: `track`, `album`, `artist`, `playlist`, `show`, `episode`. Use the
 - **Don't retry on `403 Premium required` or `403 No active device`.** Those are permanent until user action.
 - **Don't use `spotify_search` to find a playlist by name** — that searches the public Spotify catalog. User playlists come from `spotify_playlists list`.
 - **Don't mix `kind: "tracks"` with album URIs** in `spotify_library` (or vice versa). The tool normalizes IDs but the API endpoint differs.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

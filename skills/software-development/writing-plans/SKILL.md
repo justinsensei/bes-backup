@@ -1,14 +1,27 @@
 ---
 name: writing-plans
-description: "Write implementation plans: bite-sized tasks, paths, code."
+description: 'Use when working with writing plans. Write implementation plans: bite-sized
+  tasks, paths, code.'
 version: 1.1.0
 author: Hermes Agent (adapted from obra/superpowers)
 license: MIT
-platforms: [linux, macos, windows]
+platforms:
+- linux
+- macos
+- windows
 metadata:
   hermes:
-    tags: [planning, design, implementation, workflow, documentation]
-    related_skills: [subagent-driven-development, test-driven-development, requesting-code-review]
+    tags:
+    - planning
+    - design
+    - implementation
+    - workflow
+    - documentation
+    related_skills:
+    - subagent-driven-development
+    external_related_skills:
+    - test-driven-development
+    - requesting-code-review
 ---
 
 # Writing Implementation Plans
@@ -295,3 +308,12 @@ Frequent commits
 ```
 
 **A good plan makes implementation obvious.**
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

@@ -1,13 +1,25 @@
 ---
 name: bes-calendar-ingest
-description: Sync, query, and ingest calendar events from Google Calendar (work and personal) to drive daily schedule planning and automated work logs.
+description: Use when working with bes calendar ingest. Sync, query, and ingest calendar
+  events from Google Calendar (work and personal) to drive daily schedule planning
+  and automated work logs.
 version: 1.0.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [calendar, google-workspace, ingest, logs]
-    related_skills: [google-workspace, work-log, morning-briefing, wind-down]
+    tags:
+    - calendar
+    - google-workspace
+    - ingest
+    - logs
+    related_skills:
+    - google-workspace
+    - work-log
+    - morning-briefing
+    - wind-down
+platforms:
+- linux
 ---
 
 # Bes Calendar Ingest
@@ -41,3 +53,12 @@ Bes has write access to Google Calendar. You can directly schedule events on Jus
 python3 ~/.hermes/skills/productivity/google-workspace/scripts/gws_multi.py --account work|personal-main calendar create --summary "Event Title" --start "2026-06-09T14:00:00" --end "2026-06-09T15:00:00" --description "Context..."
 ```
 *Note: Specify the single correct target account; do not use `--account all` for write operations.*
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

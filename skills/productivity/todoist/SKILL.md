@@ -1,13 +1,26 @@
 ---
 name: todoist
-description: "Use whenever Justin asks you to capture, find, complete, schedule, defer, or organize a task — or when you should proactively offer to (e.g. he says 'I need to remember to X', 'follow up on Y next week', 'the next step is Z'). Wraps the 54 `mcp_todoist_*` tools the Doist MCP server exposes. Covers tool selection, write hygiene, the status-project model (Now/Next/Later/Maybe), Obsidian-project linkage, and Justin-specific conventions."
+description: Use whenever Justin asks you to capture, find, complete, schedule, defer,
+  or organize a task — or when you should proactively offer to (e.g. he says 'I need
+  to remember to X', 'follow up on Y next week', 'the next step is Z'). Wraps the
+  54 `mcp_todoist_*` tools the Doist MCP server exposes. Covers tool selection, write
+  hygiene, the status-project model (Now/Next/Later/Maybe), Obsidian-project linkage,
+  and Justin-specific conventions.
 version: 2.0.0
 author: Hermes Agent
 license: MIT
 metadata:
   hermes:
-    tags: [todoist, task-management, productivity, mcp]
-    related_skills: [native-mcp, obsidian]
+    tags:
+    - todoist
+    - task-management
+    - productivity
+    - mcp
+    related_skills:
+    - native-mcp
+    - obsidian
+platforms:
+- linux
 ---
 
 # Todoist (Bes scope — full Todoist)
@@ -383,3 +396,12 @@ If any of these stop resolving, re-fetch via `find-projects` / `find-labels` and
 - The hosted alternative is `https://ai.todoist.net/mcp` with OAuth, but we chose the local stdio + API-token path because (a) Bes runs in a VM with no browser for OAuth, (b) one token works for multiple Hermes instances, (c) Justin already manages token-in-`.env` workflows fluently.
 - Justin's quick-entry hotkey setup is out of scope for the agent. He handles client-side capture; agent-side Todoist is for tasks born in conversation with the agent.
 - Hermes has a deliberately narrower version of this skill (scope: tasks labeled `hermes` only). The two skills are intentionally divergent.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

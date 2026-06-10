@@ -1,13 +1,24 @@
 ---
 name: bes-slack-ingest
-description: Capture and ingest Slack conversations as brief pointer records with a short topic description and participant list.
+description: Use when working with bes slack ingest. Capture and ingest Slack conversations
+  as brief pointer records with a short topic description and participant list.
 version: 2.0.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [slack, obsidian, ingest, logs]
-    related_skills: [obsidian, obsidian-logs, obsidian-graph-enrichment, obsidian-vault-jam]
+    tags:
+    - slack
+    - obsidian
+    - ingest
+    - logs
+    related_skills:
+    - obsidian
+    - obsidian-logs
+    - obsidian-graph-enrichment
+    - obsidian-vault-jam
+platforms:
+- linux
 ---
 
 # Bes Slack Ingest
@@ -17,7 +28,7 @@ Captures noteworthy Slack threads and brain-dumps as lightweight pointer records
 These notes are intentionally **minimalist**. They must never contain point-by-point summaries, individual quotes, or try to capture decisions or thoughts. They function purely as a index/pointer back to Slack with a brief human-readable description.
 
 ## Synced Path
-- `/home/justin.guest/vault/Logs/Slack/YYYY-MM-DD - Spaced Title.md`
+- `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Logs/Slack/YYYY-MM-DD - Spaced Title.md`
 
 ---
 
@@ -66,3 +77,12 @@ During subsequent vault enrichment runs (e.g., during Wind-Down, Morning Briefin
 2. Read the source Slack thread replies if needed to refine and write a polished **2-3 sentence Topic Description**.
 3. Verify and compile the complete list of **main participants** and ensure they are added to the frontmatter `participants` list.
 4. **Enforce the Constraints:** Actively prune and remove any point-by-point summaries, individual thoughts, quotes, or decision trees that may have leaked into the logs. Keep them strictly as simple pointers.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

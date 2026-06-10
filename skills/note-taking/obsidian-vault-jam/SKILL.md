@@ -1,13 +1,31 @@
 ---
 name: obsidian-vault-jam
-description: On-demand interactive collaborative session to run vault hygiene/enrichment, discover new notes, suggest connections, and promote thoughts to beliefs. Can be run completely unseeded or seeded with a specific topic.
+description: Use when working with obsidian vault jam. On-demand interactive collaborative
+  session to run vault hygiene/enrichment, discover new notes, suggest connections,
+  and promote thoughts to beliefs. Can be run completely unseeded or seeded with a
+  specific topic.
 version: 1.0.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, vault-jam, interactive, notes, suggest-links, suggest-notes, promotions]
-    related_skills: [obsidian, obsidian-suggest-new-notes, obsidian-suggest-links, obsidian-suggest-promotions, obsidian-graph-enrichment, obsidian-utilities]
+    tags:
+    - obsidian
+    - vault-jam
+    - interactive
+    - notes
+    - suggest-links
+    - suggest-notes
+    - promotions
+    related_skills:
+    - obsidian
+    - obsidian-suggest-new-notes
+    - obsidian-suggest-links
+    - obsidian-suggest-promotions
+    - obsidian-graph-enrichment
+    - obsidian-utilities
+platforms:
+- linux
 ---
 
 # Obsidian: Vault Jam Session
@@ -47,10 +65,10 @@ Identify conceptual gaps, insights, or missing definitions in recent logs and in
 
 1.  **Execution (Unseeded):** Scan recent logs for the last 48 hours using the lookback script:
     `python3 ~/.hermes/skills/note-taking/obsidian-suggest-new-notes/scripts/scan_recent_logs.py --hours 48`
-2.  **Execution (Seeded):** If a seed topic was specified, scan logs but **bias your analysis heavily toward logs, clips, or meeting agendas matching the seed keyword**. (You can search the vault for log mentions of the keyword using `search_files(target='content', path='/home/justin.guest/vault/Logs', pattern='[keyword]')` to gather extra material if the 48-hour scan is too sparse).
+2.  **Execution (Seeded):** If a seed topic was specified, scan logs but **bias your analysis heavily toward logs, clips, or meeting agendas matching the seed keyword**. (You can search the vault for log mentions of the keyword using `search_files(target='content', path='${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Logs', pattern='[keyword]')` to gather extra material if the 48-hour scan is too sparse).
 3.  **Pitch Format:** Present exactly **5 candidate stubs** with their categories and 1-2 sentence rationales linking them back to logs.
     *Example:* `1. [[Proposed Title]] (category: "[[Thoughts]]")`
-4.  **Creation:** Write approved note stubs into `/home/justin.guest/vault/inbox/` using valid YAML frontmatter and standard templates matching their target category (Thoughts, Sources, Decisions, Notes). Ensure they follow the correct naming format (`ID Title.md` for Thoughts, Sources, Decisions, Notes).
+4.  **Creation:** Write approved note stubs into `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/inbox/` using valid YAML frontmatter and standard templates matching their target category (Thoughts, Sources, Decisions, Notes). Ensure they follow the correct naming format (`ID Title.md` for Thoughts, Sources, Decisions, Notes).
 5.  **Loop/Advance:** Process approvals, write files, then ask Justin: *"Would you like to see another 5 new note suggestions, or move on to Phase 3: Suggest Links?"*
 
 ---
@@ -93,3 +111,12 @@ Evaluate which notes are ready to be promoted up the hierarchical tiers (Note/So
 - **No duplicates:** Always run a quick duplicate check before creating any new notes.
 - **Unidirectional links:** Never allow a Belief to link to a Thought or raw Tier 1 note.
 - **Symmetrical frontmatter:** Double check that any updated or newly written note contains a standard `daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"` link.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

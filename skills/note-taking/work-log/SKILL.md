@@ -1,7 +1,20 @@
 ---
 name: work-log
-description: Use when Justin asks to "create a work log", "log today's work", "write a work log", or otherwise wants today's work activity summarized and appended to today's daily note in the Obsidian vault. Pulls from Slack (SignLab), Linear, Gmail (work + personal-main; personal-junk only on request), Google Calendar (all 3 accounts), Todoist (completed + due-today tasks), plus the daily note and any chat brain-dump.
-platforms: [linux, macos]
+description: Use when Justin asks to "create a work log", "log today's work", "write
+  a work log", or otherwise wants today's work activity summarized and appended to
+  today's daily note in the Obsidian vault. Pulls from Slack (SignLab), Linear, Gmail
+  (work + personal-main; personal-junk only on request), Google Calendar (all 3 accounts),
+  Todoist (completed + due-today tasks), plus the daily note and any chat brain-dump.
+platforms:
+- linux
+- macos
+version: 1.0.0
+author: Bes
+license: MIT
+metadata:
+  hermes:
+    tags:
+    - work
 ---
 
 # 📋 Work Log
@@ -20,23 +33,19 @@ If no `TARGET_DATE` is present, default to today as usual. When run from cron (n
 
 ## Step 1 — Resolve vault path
 
-Read `OBSIDIAN_VAULT_PATH` from env (typically `/home/justin.guest/vault` inside `bes-vm`). Do not hard-code. If unset, fall back to `~/Documents/Obsidian Vault`. See the `obsidian` skill for full path-handling conventions.
+Read `OBSIDIAN_VAULT_PATH` from env (typically `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}` inside `bes-vm`). Do not hard-code. If unset, fall back to `~/Documents/Obsidian Vault`. See the `obsidian` skill for full path-handling conventions.
 
 ## Step 2 — Find or create the target daily note
 
-Daily-note filename format in this vault: `YYYY-MM-DD Weekday.md` (capitalized weekday name, space-separated, e.g., `2026-06-04 Thursday.md`). They are stored inside the `/home/justin.guest/vault/Daily Notes/` directory.
+Daily-note filename format in this vault: `YYYY-MM-DD Weekday.md` (capitalized weekday name, space-separated, e.g., `2026-06-04 Thursday.md`). They are stored inside the `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Daily Notes/` directory.
 
 Check if the daily note for the target date already exists:
-1. Search for `/home/justin.guest/vault/Daily Notes/<YYYY-MM-DD Weekday>.md`.
+1. Search for `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Daily Notes/<YYYY-MM-DD Weekday>.md`.
 
-**Auto-Creation of Daily Note:**
-If the target daily note does not exist, you must **automatically create it** from the template so the process never fails due to a missing note.
-1. Read the template from `/home/justin.guest/vault/Utilities/Templates/daily_note.md`.
-2. Replace any Templater expressions with real values:
-   - For `id`, use `<TARGET_DATE_NOSYMBOLS>080000` (e.g., `20260605080000` for `2026-06-05`).
-   - Strip out any remaining `<% ... %>` or `<%* ... %>` tags or placeholder texts to make it a clean, ready-to-use note.
-3. Write the initialized note to `/home/justin.guest/vault/Daily Notes/<YYYY-MM-DD Weekday>.md`.
-4. Proceed with generating and writing the work log / record blocks into this newly created file.
+**If the daily note is missing:**
+
+- **Interactive (Justin present, no autonomous cron context):** Auto-create from `${OBSIDIAN_VAULT_PATH}/Utilities/Templates/daily_note.md` — substitute Templater tags, set `id` to `<TARGET_DATE_NOSYMBOLS>080000`, write to `Daily Notes/<YYYY-MM-DD Weekday>.md`, then proceed.
+- **Autonomous cron (TARGET_DATE set, no interactive user):** Do **not** create a blank daily note. Update `~/.hermes/morning-briefing/<TARGET_DATE>.json` with `work_log_status: "error"` (or `"skipped"` if appropriate), set `work_log_error` with the reason, output `[SILENT]`, and exit.
 
 ## Step 3 — Gather raw material (parallel, one subagent per source)
 
@@ -173,7 +182,7 @@ Justin's Linear user-id can be cached. First time, look it up with `{ viewer { i
 Always check the git history of the **Obsidian Vault** to capture notes Justin added, modified, or deleted today. This is a critical source of daily activity. Checking code repos (like `~/clio-backup`, `~/bes-backup`, or `~/hermes-agent`) is optional and should be done if Justin worked on code or mentions it.
 
 **Obsidian Vault Git check:**
-Run `git log --since="<TARGET_DATE> 00:00:00" --until="<TARGET_DATE> 23:59:59" --name-status --pretty=format:"COMMIT:%h|%an|%s"` inside `/home/justin.guest/vault` (or `OBSIDIAN_VAULT_PATH`). Filter out commits where the author is `Bes (bes-vm)` or contains `bes` to isolate Justin's manual edits.
+Run `git log --since="<TARGET_DATE> 00:00:00" --until="<TARGET_DATE> 23:59:59" --name-status --pretty=format:"COMMIT:%h|%an|%s"` inside `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}` (or `OBSIDIAN_VAULT_PATH`). Filter out commits where the author is `Bes (bes-vm)` or contains `bes` to isolate Justin's manual edits.
 
 **Code repos check (optional):**
 Scope to repos under `~/clio-backup`, `~/bes-backup`, `~/hermes-agent` (if present), and any project repo Justin mentioned in the daily note. Use `git log --author --since="<TARGET_DATE> 00:00:00" --until="<TARGET_DATE> 23:59:59" --pretty` per repo.
@@ -280,3 +289,12 @@ Justin's `bes-vault-sync` watcher auto-commits and pushes the vault to `obsidian
 - **Non-idempotent daily note parsers and duplicate headers.** When parsing or updating daily note headings (such as original section headers like `### Today's Highlights` or `### Decisions Made`), use precise string matching. Loose checks like `'highlights' in header_text` or `'decisions' in header_text` will match already-migrated/merged headings like `## 🚀 Highlights & Decisions`. If the parser/migration runs again, it will treat the merged section as the raw section, causing header duplication (such as nested `- **Highlights:**` blocks). Always exclude the merged headings (e.g. ignore any heading containing `highlights & decisions`) when parsing raw original sections.
 
 - **Execution in scheduled cron / headless environments.** When running autonomously as a cron job with no user present, the `execute_code` tool is blocked by default to prevent execution of arbitrary code without approval. Standard inline python execution using `-c` flags in the `terminal` tool can also trigger safety approval check softguards. To run custom automation safely under cron, execute pre-written scripts (like `references/direct_execution.py` or a custom `/tmp/parse.py`) using clean python calls (`python3 /path/to/script.py`) inside the `terminal` tool. This bypasses pattern-matching checks and completes headlessly and reliably.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

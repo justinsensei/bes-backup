@@ -1,20 +1,36 @@
 ---
 name: google-workspace
-description: "Gmail, Calendar, Drive, Docs, Sheets via gws CLI or Python."
+description: Use when working with google workspace. Gmail, Calendar, Drive, Docs,
+  Sheets via gws CLI or Python.
 version: 1.1.0
 author: Nous Research
 license: MIT
-platforms: [linux, macos, windows]
+platforms:
+- linux
+- macos
+- windows
 required_credential_files:
-  - path: google_token.json
-    description: Google OAuth2 token (created by setup script)
-  - path: google_client_secret.json
-    description: Google OAuth2 client credentials (downloaded from Google Cloud Console)
+- path: google_token.json
+  description: Google OAuth2 token (created by setup script)
+- path: google_client_secret.json
+  description: Google OAuth2 client credentials (downloaded from Google Cloud Console)
 metadata:
   hermes:
-    tags: [Google, Gmail, Calendar, Drive, Sheets, Docs, Contacts, Email, OAuth]
+    tags:
+    - Google
+    - Gmail
+    - Calendar
+    - Drive
+    - Sheets
+    - Docs
+    - Contacts
+    - Email
+    - OAuth
     homepage: https://github.com/NousResearch/hermes-agent
-    related_skills: [himalaya]
+    related_skills:
+    - obsidian
+    external_related_skills:
+    - himalaya
 ---
 
 # Google Workspace
@@ -333,7 +349,7 @@ import os
 import sys
 
 # Add google-workspace scripts directory to sys.path
-gw_scripts_dir = "/home/justin.guest/.hermes/skills/productivity/google-workspace/scripts"
+gw_scripts_dir = "${HERMES_HOME:-$HOME/.hermes}/skills/productivity/google-workspace/scripts"
 if gw_scripts_dir not in sys.path:
     sys.path.insert(0, gw_scripts_dir)
 
@@ -536,3 +552,12 @@ When scanning Gmail to extract action items for Todoist or similar:
 ```bash
 $GSETUP --revoke
 ```
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

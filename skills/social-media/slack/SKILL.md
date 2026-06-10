@@ -1,13 +1,23 @@
 ---
 name: slack
-description: "Operate Justin's Slack on his behalf via user-token (xoxp-) API — read channels/DMs/threads, search messages, post as Justin, react. Workspace: SignLab. Single-workspace today; designed to multi-tenant later."
+description: 'Use when working with slack. Operate Justin''s Slack on his behalf via
+  user-token (xoxp-) API — read channels/DMs/threads, search messages, post as Justin,
+  react. Workspace: SignLab. Single-workspace today; designed to multi-tenant later.'
 version: 1.0.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [slack, signlab, messaging, second-brain]
-    related_skills: [obsidian, google-workspace]
+    tags:
+    - slack
+    - signlab
+    - messaging
+    - second-brain
+    related_skills:
+    - obsidian
+    - google-workspace
+platforms:
+- linux
 ---
 
 # Slack (SignLab workspace, user-token mode)
@@ -145,14 +155,14 @@ accepts either `U01ABC...` or `@alice` (resolved via users.list).
 If Justin reacts to a message with the `🧠` (brain) emoji, use `scripts/fetch_slack_brains.py` to fetch the message and its surrounding context.
 1. List all new reacted messages:
    ```bash
-   python3 ${HERMES_HOME:-$HOME/.hermes}/skills/social-media/slack/scripts/fetch_slack_brains.py --list-new
+   python3 ${HERMES_HOME:-$HOME/.hermes}/scripts/fetch_slack_brains.py --list-new
    ```
 2. For each new item:
    - Generate a summarized Slack log in `Logs/Slack/YYYY-MM-DD-slug.md`.
    - Update today's daily note with a link and one-sentence gist under `## 🗒 Notepad` or `## 🚀 Highlights & Decisions`.
    - Mark the item as processed so it is never duplicated:
      ```bash
-     python3 ${HERMES_HOME:-$HOME/.hermes}/skills/social-media/slack/scripts/fetch_slack_brains.py --mark-processed <channel_id> <ts>
+     python3 ${HERMES_HOME:-$HOME/.hermes}/scripts/fetch_slack_brains.py --mark-processed <channel_id> <ts>
      ```
 
 **"What did I miss in #foo today?"**
@@ -194,7 +204,7 @@ You can capture high-quality conversation logs directly from Slack into the Obsi
 When Justin adds a `🧠` reaction to a message:
 - A cron job (`Slack Brain Note Capture`) runs every 2 hours using the `fetch_slack_brains.py` helper.
 - If Justin (user ID `U095LHMC4UW`) reacted with `🧠`, the script fetches the entire thread (if part of one) or an 11-message context window surrounding the message.
-- It synthesizes a Markdown log inside `/home/justin.guest/vault/Logs/Slack/YYYY-MM-DD-slug.md` with participants, a summary of who said what, and key decisions/takeaways. Do NOT include verbatim Slack messages; store only summaries with retrieval metadata.
+- It synthesizes a Markdown log inside `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Logs/Slack/YYYY-MM-DD-slug.md` with participants, a summary of who said what, and key decisions/takeaways. Do NOT include verbatim Slack messages; store only summaries with retrieval metadata.
 - It automatically appends a link + one-sentence gist under today's daily note `## 🗒 Notepad` section.
 - It marks the thread processed inside `~/.hermes/processed_slack_brains.json`.
 
@@ -222,7 +232,7 @@ There is a dedicated cron job ("Slack Brain Note Capture") running every 2 hours
 1. Runs `fetch_slack_brains.py` to fetch messages where Justin (`U095LHMC4UW`) added a `🧠` reaction.
 2. Checks against the processed cache at `~/.hermes/processed_slack_brains.json`.
 3. If new, retrieves the full conversation context (full thread replies if it's a thread; or a chronological 11-message context window around the reacted message if it's not).
-4. Summarizes the discussion via the agent and writes it to `/home/justin.guest/vault/Logs/Slack/YYYY-MM-DD-slug.md`. Do NOT include verbatim Slack messages; store only summaries with retrieval metadata.
+4. Summarizes the discussion via the agent and writes it to `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Logs/Slack/YYYY-MM-DD-slug.md`. Do NOT include verbatim Slack messages; store only summaries with retrieval metadata.
 5. Appends a link and one-sentence gist to today's Daily Note notepad under `## 🗒 Notepad`.
 6. Marks the message as processed using `python3 fetch_slack_brains.py --mark-processed <channel_id> <ts>`.
 
@@ -296,3 +306,12 @@ Pattern mirrors `gws_multi.py` in the google-workspace skill.
 - **Convenience symlink** (optional): `~/.local/bin/slack` → wrapper
 - **Python deps**: `slack_sdk` installed in `~/.hermes/hermes-agent/venv`
 - **Workspace home**: signlab.slack.com
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

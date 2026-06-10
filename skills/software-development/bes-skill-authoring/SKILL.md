@@ -1,141 +1,170 @@
 ---
 name: bes-skill-authoring
-description: "Author Bes-specific skills under ~/.hermes/skills/: frontmatter, validator, structure."
-version: 1.0.0
+description: "Use when creating, editing, or reviewing any Bes SKILL.md — conventions, frontmatter, script placement, validation, and deploy workflow."
+version: 2.0.0
 author: Bes
 license: MIT
+platforms: [linux]
 metadata:
   hermes:
-    tags: [skills, authoring, bes, conventions, skill-md]
-    related_skills: [writing-plans, requesting-code-review]
+    tags: [skills, authoring, bes, conventions, skill-md, validator]
+    related_skills: [writing-plans]
 ---
 
 # Authoring Bes Skills
 
 ## Overview
 
-Bes skills are durable, procedural knowledge for specific kinds of work (vault conventions, work logs, narrower tools, daily rituals).
+Bes skills are durable procedural knowledge stored in the `bes-backup` git repo and deployed to the Hermes runtime on the VM. This skill is the single source of truth for how to create and maintain them consistently.
 
-There are two places a SKILL.md can live:
+## Two-tree model
 
-1. **User-local (primary for Bes):** `~/.hermes/skills/<category>/<name>/SKILL.md` — personal, not shared. Created via `skill_manage(action='create')`.
-2. **In-repo (for development of Hermes core):** `/home/bb/hermes-agent/skills/<category>/<name>/SKILL.md`.
+| Tree | Path | Role |
+|---|---|---|
+| **Source (git)** | `${BES_BACKUP:-$HOME/bes-backup}/skills/<category>/<name>/SKILL.md` | Edit here. Commit to git. |
+| **Source scripts** | `${BES_BACKUP:-$HOME/bes-backup}/scripts/` | Operational scripts (cron, hygiene, pollers). |
+| **Runtime skills** | `${HERMES_HOME:-$HOME/.hermes}/skills/` | Deployed copy Bes loads at session start. |
+| **Runtime scripts** | `${HERMES_HOME:-$HOME/.hermes}/scripts/` | Deployed operational scripts. |
 
-Since Bes is a customized personal assistant for Justin, we focus almost exclusively on **User-local** skills under `~/.hermes/skills/` to codify personal rituals and Obsidian integration.
+**Rules:**
+- Always edit the **repo** first, never `skill_manage(action='create')` for in-repo skills (that writes to `~/.hermes/skills/` only and bypasses git).
+- After repo edits: run validator, then deploy to VM (git pull / rsync — whatever Justin uses).
+- `skill_manage(action='patch')` and `skill_manage(action='edit')` work on deployed skills for small runtime hotfixes, but mirror changes back into `bes-backup` or they will be lost on next deploy.
 
 ## When to Use
 
-- Justin asks you to save an approach as a skill, or remember a procedure.
-- You identify a stable, reusable workflow (e.g., custom data parsing, syncing scripts, platform integrations).
-- You need to update or maintain an existing Bes-specific skill.
+- Creating a new skill
+- Editing or patching any existing skill
+- SOUL.md says "update the skill" after discovering a stale path or pitfall
+- Before committing skill changes (run validator)
 
-## Required Frontmatter
+**Don't use for:** one-off task instructions that won't be reused — those belong in a conversation, not a skill.
 
-Source of truth: `tools/skill_manager_tool.py::_validate_frontmatter`. Hard requirements:
+## Canonical variables
 
-- Starts with `---` as the first bytes (no leading blank line).
-- Closes with `\n---\n` before the body.
-- Parses as a YAML mapping.
-- `name` field present.
-- `description` field present, ≤ **1024 chars** (`MAX_DESCRIPTION_LENGTH`).
-- Non-empty body after the closing `---`.
+Use these in skill prose and command examples instead of hardcoded VM paths:
 
-Peer-matched shape used by every skill under `~/.hermes/skills/`:
+```bash
+VAULT="${OBSIDIAN_VAULT_PATH:-${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}}"
+HERMES="${HERMES_HOME:-$HOME/.hermes}"
+REPO="${BES_BACKUP:-$HOME/bes-backup}"
+DAILY_TEMPLATE="${VAULT}/Utilities/Templates/daily_note.md"
+```
+
+Canonical daily-note template path: `$OBSIDIAN_VAULT_PATH/Utilities/Templates/daily_note.md` (capital U in Utilities).
+
+## Required frontmatter
+
+Hard requirements (enforced by `scripts/validate_skills.py`):
+
+- Starts with `---` as first bytes (no leading blank line or BOM)
+- Closes with `\n---\n` before body
+- Parses as YAML
+- `name` and `description` present
+- `description` ≤ 1024 chars; full file ≤ 100,000 chars
+- `name` ≤ 64 chars, lowercase + hyphens
+
+**Canonical shape:**
 
 ```yaml
 ---
-name: my-skill-name               # lowercase, hyphens, ≤64 chars (MAX_NAME_LENGTH)
-description: Use when <trigger>. <one-line behavior>.
+name: skill-name
+description: "Use when <trigger>. <one-line behavior>."
 version: 1.0.0
 author: Bes
 license: MIT
+platforms: [linux]
 metadata:
   hermes:
-    tags: [short, descriptive, tags]
-    related_skills: [other-skill, another-skill]
+    tags: [short, tags]
+    related_skills: [in-repo-skill-names]
+    external_related_skills: [bundled-only-peers]   # optional
+    deprecated: false                                  # optional
 ---
 ```
 
-## Size Limits
+- `related_skills` lives **only** under `metadata.hermes`, never at YAML root.
+- Every `related_skills` entry must match a `name:` in this repo, unless listed in `external_related_skills` (for bundled Hermes peers not committed here, e.g. `himalaya`).
+- `description` should start with `Use when` for Bes-native skills.
+- No emoji in H1 titles for new or edited skills.
 
-- Description: ≤ 1024 chars (enforced).
-- Full SKILL.md: ≤ 100,000 chars (enforced as `MAX_SKILL_CONTENT_CHARS`, ~36k tokens).
-- Peer skills sit at **8-14k chars**. Aim for that range. If you're pushing past 20k, split into `references/*.md` and reference them from SKILL.md.
+## Script placement
 
-## Peer-Matched Structure
+| Type | Location | Examples |
+|---|---|---|
+| Operational / cron / cross-skill | `bes-backup/scripts/` only | `vault_hygiene.py`, `fetch_slack_brains.py`, `validate_skills.py` |
+| Skill-tied CLI wrapper | `skills/<cat>/<name>/scripts/` | `slack.py`, `linear_api.py`, `gws_multi.py` |
 
-Every skill follows roughly:
+**No duplicate basenames** across `scripts/` and `skills/*/scripts/`. Runtime references operational scripts as `${HERMES}/scripts/<name>.py`.
+
+## Directory placement
 
 ```
-# <Title>
+skills/<category>/<skill-name>/SKILL.md
+```
+
+Categories in this repo: `apple`, `autonomous-ai-agents`, `creative`, `daily-rituals`, `devops`, `gaming`, `mcp`, `media`, `mlops`, `note-taking`, `productivity`, `research`, `social-media`, `software-development`.
+
+Supporting files: `references/`, `scripts/`, `templates/`, `assets/` under the skill directory.
+
+## Peer structure
+
+Minimum sections for Bes-native skills:
+
+```
+# Title (no emoji)
 
 ## Overview
-One or two paragraphs: what and why.
-
 ## When to Use
-- Bulleted triggers
-- "Don't use for:" counter-triggers
-
-## <Topic sections specific to the skill>
-- Quick-reference tables are common
-- Code blocks with exact commands
-- Bes-specific recipes and variables
-
+## <topic sections>
 ## Common Pitfalls
-Numbered list of mistakes and their fixes.
-
 ## Verification Checklist
-- [ ] Checkbox list of post-action verifications
-
-## One-Shot Recipes (optional)
-Named scenarios → concrete command sequences.
 ```
 
-Not every section is mandatory, but `Overview` + `When to Use` + actionable body + pitfalls are the minimum for the skill to feel like a peer.
-
-## Directory Placement
-
-User-local skills live under:
-```
-~/.hermes/skills/<category>/<skill-name>/SKILL.md
-```
-
-Categories currently in use (confirm with `skills_list`): `apple`, `autonomous-ai-agents`, `creative`, `daily-rituals`, `data-science`, `devops`, `email`, `gaming`, `github`, `mcp`, `media`, `mlops`, `note-taking`, `productivity`, `red-teaming`, `research`, `smart-home`, `social-media`, `software-development`.
-
-Pick the closest existing category. For Bes notes and workflows, `note-taking` or `daily-rituals` is usually best. For technical scripts, `software-development` is best.
+Split content past ~20k chars into `references/*.md`.
 
 ## Workflow
 
-1. **Survey peers** in the target category:
-   For example: `note-taking/obsidian` or `note-taking/work-log`.
-2. **Draft** with `skill_manage(action='create', ...)` to create the user-local skill.
-3. **Verify** using `skill_view(name=...)` once created (or in a fresh session).
+1. Survey peers in the target category (`find skills/<category> -name SKILL.md`).
+2. Draft or edit in `bes-backup/skills/...`.
+3. Validate: `python3 ${REPO}/scripts/validate_skills.py --skill <name>` then `--strict` for full tree.
+4. Deploy repo changes to VM (`~/.hermes/skills/`, `~/.hermes/scripts/`).
+5. Fresh Bes session: `skill_view(name='<name>')` to confirm loader sees changes.
 
-## Editing Existing Skills
+## Deprecation
 
-- **Small fix (typo, added pitfall, tightened trigger):** Use `skill_manage(action='patch', name=..., old_string=..., new_string=...)`.
-- **Major rewrite:** Use `skill_manage(action='edit', name=..., content=...)` to supply the full new content.
-- **Always verify** the edit — skills are living documents and should be maintained quietly as pitfalls arise.
+Set `metadata.hermes.deprecated: true` and point to the replacement skill in the body. Do not delete skills unless Justin asks.
+
+## Tirith / security scanner
+
+Do not embed pipe-to-interpreter command shapes in skill examples or subagent context blocks (e.g. piping stdout into python3 one-liners, bash, node -e, or curl-to-sh install patterns). Use `jq` for JSON. Use tempfile scripts for Python.
+
+Use `jq` for JSON parsing. For non-trivial Python post-processing, write a script to a tempfile and run `python3 /tmp/foo.py`.
+
+## Validator CLI
+
+```bash
+python3 scripts/validate_skills.py                  # all skills
+python3 scripts/validate_skills.py --skill work-log
+python3 scripts/validate_skills.py --strict         # warnings fail
+python3 scripts/validate_skills.py --index          # emit skills/SKILLS-INDEX.md
+```
 
 ## Common Pitfalls
 
-1. **Leading whitespace before `---`.** The validator checks `content.startswith("---")`; any leading blank line or BOM fails validation.
-
-2. **Description too generic.** Peer descriptions start with "Use when ..." and describe the *trigger class*, not the one task. "Use when debugging X" > "Debug X".
-
-3. **Forgetting the author/license/metadata block.** Not validator-enforced, but every peer has it; omitting makes the skill look half-finished.
-
-4. **Writing a skill that duplicates a peer.** Before creating, list skills and search. Prefer extending an existing skill to creating a narrow sibling.
-
-5. **Embedding scanner-tripping command shapes in skill content.** Inside each subagent context block, tell the agent which JSON parser to use (`jq` is installed everywhere) and forbid unsafe shapes explicitly (e.g. `cmd | python3 -c`, `cmd | bash`, `cmd | node -e`, or `curl | sh`).
+1. **Using `skill_manage(create)` for repo skills.** Creates a runtime-only copy; git repo won't have it.
+2. **`related_skills` at YAML root.** Must be under `metadata.hermes`.
+3. **Dangling `related_skills`.** Use `external_related_skills` for peers not in this repo.
+4. **Duplicate script files.** One canonical path per operational script.
+5. **Hardcoded `/home/justin.guest/`.** Use `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}` patterns.
+6. **Expecting current session to see new skills.** Loader is cached at session start; verify in a fresh session.
+7. **Four different daily-note template paths.** Only `Utilities/Templates/daily_note.md`.
 
 ## Verification Checklist
 
-- [ ] File created successfully via `skill_manage` (lives in `~/.hermes/skills/`)
-- [ ] Frontmatter starts at byte 0 with `---`, closes with `\n---\n`
-- [ ] No embedded `| python3 -c`, `| bash`, `| node -e`, or `curl ... | sh` patterns in example commands or subagent context blocks
-- [ ] `name`, `description`, `version`, `author`, `license`, `metadata.hermes.{tags, related_skills}` all present
-- [ ] Name ≤ 64 chars, lowercase + hyphens
-- [ ] Description ≤ 1024 chars and starts with "Use when ..."
-- [ ] Total file ≤ 100,000 chars (aim for 8-15k)
-- [ ] Structure: `# Title` → `## Overview` → `## When to Use` → body → `## Common Pitfalls` → `## Verification Checklist`
+- [ ] File at `skills/<category>/<name>/SKILL.md` in `bes-backup`
+- [ ] `python3 scripts/validate_skills.py --skill <name>` passes
+- [ ] `related_skills` resolve in-repo or are in `external_related_skills`
+- [ ] No duplicate operational scripts
+- [ ] Deployed to `~/.hermes/skills/` on VM
+- [ ] Confirmed in fresh `skill_view` session

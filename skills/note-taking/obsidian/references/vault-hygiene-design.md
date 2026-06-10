@@ -1,6 +1,6 @@
 # Vault Hygiene Script — Design Notes
 
-Scripts: `~/.hermes/scripts/vault_hygiene.py` (main), `~/.hermes/scripts/vault_hygiene_cron.py` (cron wrapper).
+Skill: `obsidian-hygiene`. Scripts: `${HERMES_HOME:-$HOME/.hermes}/scripts/vault_hygiene.py` (main), `vault_hygiene_cron.py` (cron wrapper). Source copies live in `bes-backup/scripts/`.
 
 Cron job id: `0b12d967fdf6`, schedule: daily 8am, deliver: telegram (red issues only).
 
@@ -52,4 +52,4 @@ Report but never auto-fix — these require human judgment about which value is 
 ## Known persistent issues (as of 2026-05-22)
 
 - `References/2026-06 Sienna PA Registration.md` — no frontmatter, just a PDF embed. Will keep alerting until manually fixed.
-- Today's daily note `2026-05-21 Thursday.md` had stale `id: "20260127154919"` (hardcoded in template). Check `Templates/Daily Note.md` to ensure Templater expression generates fresh timestamps.
+- Today's daily note `2026-05-21 Thursday.md` had stale `id: "20260127154919"` (hardcoded in template). Check `${OBSIDIAN_VAULT_PATH}/Utilities/Templates/daily_note.md` to ensure Templater expression generates fresh timestamps.

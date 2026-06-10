@@ -1,13 +1,23 @@
 ---
 name: obsidian-decisions
-description: Use when creating or recording team or individual decisions, trade-offs, and reasoning logs under Notes/ with category "[[Decisions]]".
+description: Use when creating or recording team or individual decisions, trade-offs,
+  and reasoning logs under Notes/ with category "[[Decisions]]".
 version: 1.0.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, notes, decisions, architecture, product]
-    related_skills: [obsidian, obsidian-notes]
+    tags:
+    - obsidian
+    - notes
+    - decisions
+    - architecture
+    - product
+    related_skills:
+    - obsidian
+    - obsidian-notes
+platforms:
+- linux
 ---
 
 # Obsidian: Decisions Log Management
@@ -18,7 +28,7 @@ This skill governs the capture and structured recording of individual or team de
 ---
 
 ## Folder & Category
-- **Directory:** Always draft decision notes in the inbox: `/home/justin.guest/vault/inbox/` (the user will review and move them later).
+- **Directory:** Always draft decision notes in the inbox: `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/inbox/` (the user will review and move them later).
 - **Category link:** `category: "[[Decisions]]"`
 
 ---
@@ -50,3 +60,12 @@ category: "[[Decisions]]"
 - **Capitalized spaced names:** Use `ID Title.md` format for the filename (where ID is the creation timestamp, e.g. `20260609170500 Pause app-to-web payment flow.md`).
 - **Drafting Location:** Always place new decision notes in the inbox folder (`vault/inbox/`).
 - **No Pipe Tables:** Avoid using markdown pipe tables; represent trade-offs or lists using clean bulleted list structures.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

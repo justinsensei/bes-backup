@@ -1,13 +1,24 @@
 ---
 name: obsidian-hygiene
-description: Use when performing daily or ad-hoc vault maintenance, running lints, resolving duplicate ID conflicts, or converting legacy inline tags to categories.
+description: Use when performing daily or ad-hoc vault maintenance, running lints,
+  resolving duplicate ID conflicts, or converting legacy inline tags to categories.
 version: 1.2.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, operations, hygiene, maintenance, lint, duplicate-id]
-    related_skills: [obsidian, obsidian-utilities]
+    tags:
+    - obsidian
+    - operations
+    - hygiene
+    - maintenance
+    - lint
+    - duplicate-id
+    related_skills:
+    - obsidian
+    - obsidian-utilities
+platforms:
+- linux
 ---
 
 # Obsidian Operation: Vault Hygiene & Maintenance
@@ -68,3 +79,12 @@ In June 2026, Justin transitioned away from bot-enriched timeline sections in fa
 When designing or patching automated hygiene scripts that read, clean, and write back markdown files:
 - **Infinite Overwrite Loops:** Avoid extracting `body_content` in a way that includes leading newlines (e.g. `text[fm_end+4:]`) and then checking if it needs an update using `.lstrip()` (e.g. `body_content != original_body`). Since writing the file adds a newline after the frontmatter closing delimiter `---`, the next read will extract the leading newline again, causing an endless loop of "fixing" and rewriting unchanged files. Always `.lstrip()` immediately upon extraction.
 - **Massive Re-indexing Overhead:** Constantly rewriting files modifies their `mtime` and hash, which triggers heavy background semantic embedding and indexing runs. Always check if real changes occurred before writing the file back to disk.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

@@ -1,13 +1,28 @@
 ---
 name: obsidian-graph-enrichment
-description: Principles and link hierarchy conventions for maintaining a clean note graph, tracking chronological thinking evolution, and using semantic AI memory integration in Obsidian.
+description: Use when working with obsidian graph enrichment. Principles and link
+  hierarchy conventions for maintaining a clean note graph, tracking chronological
+  thinking evolution, and using semantic AI memory integration in Obsidian.
 version: 1.1.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, link-hierarchy, graph, note-enrichment, thoughts, beliefs, semantic-search, embeddings]
-    related_skills: [obsidian, obsidian-thoughts-beliefs, obsidian-notes]
+    tags:
+    - obsidian
+    - link-hierarchy
+    - graph
+    - note-enrichment
+    - thoughts
+    - beliefs
+    - semantic-search
+    - embeddings
+    related_skills:
+    - obsidian
+    - obsidian-thoughts-beliefs
+    - obsidian-notes
+platforms:
+- linux
 ---
 
 # Obsidian: Graph Enrichment & Link Hierarchy
@@ -146,5 +161,12 @@ Run vector similarity queries across either full documents (`--type doc`) or ind
 ```bash
 python3 ~/.hermes/scripts/semantic_pointer.py search "search query" --type doc --limit 5
 ```
+## Common Pitfalls
 
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
 
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

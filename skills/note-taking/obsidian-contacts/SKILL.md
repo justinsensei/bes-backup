@@ -1,13 +1,22 @@
 ---
 name: obsidian-contacts
-description: Use when managing the Contacts/ directory, preventing duplicate notes, and coordinating People and Organizations categories.
+description: Use when managing the Contacts/ directory, preventing duplicate notes,
+  and coordinating People and Organizations categories.
 version: 1.4.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, contacts, folder-conventions]
-    related_skills: [obsidian, obsidian-people, obsidian-organizations]
+    tags:
+    - obsidian
+    - contacts
+    - folder-conventions
+    related_skills:
+    - obsidian
+    - obsidian-people
+    - obsidian-organizations
+platforms:
+- linux
 ---
 
 # Obsidian Type: Contacts Directory Conventions
@@ -18,8 +27,8 @@ This skill governs the physical structure and coordinate mapping of the `/Contac
 ---
 
 ## Directory & Sub-skills
-- **New Contacts Landing Directory:** `/home/justin.guest/vault/inbox/`
-- **Permanent Contacts Directory:** `/home/justin.guest/vault/Contacts/`
+- **New Contacts Landing Directory:** `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/inbox/`
+- **Permanent Contacts Directory:** `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Contacts/`
 - **Sub-skills (Categories):**
   - **`obsidian-people`**: For individual contacts, family members, friends, or colleagues (`category: "[[People]]"`).
   - **`obsidian-organizations`**: For companies, schools, legal entities, or institutions (`category: "[[Organizations]]"`).
@@ -33,8 +42,8 @@ This skill governs the physical structure and coordinate mapping of the `/Contac
 
 ### Step 1 — Check for Duplicates
 Before writing any contact file, always search both `/Contacts/` and `/inbox/` by name, first name, last name, abbreviation, or known aliases.
-- Use `search_files(target='files', path='/home/justin.guest/vault/Contacts')` and `search_files(target='files', path='/home/justin.guest/vault/inbox')`.
-- **Relocation Boundary**: Only brand-new contacts created by Bes should land in `/home/justin.guest/vault/inbox/`. Never relocate or move existing contact notes already in `/home/justin.guest/vault/Contacts/` (created by Justin or prior processes) to the inbox. Always update them in-place.
+- Use `search_files(target='files', path='${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Contacts')` and `search_files(target='files', path='${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/inbox')`.
+- **Relocation Boundary**: Only brand-new contacts created by Bes should land in `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/inbox/`. Never relocate or move existing contact notes already in `${OBSIDIAN_VAULT_PATH:-/home/justin.guest/vault}/Contacts/` (created by Justin or prior processes) to the inbox. Always update them in-place.
 - If the contact does not exist anywhere, create the new note in the `/inbox/` directory.
 
 ### Step 2 — Filename Capitalization
@@ -91,3 +100,12 @@ Granola or other automated transcription tools occasionally mishear names or int
 1. **Consolidate to Actual Name**: Merge the timelines, rename the note to the person's capitalized, correct full name, and delete the misheard/alternate contact note.
 2. **Add Alias**: Register the misheard spelling (e.g. `Drew`, `Christina`) in the frontmatter `aliases:` list of the consolidated contact note, so future automated speech-to-text references map correctly.
 3. **Vault-Wide Update**: Do a global search-and-replace for wikilinks pointing to the old/misheard spelling (e.g. replacing `[[Drew]]` or `[[drew]]` with `[[Dhruv]]`), keeping your note links perfectly clean.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault

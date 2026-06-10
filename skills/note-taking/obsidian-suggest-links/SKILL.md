@@ -1,13 +1,28 @@
 ---
 name: obsidian-suggest-links
-description: Core skill to suggest and establish conceptual links among Thoughts and Beliefs using a randomized or seeded serendipity engine, then write approved connections back to Obsidian notes.
+description: Use when working with obsidian suggest links. Core skill to suggest and
+  establish conceptual links among Thoughts and Beliefs using a randomized or seeded
+  serendipity engine, then write approved connections back to Obsidian notes.
 version: 1.0.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, link-suggestions, suggest-links, notes, thoughts, beliefs]
-    related_skills: [obsidian, obsidian-graph-enrichment, obsidian-thoughts-beliefs, obsidian-suggest-new-notes, obsidian-suggest-promotions]
+    tags:
+    - obsidian
+    - link-suggestions
+    - suggest-links
+    - notes
+    - thoughts
+    - beliefs
+    related_skills:
+    - obsidian
+    - obsidian-graph-enrichment
+    - obsidian-thoughts-beliefs
+    - obsidian-suggest-new-notes
+    - obsidian-suggest-promotions
+platforms:
+- linux
 ---
 
 # Obsidian: Suggest Links
@@ -93,3 +108,12 @@ When Justin approves one or more links, update the source note using `patch`:
   2. Merge any new thoughts, tenets, or details from the current conversation directly into it.
   3. Ensure all incoming and outgoing links to and from the previous notes are fully preserved and updated to point to this canonical note.
   4. Delete the duplicate or redundant notes immediately to keep the vault clean.
+## Common Pitfalls
+
+1. Skipping the skill and improvising paths or conventions.
+2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+## Verification Checklist
+
+- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
+- [ ] Used env-var path patterns where writing to vault or calling scripts
+- [ ] Did not manually `git commit` inside the vault
