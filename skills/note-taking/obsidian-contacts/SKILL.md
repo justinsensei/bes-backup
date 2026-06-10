@@ -1,7 +1,7 @@
 ---
 name: obsidian-contacts
 description: Use when managing the Contacts/ directory, preventing duplicate notes, and coordinating People and Organizations categories.
-version: 1.5.0
+version: 1.4.0
 author: Bes
 license: MIT
 metadata:
@@ -52,10 +52,19 @@ To enable short-name links while keeping filenames unique:
    ```
 3. The background scripts will automatically match the first name as an alias without generating duplicate candidate notes or polluting timelines.
 
-### Step 4 — Mapping Connections
+### Step 3 — Mapping Connections
 - Individual people notes must link to their respective organizations (e.g. `- **Company:** [[SignLab]]`).
 - Organizations must link to their key representatives.
 - Maintain family connections accurately using spaced wikilinks (e.g. `[[Sam]]'s teacher`, `[[Nana]]'s friend`).
+
+---
+
+## Pitfalls & Safeguards
+
+### Alias Hygiene & Link-Hijacking Prevention
+- **Avoid Generic First-Name Aliases**: Never add a highly generic or common first name (e.g., `Linda`, `Georgia`, `Drew`) as a generic alias in the frontmatter of a full-name contact note (e.g., `Linda Massie.md` or `Georgia Sullivan.md`) if there are other entities, companies, or plain-text terms (such as `Georgia Tech`, `Lindy Effect`, or the state of `Georgia`) that share that name.
+- **Why**: Broad aliases cause automated background scripts (like `check_vault_signals.py`) and AI parsers to perform "link-hijacking"—incorrectly mapping technical research, company meetings, or regional references onto family members' timeline notes, creating huge amounts of cross-pollution and duplicates.
+- **Safe Alias Rule**: Only use single-name aliases when they are absolutely unique in the vault context (e.g., `Larry` for `Andrew Lawrence` is safe, but `Andy`, `Andrew`, `David`, or `Jim` are unsafe and must map to specific individuals like `Andy Goff` or `Andy Masley` instead of general notes).
 
 ### Step 4 — Generic Name Collisions & Deduplication
 To prevent auto-generated notes from colliding on generic first names (e.g., `Andy` or `Andrew` colliding with `Andy Goff`, `Andrew Novak`, etc.):

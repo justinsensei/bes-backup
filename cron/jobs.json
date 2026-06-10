@@ -148,7 +148,7 @@
       "schedule_display": "0 7 * * *",
       "repeat": {
         "times": null,
-        "completed": 19
+        "completed": 20
       },
       "enabled": true,
       "state": "scheduled",
@@ -156,9 +156,9 @@
       "paused_reason": null,
       "created_at": "2026-05-22T15:05:05.687250-04:00",
       "next_run_at": "2026-06-11T07:00:00-04:00",
-      "last_run_at": "2026-06-09T07:35:34.448878-04:00",
-      "last_status": "error",
-      "last_error": "RuntimeError: Morning, Justin! Ready to start your day?",
+      "last_run_at": "2026-06-10T07:04:18.827431-04:00",
+      "last_status": "ok",
+      "last_error": null,
       "last_delivery_error": null,
       "deliver": "telegram:-4851855354",
       "origin": {
@@ -224,5 +224,5 @@
       "profile": null
     }
   ],
-  "updated_at": "2026-06-10T07:00:49.710387-04:00"
+  "updated_at": "2026-06-10T07:04:18.828855-04:00"
 }
