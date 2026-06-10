@@ -20,6 +20,10 @@ ID conflicts typically fall into three categories:
    - Distinct files that share an ID (e.g., a raw clipping source file and its custom summary/wrap note).
    - **Rule:** Keep both files. Assign a fresh, unique 14-digit timestamp ID to the newer note or the source file (usually the source note can be changed if the custom summary's filename contains the original ID).
 
+4. **Batch-Generated Entities (Sequential ID Collisions)**
+   - Distinct files (such as newly synchronized contacts, people, or organization notes) created in rapid succession or batches that end up with overlapping timestamp IDs (e.g., `20260610120100` shared by two different people due to simultaneous or loop-based sequential timestamp assignment).
+   - **Rule:** Keep all distinct files. Assign a unique, incremented 14-digit timestamp ID to the duplicates to resolve the conflict (e.g. changing one `20260610120100` to `20260610120101` after verifying that the target ID is not already used).
+
 ---
 
 ## Resolution Recipe

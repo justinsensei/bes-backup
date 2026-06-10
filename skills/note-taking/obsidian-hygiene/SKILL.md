@@ -34,7 +34,10 @@ This operational skill governs manual and automated procedures to maintain a cle
 ## The Hygiene Process
 
 ### Step 1 — Automated Script Execution
-Run the consolidated hygiene script at `~/.hermes/scripts/vault_hygiene.py` (which runs automatically daily at 9PM, or can be run manually) to check the health of the vault:
+Run the consolidated hygiene script at `~/.hermes/scripts/vault_hygiene.py` (which runs automatically daily at 9PM, or can be run manually) to check the health of the vault.
+
+*Note: If there are many newly modified or added files, the script will trigger a heavy semantic indexing run at the end. When running this script via the `terminal` tool, always pass a generous timeout parameter (e.g., `timeout: 180` or higher) to prevent a premature timeout error.*
+
 ```bash
 python3 ~/.hermes/scripts/vault_hygiene.py
 ```
@@ -77,6 +80,8 @@ In June 2026, Justin transitioned away from bot-enriched timeline sections in fa
 ### Step 5 — Frontmatter Parsing and Overwrite Pitfalls
 
 When designing or patching automated hygiene scripts that read, clean, and write back markdown files:
+- **Timeline Removal and Frontmatter Destruction:** When removing native timeline blocks (e.g., legacy `## Timeline` sections), ensure your search-and-replace patterns do not accidentally match and delete the frontmatter's closing properties divider (`---`). A pattern matching `---\n\n## Timeline` can easily delete the closing properties marker from legacy notes that have no other body content, leaving behind an unclosed properties section (`---` at the top only) which breaks YAML metadata parsers. Always verify that a closing `---` remains present and sits on its own line after the properties block.
+- **Dangling closing dividers:** Ensure any script that dynamically adds or updates properties (like `daily_note` or `category`) writes back the closing divider (`---`) on a *fresh line*. Writing it without an intervening newline will append it directly to the end of the last property string (e.g., `daily_note: '...'---`), which corrupts properties.
 - **Infinite Overwrite Loops:** Avoid extracting `body_content` in a way that includes leading newlines (e.g. `text[fm_end+4:]`) and then checking if it needs an update using `.lstrip()` (e.g. `body_content != original_body`). Since writing the file adds a newline after the frontmatter closing delimiter `---`, the next read will extract the leading newline again, causing an endless loop of "fixing" and rewriting unchanged files. Always `.lstrip()` immediately upon extraction.
 - **Massive Re-indexing Overhead:** Constantly rewriting files modifies their `mtime` and hash, which triggers heavy background semantic embedding and indexing runs. Always check if real changes occurred before writing the file back to disk.
 ## Common Pitfalls

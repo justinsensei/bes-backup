@@ -75,6 +75,7 @@ category: "[[CategoryName]]"         # Single category link (quoted shortest-pat
 
 ### Git & Synchronization
 - Do NOT run `git` commands (add, commit, push) inside the vault. The background watcher `bes-vault-sync` handles commit and synchronization to GitHub automatically within seconds of filesystem writes.
+- For detailed architecture, configuration, scripts, and pitfalls of the synchronization daemons (`bes-vault-sync` and `bes-autocommit`), see the **[Git & Synchronization Architecture Reference](references/git-and-synchronization-architecture.md)**.
 
 ---
 
