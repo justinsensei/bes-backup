@@ -69,15 +69,15 @@ Discussed K12 GTM rollout with Endre.
             encoding="utf-8",
         )
         report = self._integrate("inbox/2026-06-10 - Slack - K12 GTM sync.md", "K12 GTM sync discussion")
-        self.assertEqual(report["updated"]["projects"], [])
-        self.assertEqual(report["updated"]["contacts"], [])
-        self.assertIn("Endre:Timeline", report["skipped"])
+        self.assertIn("K12 GTM", report["updated"]["projects"])
+        self.assertIn("Endre", report["updated"]["contacts"])
 
         proj = Path(self.vault, "Notes", "Projects", "K12 GTM.md").read_text(encoding="utf-8")
-        self.assertNotIn("2026-06-10", proj)
+        self.assertIn("## Related inputs", proj)
+        self.assertIn("2026-06-10 | [[inbox/2026-06-10 - Slack - K12 GTM sync|", proj)
 
-        contact = Path(self.vault, "Notes", "Contacts", "Endre.md").read_text(encoding="utf-8")
-        self.assertNotIn("2026-06-10", contact)
+        contact = Path(self.vault, "Contacts", "Endre.md").read_text(encoding="utf-8")
+        self.assertIn("2026-06-10 | [[inbox/2026-06-10 - Slack - K12 GTM sync|", contact)
 
     def test_decision_updates_project_state(self):
         ingest = os.path.join(self.vault, "inbox", "2026-06-10 - Decision - K12 GTM.md")
