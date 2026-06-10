@@ -17,6 +17,31 @@ This is the foundational skill for interacting with Justin's Obsidian vault. It 
 
 ---
 
+## Note Hierarchy (The Three-Tier System)
+The vault utilizes a unidirectional, three-tier conceptual hierarchy to manage the evolution of knowledge:
+
+1. **Tier 1 (Raw & Ephemeral Inputs):**
+   - *Categories:* `[[Notes]]` (default), `[[Concepts]]` (others' thinking), `[[Decisions]]`, `[[Memories]]`.
+   - *Filename Format:* `ID Title.md` (e.g., `20260610120000 Spaced Title.md`).
+   - *Role:* Scratchpads, source clippings, or raw logs. Almost everything defaults here.
+
+2. **Tier 2 (Emergent & Synthesized Thoughts):**
+   - *Categories:* `[[Thoughts]]`.
+   - *Filename Format:* `ID Title.md` (retains creation ID/timestamp).
+   - *Role:* Personal ideas, active theories, or open research questions. This is a transitional state where raw inputs evolve into emergent opinions.
+
+3. **Tier 3 (Permanent & Conviction Beliefs):**
+   - *Categories:* `[[Beliefs]]` (guiding models), `[[References]]` (checklists/cheat sheets).
+   - *Filename Format:* `Title.md` (no timestamp prefix, signaling permanence and authority).
+   - *Role:* Trusted, highly stable playbooks. Beliefs require a specific structure (core thesis, exactly 3 **Core Tenets**, and 2 **Application** scenarios).
+
+**Core Hierarchy Rules:**
+- **The Unidirectional Link Rule:** Higher-tier notes must not link downward to lower-tier notes (e.g., a `[[Belief]]` or `[[Reference]]` cannot link to an ephemeral `[[Note]]` or `[[Thought]]`).
+- **Default to Notes:** All personal reflections and conceptual notes default to Tier 1 `[[Notes]]`. Only long-conviction, highly structured mental models are categorized as `[[Beliefs]]`.
+- **Reversion Naming:** If a note is demoted back to Tier 1 or Tier 2, its filename is reverted to restore the 14-digit ID prefix.
+
+---
+
 ## Vault Path
 - Vault root directory: `/home/justin.guest/vault`
 - Environmental variable: `OBSIDIAN_VAULT_PATH` set in `~/.hermes/.env` (resolves to `/home/justin.guest/vault` inside VM).
