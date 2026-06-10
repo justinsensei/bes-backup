@@ -1,7 +1,7 @@
 ---
 name: obsidian-contacts
 description: Use when managing the Contacts/ directory, preventing duplicate notes, and coordinating People and Organizations categories.
-version: 1.3.0
+version: 1.4.0
 author: Bes
 license: MIT
 metadata:
@@ -44,3 +44,9 @@ All files (whether in `/inbox/` or `/Contacts/`) must use standard Capitalized, 
 - Individual people notes must link to their respective organizations (e.g. `- **Company:** [[SignLab]]`).
 - Organizations must link to their key representatives.
 - Maintain family connections accurately using spaced wikilinks (e.g. `[[Sam]]'s teacher`, `[[Nana]]'s friend`).
+
+### Step 4 — Generic Name Collisions & Deduplication
+To prevent auto-generated notes from colliding on generic first names (e.g., `Andy` or `Andrew` colliding with `Andy Goff`, `Andrew Novak`, etc.):
+- **Never create a generic first-name contact file** (e.g. `andy.md` or `andrew.md`) unless the person is uniquely known by only that single name. If a generic first-name file exists and is polluted with multiple people's timelines, perform an LLM-driven deduplication to split them into their respective capitalized full-name files (e.g. `Andy Goff.md` and `Andy Masley.md`), and delete the generic file.
+- **Alias Resolution**: Ensure that any unique nickname/alias (like `Larry` for `Andrew Lawrence`) is registered in the main file's frontmatter `aliases` list. This prevents the unresolved links scanner from proposing a duplicate card for the nickname.
+- **Contextual Verification**: When analyzing legacy timeline entries to untangle them, verify the context (e.g. family mentions like Pat/Kath/Meghan for family, or professional terms like architect/design/surveyor for contractors, or topics like pretending to learn for references) to ensure accurate attribution.
