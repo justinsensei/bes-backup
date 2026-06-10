@@ -13,7 +13,7 @@ metadata:
 # Obsidian Type: Chronological Directory & Input Conventions
 
 ## Overview
-This skill governs the structure and navigation of chronological log notes and raw incoming streams under `Inputs/`, pointing to focused sub-skills for daily journaling, meeting records, and synced readings.
+This skill governs the structure and navigation of chronological input notes and raw incoming streams under `Inputs/`, pointing to focused sub-skills for daily journaling, meeting records, and synced readings.
 
 ---
 
@@ -40,6 +40,6 @@ This skill governs the structure and navigation of chronological log notes and r
 
 - **Strict Date Formats:** Ensure all chronological filenames strictly adhere to their respective date patterns:
   - Daily Notes: `YYYY-MM-DD Weekday.md` (capitalized weekday name).
-  - Meetings, Emails, and Slack Logs: `YYYY-MM-DD - Spaced Title.md` (e.g. `2026-06-09 - SignLab Product Alignment.md`, `2026-06-09 - Product Feedback on Free to Play.md`).
-- **Linking to Daily Notes:** Every chronological log file must link back to its creation day in its YAML `daily_note:` property.
-- **Archive Raw Logs:** Never leave raw files in the root `/meetings/` folder. Ensure the automated hygiene script pre-processes and moves them to `/Inputs/Meetings/`.
+  - **Meetings, Emails, and Slack Inputs:** `YYYY-MM-DD - Spaced Title.md` (e.g. `2026-06-09 - SignLab Product Alignment.md`, `2026-06-09 - Product Feedback on Free to Play.md`).
+- **Linking to Daily Notes:** Every chronological input file must link back to its creation day in its YAML `daily_note:` property.
+- **Archive Raw Inputs:** Never leave raw files in the root `/meetings/` folder. Ensure the automated hygiene script pre-processes and moves them to `/Inputs/Meetings/`.
