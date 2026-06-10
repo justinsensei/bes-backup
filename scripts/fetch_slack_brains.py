@@ -185,11 +185,11 @@ def fetch_note_candidates(client):
         if len(users) < 2:
             continue
             
-        # Check if Justin added a jg_log or jg_decision reaction to any message in the thread
+        # Check if Justin added a obsidian-jg reaction to any message in the thread
         has_brain = False
         for m in messages:
             for rxn in m.get("reactions", []):
-                if rxn.get("name") in ["jg_log", "jg_decision"] and user_id in rxn.get("users", []):
+                if rxn.get("name") in ["obsidian-jg"] and user_id in rxn.get("users", []):
                     has_brain = True
                     break
             if has_brain:
@@ -254,10 +254,10 @@ def fetch_new_brains(client):
         if key in processed_set:
             continue
             
-        # Verify Justin added the reaction 'jg_log' or 'jg_decision'
+        # Verify Justin added the reaction 'obsidian-jg'
         reaction_type = None
         for rxn in msg.get("reactions", []):
-            if rxn.get("name") in ["jg_log", "jg_decision"] and user_id in rxn.get("users", []):
+            if rxn.get("name") in ["obsidian-jg"] and user_id in rxn.get("users", []):
                 reaction_type = rxn.get("name")
                 break
         
