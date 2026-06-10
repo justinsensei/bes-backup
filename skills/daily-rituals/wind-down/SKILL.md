@@ -1,13 +1,13 @@
 ---
 name: wind-down
-description: "Interactive daily wrap-up: 1. Log candidates; 2. Discovered contacts; 3. Source review; 4. Vault inbox triage; 5. Work log draft/write; 6. Next day's calendar preview."
-version: 1.2.0
+description: "Interactive daily wrap-up: 1. Log candidates; 2. Discovered contacts; 3. Source review; 4. Everything In Its Right Place (EIIRP) Vault Hygiene & Triage; 5. Work log draft/write; 6. Next day's calendar preview."
+version: 1.3.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [productivity, wind-down, daily-routine, work-log, inbox-triage, sources, calendar]
-    related_skills: [work-log, morning-briefing, obsidian, todoist]
+    tags: [productivity, wind-down, daily-routine, work-log, inbox-triage, sources, calendar, hygiene]
+    related_skills: [work-log, morning-briefing, obsidian, obsidian-hygiene, todoist]
 ---
 
 # 🌅 Daily Wind-Down & Wrap-Up
@@ -173,36 +173,84 @@ Review persistent reference sources, articles, or transcripts added or updated t
 
 ---
 
-### Phase 4 — Vault Inbox Triage
+### Phase 4 — Everything In Its Right Place (EIIRP) Vault Hygiene & Triage
 
-Help Justin empty his Obsidian "inbox" so quick notes and scratchpads land in their correct homes.
+This phase implements the formal 7-phase EIIRP cycle to perform comprehensive note hygiene, frontmatter validation, and inbox triage across the entire vault. This ensures files are clean, metadata is valid, and the knowledge graph is richly linked.
 
-1. **Scan the Inbox Directory:**
-   - List all files inside the vault inbox directory (`/home/justin.guest/vault/inbox/`) using `search_files(path='/home/justin.guest/vault/inbox', pattern='*')`.
+Wait for Justin's confirmation or feedback at the end of the EIIRP report (Step 7) before executing any folder movements or renaming notes.
 
-2. **Read & Classify Inbox Notes:**
-   - For each file in the inbox, read its first few lines using `read_file`.
-   - Determine its primary focus and suggest the correct target category and folder under `/home/justin.guest/vault/`:
-     - **`Contacts/`** (Category: `[[People]]` or `[[Organizations]]`) — if about a person, family member, or company/institution.
-     - **`Logs/Meetings/`** (Category: `[[Meetings]]`) — if a meeting sync, agenda, or discussion record.
-     - **`Notes/`** (Category: `[[Thoughts]]`, `[[Beliefs]]`, `[[Memories]]`, `[[Decisions]]`, `[[Projects]]`, `[[References]]`, `[[Concepts]]`, or `[[Notes]]`) — if conceptual, ideas, principles, personal memories, decisions, project hubs, reference guides, or raw notes.
+1. **Step 1: Inventory (Scan & List)**
+   - Scan the vault inbox directory (`/home/justin.guest/vault/inbox/`) using `search_files(path='/home/justin.guest/vault/inbox', pattern='*')`.
+   - Identify any other files modified or created in the vault within the last 24 hours (excluding automated/system logs unless they need structural triage).
 
-3. **Present Triage Options to Justin:**
-   - List the inbox notes and your suggested folder movements in a clean, numbered list:
+2. **Step 2: Taxonomy (Classification & Routing)**
+   - Classify all inventoried notes based on content analysis and map them to their correct Obsidian folder routes:
+     - **`Contacts/`** (Category: `[[People]]` or `[[Organizations]]`):
+       - *Crucial Rule:* Any brand-new contact note created by Bes must land in `/home/justin.guest/vault/inbox/`. Existing contacts already under `Contacts/` are updated in place and must *never* be relocated.
+     - **`Logs/Meetings/`** (Category: `[[Meetings]]`):
+       - For meeting syncs, agendas, or discussion records (e.g. Granola notes).
+     - **`Notes/`**:
+       - For thoughts, concepts, patterns, beliefs, memories, decisions, and projects. Recommend the exact subfolder and category YAML header based on content focus:
+         - **`Notes/Thoughts`** (Category: `[[Thoughts]]`) — reflections, raw thoughts, ideas, and opinions.
+         - **`Notes/Concepts`** (Category: `[[Concepts]]`) — models, theories, definitions, or educational concepts (others' thinking).
+         - **`Notes/References`** (Category: `[[References]]`) — patterns, structured guides, technical reference sheets (note: Justin uses Apple Notes as a "filing cabinet" for references, but continues using Obsidian for general note-taking/referencing).
+         - **`Notes/Beliefs`** (Category: `[[Beliefs]]`) — philosophies and core values (axioms).
+         - **`Notes/Memories`** (Category: `[[Memories]]`) — personal memories or historical highlights.
+         - **`Notes/Decisions`** (Category: `[[Decisions]]`) — specific personal or project-related choices.
+         - **`Notes/Projects`** (Category: `[[Projects]]`) — active project hubs and dashboard files.
+
+3. **Step 3: Schema Check (Frontmatter Validation)**
+   - Validate the YAML frontmatter headers of all new or modified notes.
+   - Enforce the following criteria:
+     - **Identifiers:** Every note must contain a 14-digit unique timestamp identifier (`id: YYYYMMDDHHmmss` format) in its frontmatter.
+     - **Daily Note Link:** Ensure `daily_note: "[[<YYYY-MM-DD Weekday>]]"` is present and correctly matches the note's creation date.
+     - **Category:** Confirm the correct `category` matches the note's taxonomy (e.g. `category: "[[Thoughts]]"`).
+     - **Frontmatter Safety:**
+       - Ensure a closing `---` divider is present and sits on its own line after the properties block to avoid unclosed properties blocks.
+       - Verify that adding/updating properties doesn't result in "dangling closing dividers" or merged text (e.g., `daily_note: '...'---` is invalid).
+       - Ensure timeline removal or legacy cleanup patterns do not accidentally match and destroy the frontmatter closing divider.
+
+4. **Step 4: File & Filing (Execution & Triage)**
+   - Run the automated vault hygiene routines to auto-reconcile, move, and link files.
+   - **Run the automated script:**
+     ```bash
+     python3 ~/.hermes/scripts/vault_hygiene.py
      ```
-     📥 N items in your vault inbox:
-     1. `Nana pride 20260607093335.md` → move to `Contacts/` (Category: `[[People]]`) (Notes on Nana and Pride event)
-     2. `Jamie lawn 20260607093304.md` → move to `Contacts/` (Category: `[[People]]`) (Notes on Jamie mowing the lawn)
-     3. `20260605162856.md` → move to `Notes/` (Category: `[[Thoughts]]`) (Quick thought on...)
-     ...
-     Shall I move these as suggested, or would you like to route them differently?
-     ```
-   - **Wait for Justin's response.**
+     - This script automatically relocates misplaced daily notes to `Daily Notes/`, converts legacy inline tags (like `#people` or `#meeting`) to category YAML metadata, and runs the auto-linker to convert plain-text mentions of known contacts and projects into proper wikilinks.
+   - For all other inbox notes requiring human judgment, compile your recommended movements and renames into the final report.
 
-4. **Execute the Movements:**
-   - Move the confirmed files to their target directories (creating directories if needed).
-   - If a file is renamed to fit a naming convention, let Justin know.
-   - If any bidirectional links or mentions exist, make sure they remain valid.
+5. **Step 5: Skill/Context Audit (Dense Knowledge Graph Linking)**
+   - Audit the context of new and modified notes. Ensure that all active work logs and notes created today link back to their associated project notes, contact cards, or key task IDs.
+   - Ensure the knowledge graph remains highly dense, connected, and contextually complete.
+
+6. **Step 6: Verification (Link & Orphan Audit)**
+   - Verify that all internal and external wikilinks inside the newly created or modified notes are valid and not broken.
+   - Scan for orphaned files created today (i.e. notes with zero incoming or outgoing links) and propose relevant connections to existing daily notes or project hubs.
+
+7. **Step 7: Report (Unified Status Summary)**
+   - Generate a beautifully formatted, unified status summary of the 7-phase EIIRP run.
+   - Present this report to Justin in Telegram. It must summarize:
+     - **Inventory:** Notes analyzed today.
+     - **Taxonomy & Schema:** Recommended destination subfolders, categories, and frontmatter validation results.
+     - **File & Filing:** Misplaced notes relocated by `vault_hygiene.py` and suggested manual inbox triage routes.
+     - **Audit & Verification:** Reconnection/audit results, broken links, and orphaned notes.
+     - *Format example:*
+       ```
+       📥 EIIRP Vault Hygiene & Triage Report:
+
+       1. **Inventory**: 3 new files found in inbox/ and 2 modified today.
+       2. **Taxonomy & Schema**:
+          - `20260610090000.md` → Suggest `Notes/Thoughts` (Category: `[[Thoughts]]`). Frontmatter: Valid.
+          - `New Contact.md` → Suggest `inbox/` (Category: `[[People]]`). Frontmatter: Missing daily_note link, will heal.
+       3. **File & Filing**:
+          - Misplaced daily note `2026-06-09 Tuesday.md` moved from inbox/ to `Daily Notes/` via `vault_hygiene.py`.
+       4. **Audit & Verification**:
+          - Broken link detected in `20260610090000.md` pointing to non-existent `[[Project Alpha]]`.
+          - All other links valid. No orphaned notes.
+
+       Shall I execute these inbox movements and heal the frontmatter as suggested, or would you like to route them differently?
+       ```
+   - **Wait for Justin's response and explicit approval before moving any inbox files or applying manual frontmatter edits.**
 
 ---
 
@@ -281,3 +329,9 @@ Preview tomorrow's schedule to establish mental readiness, coordinate upcoming t
 - **Escape Slack Channels:** Always write `#channel-name` as `\#channel-name` inside the daily note so Obsidian doesn't parse it as a tag.
 - **Dynamic Timezone Offset:** When fetching calendar events, always calculate and append the local timezone offset (e.g. `-04:00` or `-05:00`) to `--start` and `--end` to prevent boundary events from leaking from yesterday or tomorrow.
 - **Git Commit Warning:** Do not manually `git add` or `git commit` any vault edits. The `bes-vault-sync` watcher will handle it immediately.
+- **Todoist Task Creation Rule:** When creating any Todoist task, always add a one-sentence comment immediately after — source + why it became a task.
+- **Todoist Filter Preference:** Do not present tasks using native Todoist sidebar views (Today, Inbox, etc.), as Justin finds them cluttered. Emphasize saved filter views.
+- **Frontmatter Safety & Infinite Loops:** Avoid extracting body content in a way that includes leading newlines, preventing infinite overwrite loops during hygiene tasks. Always `.lstrip()` body content immediately upon extraction.
+- **Dangling Closing Dividers:** Ensure any automated or manual procedure that adds or updates properties writes back the closing divider (`---`) on a *fresh line*. Writing it without an intervening newline will append it directly to the end of the last property string (e.g., `daily_note: '...'---`), which corrupts properties.
+- **Non-Unique Aliases Guard:** Always skip auto-linking any alias that is non-unique (shared by more than one distinct contact path) to avoid incorrect connections in the vault.
+- **Timelines Deactivation:** Active bot-enriched timeline enrichment is completely deactivated. Do not append `## Timeline` bullets to contact cards; rely on Obsidian's native Backlinks panel instead.
