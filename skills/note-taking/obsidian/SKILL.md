@@ -30,13 +30,18 @@ Every manual note must have a YAML frontmatter block containing at least these f
 ```yaml
 ---
 id: 'YYYYMMDDHHmmss'                 # Numerical string based on creation time
-daily_note: "[[Daily Notes/YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]" # Link to creation day
-category: "[[CategoryName]]"         # Single category link (quoted wikilink)
+daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]" # Shortest-path link to creation day
+category: "[[CategoryName]]"         # Single category link (quoted shortest-path wikilink)
 ---
 ```
 - Use single quotes `'` or double quotes `"` around IDs and wikilinks to ensure YAML parsing is safe.
 - **`aliases`** (optional): YAML list of alternative names for easy lookup.
-- **`project`** (optional): Quoted wikilink pointing to a parent project (placed last in frontmatter).
+- **`project`** (optional): Quoted shortest-path wikilink pointing to a parent project (placed last in frontmatter).
+
+### Link Conventions
+- **Shortest-Path Wikilinks:** Always use cleanest, shortest-path wikilinks (e.g., `[[Note Name]]` or `[[Note Name|Display Text]]`) instead of full folder path links (e.g., `[[Folder/Note Name]]`). 
+- **Name Collisions:** Full paths are only permitted if a direct name collision actually exists in the vault (meaning two separate files share the exact same base filename in different directories). Currently, there is only one known collision in the vault: `Cracking the Pm Career` (in both `Logs/Readings/` and `Logs/Sources/`).
+- **Formatting:** Keep display names concise and avoid full path leaks in normal note body reading.
 
 ### Formatting Rules
 - **Horizontal Rules:** Always use exactly three hyphens `---` on a line by itself to represent a horizontal divider. Never use two hyphens or other symbols.
