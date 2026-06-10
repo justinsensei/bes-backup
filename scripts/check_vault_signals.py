@@ -41,38 +41,66 @@ def extract_date_from_file(file_path, content):
 def get_existing_entities(vault_path):
     entities = {}
     
+    # Helper to parse a contact file
+    def parse_contact_file(file_path, filename):
+        ptype = 'person'
+        aliases = []
+        title = filename[:-3]
+        is_contact = False
+        try:
+            with open(file_path, encoding='utf-8', errors='replace') as file_obj:
+                content = file_obj.read()
+                
+                # Check if it's a contact (important for inbox files)
+                m_cat = re.search(r'^category:\s*["\']?\[\[(People|Organizations)\]\]["\']?', content, re.MULTILINE)
+                m_type = re.search(r'^type:\s*[\'"]?([a-zA-Z0-9_-]+)[\'"]?', content, re.MULTILINE)
+                
+                if m_cat or m_type:
+                    is_contact = True
+                    
+                if m_type:
+                    ptype = m_type.group(1).strip()
+                elif m_cat:
+                    ptype = 'person' if m_cat.group(1) == 'People' else 'organization'
+                    
+                # Parse aliases
+                m_aliases = re.search(r'^aliases:\s*\n((?:\s*-\s*.*?\n)+)', content, re.MULTILINE)
+                if m_aliases:
+                    aliases = [a.strip()[1:].strip().strip('"\'') for a in m_aliases.group(1).split('\n') if a.strip().startswith('-')]
+        except Exception:
+            pass
+        return is_contact, ptype, title, aliases
+
     # 1. Contacts (People and Organizations)
     contacts_dir = os.path.join(vault_path, 'Contacts')
     if os.path.exists(contacts_dir):
         for f in os.listdir(contacts_dir):
             if f.endswith('.md'):
-                name_key = f[:-3].lower()
                 file_path = os.path.join(contacts_dir, f)
-                
-                # Default type from folder structure/mtime, but let's parse type from frontmatter
-                ptype = 'person'
-                aliases = []
-                title = f[:-3]
-                try:
-                    with open(file_path, encoding='utf-8', errors='replace') as file_obj:
-                        content = file_obj.read()
-                        m_type = re.search(r'^type:\s*[\'"]?([a-zA-Z0-9_-]+)[\'"]?', content, re.MULTILINE)
-                        if m_type:
-                            ptype = m_type.group(1).strip()
-                            
-                        # Parse aliases
-                        m_aliases = re.search(r'^aliases:\s*\n((?:\s*-\s*.*?\n)+)', content, re.MULTILINE)
-                        if m_aliases:
-                            aliases = [a.strip()[1:].strip().strip('"\'') for a in m_aliases.group(1).split('\n') if a.strip().startswith('-')]
-                except Exception:
-                    pass
-                    
+                _, ptype, title, aliases = parse_contact_file(file_path, f)
+                name_key = f[:-3].lower()
                 entities[name_key] = {
                     "path": file_path,
                     "type": ptype,
                     "title": title,
                     "aliases": aliases
                 }
+                
+    # Also scan inbox for untriaged contacts
+    inbox_dir = os.path.join(vault_path, 'inbox')
+    if os.path.exists(inbox_dir):
+        for f in os.listdir(inbox_dir):
+            if f.endswith('.md'):
+                file_path = os.path.join(inbox_dir, f)
+                is_contact, ptype, title, aliases = parse_contact_file(file_path, f)
+                if is_contact:
+                    name_key = f[:-3].lower()
+                    entities[name_key] = {
+                        "path": file_path,
+                        "type": ptype,
+                        "title": title,
+                        "aliases": aliases
+                    }
                 
     # 2. Projects (from Notes/Projects/)
     projects_dir = os.path.join(vault_path, 'Notes', 'Projects')
