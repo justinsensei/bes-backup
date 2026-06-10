@@ -30,8 +30,8 @@ python3 ~/.hermes/scripts/vault_hygiene.py
 This script performs:
 1. **Misplaced Daily Notes:** Detects daily notes located outside `/Daily Notes/` and relocates them.
 2. **Tag-to-Category Conversion:** Converts inline tags like `#people` or `#meeting` into formal category YAML frontmatter and removes the inline tag from the body.
-3. **Identifier Diagnostics:** Performs high-speed scans for missing or duplicate `id` keys, or malformed `daily_note` links.
-4. **Auto-Linking of Unlinked Mentions:** Automatically converts plain-text mentions of known contacts and projects (by title and aliases like "Tor", "Anya", "Dave") into proper wikilinks inside newly reconciled Granola meetings and Daily Notes modified within the last 7 days. This builds a robust, tight knowledge graph automatically without manual overhead.
+3. **Identifier & Alias Diagnostics:** Performs high-speed scans for missing or duplicate `id` keys, duplicate/non-unique aliases (alphanumeric, length >= 2), or malformed `daily_note` links.
+4. **Auto-Linking of Unlinked Mentions:** Automatically converts plain-text mentions of known contacts and projects (by title and aliases like "Tor", "Anya", "Dave") into proper wikilinks inside newly reconciled Granola meetings and Daily Notes modified within the last 7 days. If an alias is non-unique (shared by multiple contacts), it is explicitly skipped to prevent incorrect linking (see "Ambiguity & Non-Unique Alias Rules" below). This builds a robust, tight knowledge graph automatically without manual overhead.
 
 ---
 
