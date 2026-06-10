@@ -88,3 +88,8 @@ Notes are categorized with a single `category` YAML property containing a quoted
 1. **Determine Category:** Read note content and title. Map it to exactly one category above. Convert legacy inline tags (e.g. `#meeting`) to the property and remove from body.
 2. **Update YAML:** Set `category: "[[<CategoryName>]]"` using targeted `patch`.
 3. **Move File:** Relocate the file from `inbox/` to its corresponding target folder. Create folders with `mkdir -p` if missing.
+
+---
+
+## Linked Utility Scripts
+- **`scripts/heal_wikilinks.py`:** Statically re-runnable python script to scan the entire vault, identify base-filename collisions, and automatically heal/simplify any full-path wikilinks down to clean shortest-path wikilinks. Runs completely dynamically and safely.
