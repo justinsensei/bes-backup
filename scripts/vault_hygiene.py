@@ -91,12 +91,22 @@ def get_existing_entities(vault_path):
     return entities
 
 def auto_link_text(text, entities, current_file_title):
+    # Find which keys are ambiguous (belonging to more than one distinct contact path)
+    key_to_paths = defaultdict(list)
+    for ent_key, ent_info in entities.items():
+        key_to_paths[ent_info["title"].lower()].append(ent_info["path"])
+        for alias in ent_info.get("aliases", []):
+            key_to_paths[alias.lower()].append(ent_info["path"])
+            
+    ambiguous_keys = {k for k, paths in key_to_paths.items() if len(set(paths)) > 1}
+
     all_keys = []
     for ent_key, ent_info in entities.items():
         title = ent_info["title"]
-        all_keys.append((title, ent_info))
+        if title.lower() not in ambiguous_keys:
+            all_keys.append((title, ent_info))
         for alias in ent_info.get("aliases", []):
-            if len(alias) >= 3:
+            if len(alias) >= 3 and alias.lower() not in ambiguous_keys:
                 all_keys.append((alias, ent_info))
                 
     all_keys.sort(key=lambda x: len(x[0]), reverse=True)
