@@ -24,7 +24,7 @@ A markdown file is registered as a contact if it has `category: "[[People]]"`, `
 
 ### 2. Timeline Enrichment (`scan_file_for_signals`)
 For every file modified since the watermark, the script searches for references to registered contacts using three strategies in order:
-1.  **Direct Wikilinks**: Checks for lowercased links pointing to the file (e.g. `[[mac lawrence]]` or `[[contacts/mac lawrence]]`).
+1.  **Direct Wikilinks**: Checks for lowercased links pointing to the file (e.g. `[[mac lawrence]]` or `[[mac lawrence]]`).
 2.  **Exact Text Matches**: Checks for the lowercased filename as a word-bounded phrase (e.g., `\bmac lawrence\b`).
 3.  **Alias Matches**: Checks for any of the contact's aliases as a word-bounded phrase (e.g., `\bmac\b`).
 
@@ -44,7 +44,7 @@ The script parses all wikilinks of the form `[[Link]]` or `[[Link|display_text]]
 - **The Result**: Unrelated technical logs, business meetings, or regional notes automatically write fake timeline entries onto your family members' contact notes, causing severe timeline pollution.
 
 ### Failure Mode B: Phantom Ghost Links
-- **The Bug**: If a generic first-name file does not exist (e.g., `sam.md` or `andy.md`) but was linked in a draft, the background script or prior processes may automatically append `- YYYY-MM-DD | Mentioned in [[Contacts/sam|sam]]` into other contact or organization notes (like `signlab.md` or `smartpass.md`).
+- **The Bug**: If a generic first-name file does not exist (e.g., `sam.md` or `andy.md`) but was linked in a draft, the background script or prior processes may automatically append `- YYYY-MM-DD | Mentioned in [[sam]]` into other contact or organization notes (like `signlab.md` or `smartpass.md`).
 - **The Result**: These files accumulate unresolvable "ghost" timeline references that never link to a real contact card, creating clutter and generating constant unresolved link warnings.
 
 ---
@@ -57,5 +57,5 @@ When cleaning up duplicate or polluted contacts, follow this sequence:
 2.  **Clean Target Timelines**: Open the polluted contact's note and manually delete any incorrect timeline bullets (e.g. remove macOS or Mac Mini entries from Mac Lawrence's card).
 3.  **Global Ghost Link Cleanup**: Run a global search across the vault for the phantom links (e.g. search for `[[Contacts/sam` or `[[Contacts/Sam`).
     -   *If self-referential or erroneous*: Delete the timeline bullet entirely (common in shared contact sheets or cards of other people sharing a similar first name).
-    -   *If genuine family mention*: Update the wikilink to point explicitly to the capitalized, full-name card (e.g., change `[[Contacts/sam|sam]]` to `[[Sam Goff|sam]]`).
+    -   *If genuine family mention*: Update the wikilink to point explicitly to the capitalized, full-name card (e.g., change `[[sam]]` to `[[Sam Goff|sam]]`).
 4.  **Delete Generic Notes**: Delete any remaining lowercase or first-name-only contact files (e.g. remove `Contacts/ryan.md` or `Contacts/sam.md`).

@@ -29,7 +29,7 @@ A Decision Note is a simplified narrative highlighting the context, shift, and i
 ```markdown
 ---
 id: 'YYYYMMDDHHmmss'
-daily_note: "[[Daily Notes/YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
+daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
 category: "[[Decisions]]"
 ---
 ## Decision: Spaced Capitalized Topic Name

@@ -29,7 +29,7 @@ Meetings synced from Granola are swept automatically by the vault hygiene script
    ```yaml
    ---
    id: 'YYYYMMDDHHmmss'
-   daily_note: "[[Daily Notes/YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
+   daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
    category: "[[Meetings]]"
    ---
    ```

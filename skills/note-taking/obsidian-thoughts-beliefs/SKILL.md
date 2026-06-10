@@ -37,7 +37,7 @@ Thoughts notes capture reflections, opinions, or ideas. They are open, structure
 ```markdown
 ---
 id: 'YYYYMMDDHHmmss'
-daily_note: "[[Daily Notes/YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
+daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
 category: "[[Thoughts]]"
 ---
 
@@ -58,7 +58,7 @@ Beliefs are *evolved* concepts / thoughts — things that are durably true and t
 ```markdown
 ---
 id: 'YYYYMMDDHHmmss'
-daily_note: "[[Daily Notes/YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
+daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
 category: "[[Beliefs]]"
 ---
 

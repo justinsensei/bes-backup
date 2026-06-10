@@ -54,7 +54,7 @@ Reference notes should be highly scannable, starting with a clear purpose block 
 ```markdown
 ---
 id: 'YYYYMMDDHHmmss'
-daily_note: "[[Daily Notes/YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
+daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
 category: "[[References]]"
 ---
 
@@ -81,7 +81,7 @@ Concept notes are simplified narratives that explain a theory, mental model, or 
 
 ```markdown
 ---
-daily_note: "[[Daily Notes/YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
+daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
 id: YYYYMMDDHHmmss
 category: "[[Concepts]]"
 ---

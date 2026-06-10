@@ -33,7 +33,7 @@ This skill governs chronological meeting notes, including formatting templates a
 ```markdown
 ---
 id: 'YYYYMMDDHHmmss'
-daily_note: "[[Daily Notes/YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
+daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
 category: "[[Meetings]]"
 ---
 

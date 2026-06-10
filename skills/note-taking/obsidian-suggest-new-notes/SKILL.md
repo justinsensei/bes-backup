@@ -58,7 +58,7 @@ Ask Justin which suggestions he would like to approve. For each approved note:
 ```markdown
 ---
 id: 'YYYYMMDDHHmmss'
-daily_note: "[[Daily Notes/YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
+daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
 category: "[[Thoughts]]"
 ---
 
@@ -77,7 +77,7 @@ What is the core idea or reflection? Keep it atomic.
 ```markdown
 ---
 id: 'YYYYMMDDHHmmss'
-daily_note: "[[Daily Notes/YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
+daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
 category: "[[Concepts]]"
 ---
 
@@ -97,7 +97,7 @@ category: "[[Concepts]]"
 ```markdown
 ---
 id: 'YYYYMMDDHHmmss'
-daily_note: "[[Daily Notes/YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
+daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
 category: "[[Decisions]]"
 ---
 
@@ -120,7 +120,7 @@ Why was this path chosen over others?
 ```markdown
 ---
 id: 'YYYYMMDDHHmmss'
-daily_note: "[[Daily Notes/YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
+daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
 category: "[[Notes]]"
 ---
 

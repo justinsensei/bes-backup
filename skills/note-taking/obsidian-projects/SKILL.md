@@ -30,7 +30,7 @@ A Project or Travel note organizes timelines, tasks, objectives, and related sub
 ```markdown
 ---
 id: 'YYYYMMDDHHmmss'
-daily_note: "[[Daily Notes/YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
+daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
 category: "[[Projects]]"
 status: Active # Active, Inactive
 ---

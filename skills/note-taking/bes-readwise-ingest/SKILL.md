@@ -33,7 +33,7 @@ Every Readwise synced reading note must strictly adhere to the following templat
 ```yaml
 ---
 id: 'YYYYMMDDHHmmss'                 # Single-quoted string matching latest highlight's timestamp
-daily_note: "[[Daily Notes/YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]" # Standardized symmetrical daily note link
+daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]" # Standardized symmetrical daily note link
 category: "[[Sources]]"             # Quoted category wikilink
 ---
 ```

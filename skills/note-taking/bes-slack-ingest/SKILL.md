@@ -28,7 +28,7 @@ Every Slack log note must start with this frontmatter format:
 ```yaml
 ---
 id: 'YYYYMMDDHHmmss'                 # Numerical string based on first message's timestamp
-daily_note: "[[Daily Notes/YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]" # Symmetrical daily note link
+daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]" # Symmetrical daily note link
 category: "[[Slack]]"                 # Quoted category link
 channel: "channel-name"              # The source Slack channel
 original_url: "https://slack.com/..." # Link to original discussion

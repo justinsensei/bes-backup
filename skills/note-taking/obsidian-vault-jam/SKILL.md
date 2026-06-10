@@ -92,4 +92,4 @@ Evaluate which notes are ready to be promoted up the hierarchical tiers (Note/So
 ## Verification & Guardrails
 - **No duplicates:** Always run a quick duplicate check before creating any new notes.
 - **Unidirectional links:** Never allow a Belief to link to a Thought or raw Tier 1 note.
-- **Symmetrical frontmatter:** Double check that any updated or newly written note contains a standard `daily_note: "[[Daily Notes/YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"` link.
+- **Symmetrical frontmatter:** Double check that any updated or newly written note contains a standard `daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"` link.

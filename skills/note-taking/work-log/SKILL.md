@@ -202,7 +202,7 @@ Produce a highly concise, 1–2 sentence preview summary of the day's core theme
 
 ### `## 📅 Schedule & Events`
 Populate with chronological bullets of today's events from the Calendar subagent, integrated with links to today's meetings. Each bullet should follow this clean format:
-`- **HH:MM - HH:MM** Event Title [Account/Context]` (e.g., `[[Granola/2026-06/2026-06-04 Product meeting|Product meeting]]` or calendar events). Mark events as completed or cancelled appropriately.
+`- **HH:MM - HH:MM** Event Title [Account/Context]` (e.g., `[[2026-06-04 Product meeting|Product meeting]]` or calendar events). Mark events as completed or cancelled appropriately.
 
 ### `## 🚀 Highlights & Decisions`
 Combine your synthesized highlights, consequential decisions, and unresolved blockers/questions. Group them logically (e.g., by Project, SignLab/Personal, or key domains).
@@ -215,7 +215,7 @@ Enumerate shipped accomplishments. Group or list:
 - Completed Todoist tasks (e.g., `✓ [Project/Category] Task name`)
 - Closed Linear issues
 - Commits shipped or PRs merged
-- Vault updates: list any manual notes created, modified, or reorganized in your vault (e.g., `✓ [Vault] Created: [[Notes/some-thought|Some Thought]]` or `✓ [Vault] Updated: [[Contacts/some-person|Some Person]]`)
+- Vault updates: list any manual notes created, modified, or reorganized in your vault (e.g., `✓ [Vault] Created: [[some-thought|Some Thought]]` or `✓ [Vault] Updated: [[some-person|Some Person]]`)
 
 ## Step 5 — Update the daily note
 

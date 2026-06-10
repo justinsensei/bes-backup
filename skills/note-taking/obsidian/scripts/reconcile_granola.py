@@ -81,7 +81,7 @@ def reconcile_file(file_path: Path, existing_ids: set):
         if body.lstrip().startswith("--\n") or body.lstrip().startswith("--\r\n"):
             body = re.sub(r"^--\s*\n", "", body.lstrip())
             
-        new_fm = f"id: {note_id}\ndaily_note: '[[daily/{date_str}-{weekday}|{date_str} {weekday.capitalize()}]]'\ncategory: \"[[Meetings]]\""
+        new_fm = f"id: {note_id}\ndaily_note: '[[{date_str} {weekday.capitalize()}|{date_str} {weekday.capitalize()}]]'\ncategory: \"[[Meetings]]\""
     else:
         new_fm_lines = []
         # Rebuild existing fields except id, daily_note, category if they need to be rewritten
@@ -96,7 +96,7 @@ def reconcile_file(file_path: Path, existing_ids: set):
             
         new_fm_lines.insert(0, f"id: {note_id}")
         if dn_missing:
-            new_fm_lines.append(f"daily_note: '[[daily/{date_str}-{weekday}|{date_str} {weekday.capitalize()}]]'")
+            new_fm_lines.append(f"daily_note: '[[{date_str} {weekday.capitalize()}|{date_str} {weekday.capitalize()}]]'")
         if cat_missing:
             new_fm_lines.append("category: \"[[Meetings]]\"")
         new_fm = "\n".join(new_fm_lines)

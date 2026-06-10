@@ -57,7 +57,7 @@ All new notes must start with the `New Note` frontmatter (pre-evaluating Templat
 ```yaml
 ---
 id: "<YYYYMMDDHHmmss at write time, e.g. 20260520143157>"
-daily_note: "[[Daily Notes/<YYYY-MM-DD Weekday>|YYYY-MM-DD Weekday]]"
+daily_note: "[[<YYYY-MM-DD Weekday>|YYYY-MM-DD Weekday]]"
 ---
 ```
 
@@ -89,7 +89,7 @@ All new email log notes must start with this frontmatter format:
 ```yaml
 ---
 id: "<YYYYMMDDHHmmss at write time>"
-daily_note: "[[Daily Notes/<YYYY-MM-DD Weekday>|YYYY-MM-DD Weekday]]"
+daily_note: "[[<YYYY-MM-DD Weekday>|YYYY-MM-DD Weekday]]"
 category: "[[Emails]]"
 type: email
 original_url: "<Gmail message search link, e.g. https://mail.google.com/mail/u/0/#search/rfc822msgid:<Message-ID> or search query>"

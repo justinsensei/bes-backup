@@ -25,7 +25,7 @@ All synced Readwise log notes must strictly adhere to the following template:
 ```yaml
 ---
 id: 'YYYYMMDDHHmmss'                 # Single-quoted string matching latest highlight's timestamp
-daily_note: "[[Daily Notes/YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]" # Standardized daily note link
+daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]" # Standardized daily note link
 category: "[[Sources]]"             # Quoted category wikilink
 ---
 ```
