@@ -154,6 +154,14 @@ skills/productivity/todoist-inbox-fill/**/*.pyc
 !skills/note-taking/did-i-already-do-this/
 !skills/note-taking/did-i-already-do-this/**
 
+# Agent-authored skill: llm-wiki (compounding vault knowledge / Inputs-Sources integration)
+!skills/note-taking/llm-wiki/
+!skills/note-taking/llm-wiki/**
+
+# Tracked customization: obsidian-hygiene (vault hygiene operator docs)
+!skills/note-taking/obsidian-hygiene/
+!skills/note-taking/obsidian-hygiene/**
+
 # Agent-authored skill: manage-projects (cross-tool project workflow — Todoist sub-project + Obsidian note)
 !skills/productivity/manage-projects/
 !skills/productivity/manage-projects/**
@@ -162,6 +170,8 @@ skills/productivity/todoist-inbox-fill/**/*.pyc
 skills/note-taking/obsidian-manage-categories/**/__pycache__/
 skills/note-taking/obsidian-people-notes/**/__pycache__/
 skills/note-taking/did-i-already-do-this/**/__pycache__/
+skills/note-taking/llm-wiki/**/__pycache__/
+skills/note-taking/obsidian-hygiene/**/__pycache__/
 skills/productivity/manage-projects/**/__pycache__/
 
 # Tracked customization of bundled skill: apple/imessage

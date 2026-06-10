@@ -6,7 +6,7 @@ platforms: [linux, macos]
 metadata:
   hermes:
     tags: [email, gmail, obsidian, dispatch, polling]
-    related_skills: [google-workspace, obsidian, polling-cron-agent]
+    related_skills: [google-workspace, obsidian, llm-wiki, polling-cron-agent]
 ---
 
 # Bes Email Dispatch
@@ -73,14 +73,13 @@ Below the frontmatter, format the note body cleanly:
 
 ---
 
-## Action 1b: Log Email (Save to Logs/Emails/)
+## Action 1b: Log Email (Save to Inputs/Emails/)
 
 ### Trigger Keywords
 - Contains: `log this`, `log email`, `log thread`, `save as email log`, `log`
 
 ### Storage Destination
-- Create a new markdown note inside the **`Logs/Emails/`** directory of his vault:
-  `/home/justin.guest/vault/Logs/Emails/YYYY-MM-DD - Spaced Subject.md`
+- Create a new markdown note inside **`Inputs/Emails/`** (`$OBSIDIAN_VAULT_PATH/Inputs/Emails/YYYY-MM-DD - Spaced Subject.md`)
   *(Where `YYYY-MM-DD` is the current date, and `Spaced Subject` is a cleaned, capitalized, spaced version of the subject).*
 
 ### Note Structure & Frontmatter
@@ -144,7 +143,8 @@ For each message ID detected by the poller:
    - Create a Todoist task (`Task` / `TODO` / `to do`)
    - Or both!
 3. **Execute actions:**
-   - If filing: Generate and write the markdown note to `/home/justin.guest/vault/inbox/` or `/home/justin.guest/vault/Logs/Emails/`.
+   - If filing: Generate and write the markdown note to `inbox/` or `Inputs/Emails/`.
+   - After filing, run `llm-wiki` integrate-light (log + index + daily notepad).
    - If creating a task: Call `mcp_todoist_add_tasks` and then `mcp_todoist_add_comments` with the email summary.
    - If both: Do both operations.
 4. **Report back:** Output a single concise line per email in your final response (for Telegram delivery):

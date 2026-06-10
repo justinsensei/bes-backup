@@ -352,13 +352,17 @@ def main():
     
     # Find all modified markdown files
     modified_files = []
-    skip_dirs = {".git", ".trash", ".cursor", ".claude", "_templates", "utilities", "Utilities"}
+    skip_dirs = {".git", ".trash", ".cursor", ".claude", "_templates", "utilities", "Utilities", "Readwise"}
     
     for root, dirs, files in os.walk(vault_path):
         dirs[:] = [d for d in dirs if not d.startswith(".") and d not in skip_dirs]
         for f in files:
             if f.endswith('.md'):
                 file_path = os.path.join(root, f)
+                rel = os.path.relpath(file_path, vault_path).replace("\\", "/")
+                if rel.startswith(("Inputs/Readings/", "Inputs/Emails/", "Inputs/Slack/",
+                                   "Logs/Sources/", "Logs/Readings/", "Logs/Emails/", "Logs/Slack/")):
+                    continue
                 try:
                     mtime = datetime.fromtimestamp(os.path.getmtime(file_path))
                     if mtime > watermark_dt:

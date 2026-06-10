@@ -10,7 +10,7 @@ platforms:
 metadata:
   hermes:
     tags: [productivity, wind-down, daily-routine, work-log, inbox-triage, sources, calendar, hygiene]
-    related_skills: [work-log, morning-briefing, obsidian, obsidian-hygiene, todoist]
+    related_skills: [work-log, morning-briefing, obsidian, obsidian-hygiene, llm-wiki, todoist]
 ---
 
 # 🌅 Daily Wind-Down & Wrap-Up
@@ -61,7 +61,7 @@ If Justin selects any:
 1. For each selected item:
    - **For Slack conversations:**
      - Synthesize a high-quality summary showing "who said what" clearly. Do NOT store verbatim Slack messages; store only summaries with retrieval metadata.
-     - Write to `/home/justin.guest/vault/Logs/Slack/YYYY-MM-DD - Spaced Title.md`.
+     - Write to `$OBSIDIAN_VAULT_PATH/Inputs/Slack/YYYY-MM-DD - Spaced Title.md`.
      - Structure the YAML frontmatter for Slack logs:
        ```yaml
        ---
@@ -75,12 +75,12 @@ If Justin selects any:
        ---
        ```
      - Append a link and one-sentence gist to today's daily note notepad under `## 🗒 Notepad`:
-       `* [[Logs/Slack/<filename>|Slack summary]]: <One-sentence-gist>.`
+       `* [[Inputs/Slack/<filename>|Slack summary]]: <One-sentence-gist>.`
      - Run the command to mark it processed:
        `python3 /home/justin.guest/.hermes/scripts/fetch_slack_brains.py --mark-processed <channel_id> <ts>`
    - **For Emails:**
      - Synthesize a high-quality summary of the email thread showing clearly what was discussed, decided, or requested. Do NOT store verbatim email text; store only summaries with retrieval metadata.
-     - Write to `/home/justin.guest/vault/Logs/Emails/YYYY-MM-DD - Spaced Subject.md`.
+     - Write to `$OBSIDIAN_VAULT_PATH/Inputs/Emails/YYYY-MM-DD - Spaced Subject.md`.
      - Structure the YAML frontmatter for email logs:
        ```yaml
        ---
@@ -94,7 +94,7 @@ If Justin selects any:
        ---
        ```
      - Append a link and one-sentence gist to today's daily note notepad under `## 🗒 Notepad`:
-       `* [[Logs/Emails/<filename>|Email summary]]: <One-sentence-gist>.`
+       `* [[Inputs/Emails/<filename>|Email summary]]: <One-sentence-gist>.`
      - Run the command to mark it processed:
        `python3 /home/justin.guest/.hermes/scripts/fetch_source_candidates.py --mark-email-processed <thread_id>`
    - Report the log(s) successfully saved.
@@ -158,22 +158,23 @@ If no discovered contacts are found, proceed to Phase 3.
 
 ---
 
-### Phase 3 — Source Review
+### Phase 3 — Reading Review
 
-Review persistent reference sources, articles, or transcripts added or updated today.
+Review raw reading imports added or updated today. Offer compiled Source note creation via `llm-wiki` integrate-full.
 
-1. **Find Today's Sources:**
-   - Scan `/home/justin.guest/vault/Logs/Sources/` for files modified in the last 24 hours (using `find ~/vault/Logs/Sources -mtime -1 -type f` or `search_files`).
-   - Check if any new source files contain `daily_note: "[[<TODAY_DATE> ...]]"` in their frontmatter.
+1. **Find Today's Readings:**
+   - Scan `$OBSIDIAN_VAULT_PATH/Inputs/Readings/` (legacy `Logs/Sources/`, `Logs/Readings/` during migration) for files modified in the last 24 hours.
+   - Check for `category: "[[Readings]]"` and `daily_note: "[[<TODAY_DATE> ...]]"` in frontmatter.
 
-2. **Summarize Today's Sources:**
-   - If new sources are found, read their summaries/highlights using `read_file`.
-   - Present a highly concise summary of each new source (title, author, original URL, and 2-3 key takeaways or notable highlights).
-   - If no new sources were added today, state: *"No new sources added today."*
+2. **Summarize Today's Readings:**
+   - If new readings are found, read highlights using `read_file`.
+   - Present concise summary per reading (title, author, URL, 2-3 key takeaways).
+   - Note any without a compiled Source in `Notes/` — offer integrate-full promotion.
+   - If none found: *"No new readings added today."*
 
 3. **Present & Check Action Items:**
-   - Ask if Justin has any thoughts on these sources or wants to capture any action items from them into Todoist:
-     *"Any highlights you want to turn into Todoist tasks, or shall we move to vault inbox triage?"*
+   - Ask if Justin wants Todoist tasks from highlights, or Source note compilation:
+     *"Any highlights for Todoist, compile any into Source notes, or move to vault triage?"*
    - **Wait for Justin's response.**
 
 ---
@@ -192,10 +193,14 @@ Wait for Justin's confirmation or feedback at the end of the EIIRP report (Step 
    - Classify all inventoried notes based on content analysis and map them to their correct Obsidian folder routes:
      - **`Contacts/`** (Category: `[[People]]` or `[[Organizations]]`):
        - *Crucial Rule:* Any brand-new contact note created by Bes must land in `/home/justin.guest/vault/inbox/`. Existing contacts already under `Contacts/` are updated in place and must *never* be relocated.
-     - **`Logs/Meetings/`** (Category: `[[Meetings]]`):
-       - For meeting syncs, agendas, or discussion records (e.g. Granola notes).
-     - **`Notes/`**:
-       - For thoughts, concepts, patterns, beliefs, memories, decisions, and projects. Recommend the exact subfolder and category YAML header based on content focus:
+     - **`Inputs/Meetings/`** (Category: `[[Meetings]]`):
+       - Meeting syncs, agendas, Granola summaries.
+     - **`Inputs/Readings/`** (Category: `[[Readings]]`):
+       - Raw reading imports (immutable).
+     - **`Notes/`** with **`[[Sources]]`**:
+       - Compiled bibliographical records (integrate-full, not raw imports).
+     - **`Notes/`** (maturity tiers):
+       - Thoughts, concepts, beliefs, memories, decisions, projects:
          - **`Notes/Thoughts`** (Category: `[[Thoughts]]`) — reflections, raw thoughts, ideas, and opinions.
          - **`Notes/Concepts`** (Category: `[[Concepts]]`) — models, theories, definitions, or educational concepts (others' thinking).
          - **`Notes/References`** (Category: `[[References]]`) — patterns, structured guides, technical reference sheets (note: Justin uses Apple Notes as a "filing cabinet" for references, but continues using Obsidian for general note-taking/referencing).
@@ -224,9 +229,9 @@ Wait for Justin's confirmation or feedback at the end of the EIIRP report (Step 
      - This script automatically relocates misplaced daily notes to `Daily Notes/`, converts legacy inline tags (like `#people` or `#meeting`) to category YAML metadata, and runs the auto-linker to convert plain-text mentions of known contacts and projects into proper wikilinks.
    - For all other inbox notes requiring human judgment, compile your recommended movements and renames into the final report.
 
-5. **Step 5: Skill/Context Audit (Dense Knowledge Graph Linking)**
-   - Audit the context of new and modified notes. Ensure that all active work logs and notes created today link back to their associated project notes, contact cards, or key task IDs.
-   - Ensure the knowledge graph remains highly dense, connected, and contextually complete.
+5. **Step 5: integrate-full (Wiki Compile)**
+   - Load `llm-wiki` skill. Run integrate-full for today's scope: Reading→Source promotion, project/contact cross-refs, contradiction flags.
+   - Confirm with Justin before bulk edits to mature notes. Maturity promotion stays in `obsidian-suggest-promotions`.
 
 6. **Step 6: Verification (Link & Orphan Audit)**
    - Verify that all internal and external wikilinks inside the newly created or modified notes are valid and not broken.

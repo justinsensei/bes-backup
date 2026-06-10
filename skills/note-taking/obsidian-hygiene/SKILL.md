@@ -1,99 +1,101 @@
 ---
 name: obsidian-hygiene
-description: Use when performing daily or ad-hoc vault maintenance, running lints,
-  resolving duplicate ID conflicts, or converting legacy inline tags to categories.
-version: 1.2.0
+description: Use when running vault hygiene checks, interpreting vault_hygiene.py output, or triaging structural vault issues (IDs, folders, ghost links, source linkage). Structural lint only — semantic contradictions belong to llm-wiki.
+version: 1.1.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags:
-    - obsidian
-    - operations
-    - hygiene
-    - maintenance
-    - lint
-    - duplicate-id
-    related_skills:
-    - obsidian
-    - obsidian-utilities
-platforms:
-- linux
+    tags: [obsidian, hygiene, vault, lint, triage]
+    related_skills: [obsidian, llm-wiki, wind-down, morning-briefing]
 ---
 
-# Obsidian Operation: Vault Hygiene & Maintenance
-
-- **Linked References:**
-  - **[Resolving ID Conflicts](references/resolving-id-conflicts.md):** Step-by-step recipe to resolve clashing note identifiers.
+# Obsidian Vault Hygiene
 
 ## Overview
-This operational skill governs manual and automated procedures to maintain a clean, perfectly-linked, conflict-free vault. It handles executing hygiene scripts and resolving complex metadata anomalies (like duplicate IDs).
 
----
+Operator docs for `vault_hygiene.py` and its cron wrapper. Enforces the three-layer taxonomy (Inputs → Sources → maturity tiers) with auto-fixes for safe structural issues and reports for human triage.
 
-## The Hygiene Process
+## When to Use
 
-### Step 1 — Automated Script Execution
-Run the consolidated hygiene script at `~/.hermes/scripts/vault_hygiene.py` (which runs automatically daily at 9PM, or can be run manually) to check the health of the vault.
+- Morning briefing Job B (tier-1 auto-fixes)
+- Wind-down EIIRP Step 4 (`python3 ~/.hermes/scripts/vault_hygiene.py`)
+- Interpreting Telegram alerts from cron job `0b12d967fdf6`
+- After taxonomy migration — verify wrong-folder and legacy-path reports
 
-*Note: If there are many newly modified or added files, the script will trigger a heavy semantic indexing run at the end. When running this script via the `terminal` tool, always pass a generous timeout parameter (e.g., `timeout: 180` or higher) to prevent a premature timeout error.*
+**Don't use for:** semantic contradiction scans, Reading→Source promotion, or maturity-tier promotion (use `llm-wiki` and `obsidian-suggest-promotions`).
+
+## Vault Path
+
+`OBSIDIAN_VAULT_PATH` from `~/.hermes/.env` (typically `/home/justin.guest/vault` on bes-vm).
+
+## Step 1 — Run hygiene
 
 ```bash
 python3 ~/.hermes/scripts/vault_hygiene.py
 ```
-This script performs:
-1. **Misplaced Daily Notes:** Detects daily notes located outside `/Daily Notes/` and relocates them.
-2. **Tag-to-Category Conversion:** Converts inline tags like `#people` or `#meeting` into formal category YAML frontmatter and removes the inline tag from the body.
-3. **Identifier & Alias Diagnostics:** Performs high-speed scans for missing or duplicate `id` keys, duplicate/non-unique aliases (alphanumeric, length >= 2), or malformed `daily_note` links.
-4. **Auto-Linking of Unlinked Mentions:** Automatically converts plain-text mentions of known contacts and projects (by title and aliases like "Tor", "Anya", "Dave") into proper wikilinks inside newly reconciled Granola meetings and Daily Notes modified within the last 7 days. If an alias is non-unique (shared by multiple contacts), it is explicitly skipped to prevent incorrect linking (see "Ambiguity & Non-Unique Alias Rules" below). This builds a robust, tight knowledge graph automatically without manual overhead.
-5. **Ghost Links & Orphan Notes Detection:** Audits the entire vault for unresolved Obsidian wikilinks (`[[LinkTarget]]`) pointing to non-existent notes (reported under `## ⚠️ Ghost Links`) and true orphan notes with zero incoming/outgoing links (reported under `## ⚠️ Orphan Notes`).
-6. **Parallel Citation & Web Source Validation:** Executes high-speed, parallel HTTP HEAD/GET checks with thread pools to validate external URLs inside literature/source notes in `/Logs/Sources/`, warning of any dead/unresolving URLs under `## ⚠️ Citation & Source Issues`.
 
----
+**Auto-fix tier (silent unless printed):**
+- Reconcile Granola `meetings/` → `Inputs/Meetings/` with `category: "[[Meetings]]"`
+- Auto-link entities in meeting bodies and recent daily notes (last 7 days)
+- Legacy `[[Sources]]` on `Inputs/Readings/` → `[[Readings]]`
+- Misplaced daily notes → `Daily Notes/`
+- Tag-to-category conversion per design doc
 
-### Step 2 — Resolve ID Conflicts
-If the script reports duplicate ID conflicts, follow the classification and resolution steps detailed in the linked reference:
-1. **Accidental Duplicate / Template Copies:** Keep the earlier note; delete the newer duplicate.
-2. **Identical Sources (`-1` suffix):** Delete the `-1` file and globally heal internal wikilinks pointing to it.
-3. **Distinct Content sharing an ID:** Generate a fresh 14-digit timestamp ID for the newer/source note and update its frontmatter.
+**Report tier (stdout):**
 
----
+| Section | Severity | Meaning |
+|---------|----------|---------|
+| `## 🔴 ID conflicts` | Red | Duplicate `id` values |
+| `## 🔴 Non-unique aliases` | Red | Same alias on multiple contacts |
+| `## 🔴 Missing ID` | Red | Note lacks `id` |
+| `## 🔴 Missing daily_note` | Red | Note lacks `daily_note` |
+| `## 🔴 Wrong folder` | Red | Category/folder mismatch |
+| `## ⚠️ Ghost Links` | Warning | Wikilink target missing |
+| `## ⚠️ Orphan Notes` | Warning | Zero in/out links |
+| `## ⚠️ Source linkage` | Warning | Compiled Source missing `## Raw inputs` |
+| `## ⚠️ Citation & Reading URL Issues` | Warning | Broken URLs in Readings |
+| `## ⚠️ Legacy path links` | Warning | Wikilinks still use `Logs/` paths |
 
-### Step 3 — Manual Link Health Audit
-Regularly verify that link targets are correct and not broken.
-- Verify that newly moved notes didn't break external scripts.
-- Review and clean up empty tags or stray formatting rules.
+Cron (`vault_hygiene_cron.py`) surfaces all 🔴 and taxonomy-relevant ⚠️ sections to Telegram.
 
----
+## Three-layer immutability
 
-### Step 4 — Deactivation of Timelines & Transition to Native Backlinks
-In June 2026, Justin transitioned away from bot-enriched timeline sections in favor of Obsidian's native **Backlinks** panel, which dynamically displays all mentions of a file with real-time context.
-- **Read-Only Mentions:** Active timeline enrichment (appending `## Timeline` bullets to notes) has been completely deactivated.
-- **Unresolved Link & Plain-Text Discovery:** The signals script (`check_vault_signals.py`) has been refactored to be read-only. It scans for both bracketed unresolved links AND plain-text candidates of new contacts (not yet in the vault) and feeds them to the Morning Briefing as candidates for contact card creation.
-- **Manual Timeline Spacing (Legacy):** If any manual timelines are edited or maintained, keep exactly one empty line between the heading and the first item, with no blank lines between individual bullet points.
+| Path | Body edits allowed? |
+|------|---------------------|
+| `Inputs/Readings/`, `Emails/`, `Slack/` | Frontmatter only — never auto-link or compile |
+| `Inputs/Meetings/` | Entity auto-link + `### Related` project sections |
+| `Notes/` with `[[Sources]]` | Full body (integrate-full keeps summary current) |
+| Maturity notes in `Notes/` | Full body |
 
-### Ambiguity & Non-Unique Alias Rules
-- **Non-Unique Aliases:** If multiple contacts share the same alias (e.g. `'aunt lindy'` shared by `Linda Massie` and `Linda Lash`), the vault hygiene process flags this under a `## 🔴 Non-unique aliases` diagnostics header.
-- **Auto-Linker Safeguard:** To prevent making wrong connections, the auto-linker explicitly detects and skips any alias that is non-unique (shared by more than one distinct contact path).
-- **Interactive Resolution (Briefing):** When `check_vault_signals.py` detects an unlinked plain-text mention of an ambiguous alias, it logs it under `ambiguous_mentions` in `vault_signals_last_run.json`. This is surfaced in Phase 1 of the Morning Briefing under `❓ Ambiguous mentions`. When Justin clarifies the target (e.g. "I meant Linda Massie"), the agent must use the `patch` tool to replace the plain text in the context file with the correct link (e.g. `[[Linda Massie|Aunt Lindy]]`) and confirm the fix.
+## Category placement quick reference
 
----
+| Category | Folder |
+|----------|--------|
+| `[[Readings]]` | `Inputs/Readings/` |
+| `[[Meetings]]` | `Inputs/Meetings/` |
+| `[[Emails]]` | `Inputs/Emails/` |
+| `[[Slack]]` | `Inputs/Slack/` |
+| `[[Sources]]` (compiled) | `Notes/` |
+| `[[Thoughts]]`, `[[Concepts]]`, etc. | `Notes/` per obsidian triage table |
 
-### Step 5 — Frontmatter Parsing and Overwrite Pitfalls
+## Hygiene vs llm-wiki
 
-When designing or patching automated hygiene scripts that read, clean, and write back markdown files:
-- **Timeline Removal and Frontmatter Destruction:** When removing native timeline blocks (e.g., legacy `## Timeline` sections), ensure your search-and-replace patterns do not accidentally match and delete the frontmatter's closing properties divider (`---`). A pattern matching `---\n\n## Timeline` can easily delete the closing properties marker from legacy notes that have no other body content, leaving behind an unclosed properties section (`---` at the top only) which breaks YAML metadata parsers. Always verify that a closing `---` remains present and sits on its own line after the properties block.
-- **Dangling closing dividers:** Ensure any script that dynamically adds or updates properties (like `daily_note` or `category`) writes back the closing divider (`---`) on a *fresh line*. Writing it without an intervening newline will append it directly to the end of the last property string (e.g., `daily_note: '...'---`), which corrupts properties.
-- **Infinite Overwrite Loops:** Avoid extracting `body_content` in a way that includes leading newlines (e.g. `text[fm_end+4:]`) and then checking if it needs an update using `.lstrip()` (e.g. `body_content != original_body`). Since writing the file adds a newline after the frontmatter closing delimiter `---`, the next read will extract the leading newline again, causing an endless loop of "fixing" and rewriting unchanged files. Always `.lstrip()` immediately upon extraction.
-- **Massive Re-indexing Overhead:** Constantly rewriting files modifies their `mtime` and hash, which triggers heavy background semantic embedding and indexing runs. Always check if real changes occurred before writing the file back to disk.
-- **Healing Corrupted Frontmatter:** If frontmatter properties become corrupted across many notes (due to missing closing dashes or merged properties-dashes), use the specialized recovery script at `/home/justin.guest/fix_frontmatter.py` to recursively heal them. The script automatically splits appended dashes on property lines and safely closes unclosed frontmatter blocks across the entire vault.
+- **obsidian-hygiene:** structural (this skill)
+- **llm-wiki `references/lint.md`:** semantic (contradictions, stale summaries) — on demand
+- **obsidian-suggest-promotions:** maturity ladder — unchanged
 
 ## Common Pitfalls
 
-1. Skipping the skill and improvising paths or conventions.
-2. Hardcoding `/home/justin.guest/` instead of `$OBSIDIAN_VAULT_PATH` / `${HERMES_HOME}`.
+1. Running hygiene before migration — expect `Logs/` paths in reports; feature-detection handles both.
+2. Expecting auto-link in Readings — immutability guard prevents it.
+3. Confusing Layer 2 `[[Sources]]` (compiled, `Notes/`) with raw Readings (`Inputs/Readings/`).
+4. Auto-moving wrong-folder notes — hygiene reports only; wind-down EIIRP triages moves.
+
 ## Verification Checklist
 
-- [ ] Followed this skill's steps without contradicting `obsidian` core conventions
-- [ ] Used env-var path patterns where writing to vault or calling scripts
-- [ ] Did not manually `git commit` inside the vault
+- [ ] Script completes without traceback
+- [ ] Granola meetings land in `Inputs/Meetings/` with `[[Meetings]]`
+- [ ] No `[[Sources]]` left on input Reading paths
+- [ ] Cron Telegram includes wrong-folder / source-linkage when present
+- [ ] Semantic re-index triggered at end of run

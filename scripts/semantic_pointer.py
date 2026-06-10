@@ -229,9 +229,9 @@ def index_vault(verbose=False, batch_size=30):
         
     print(f"Found {len(pending_files)} new/modified files to index.")
     
-    # Sort to prioritize Logs/ first, then Daily Notes/, then others
+    # Sort to prioritize Inputs/ (or legacy Logs/) first, then Daily Notes/
     pending_files.sort(key=lambda x: (
-        0 if "Logs/" in x[0] else (1 if "Daily Notes/" in x[0] else 2),
+        0 if ("Inputs/" in x[0] or "Logs/" in x[0]) else (1 if "Daily Notes/" in x[0] else 2),
         x[0]
     ))
     
@@ -467,7 +467,7 @@ def run_historical_bridge(target_file, limit=5, commit=False):
     target_emb_bytes = cursor.fetchone()[0]
     
     # We want to search for similarity ONLY across Tier 1 logs:
-    # Categories: "Meetings", "Readings", "Slack", "Daily Notes" or starting with "Logs/" or "Daily Notes/"
+    # Tier-1 inputs: Meetings, Readings, Slack, Emails, Daily Notes (Inputs/ or legacy Logs/)
     # We find the top semantically dense historical matches.
     cursor.execute("""
         select 

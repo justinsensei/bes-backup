@@ -281,14 +281,16 @@ def get_vault_activity(vault_path, last_briefing_dt):
             
             # Map specific directory patterns to types if untyped or default
             if ptype == "note":
-                if slug.startswith("Logs/Meetings/") or slug.startswith("logs/meetings/") or slug.startswith("meetings/"):
+                if (slug.startswith("Inputs/Meetings/") or slug.startswith("Logs/Meetings/")
+                        or slug.startswith("logs/meetings/") or slug.startswith("meetings/")):
                     ptype = "meeting"
                 elif slug.startswith("Daily Notes/") or slug.startswith("Logs/Daily/") or slug.startswith("logs/daily/") or slug.startswith("daily/"):
                     ptype = "daily"
                 elif slug.startswith("Contacts/") or slug.startswith("contacts/"):
-                    ptype = "person" # default contacts to person
-                elif slug.startswith("sources/"):
-                    ptype = "source"
+                    ptype = "person"
+                elif (slug.startswith("Inputs/Readings/") or slug.startswith("Logs/Sources/")
+                        or slug.startswith("Logs/Readings/") or slug.startswith("sources/")):
+                    ptype = "reading"
                 elif slug.startswith("archive/"):
                     ptype = "archive"
             

@@ -2,9 +2,8 @@
 """
 vault_hygiene_cron.py — Cron wrapper for vault_hygiene.py.
 
-Runs the hygiene script and prints output ONLY if there are red-level issues
-(ID conflicts, missing IDs, missing daily_note links). Auto-fixes (misplaced
-daily notes, tag conversions) run silently.
+Runs the hygiene script and prints output when there are red-level issues
+or taxonomy-relevant warnings. Auto-fixes run silently unless surfaced below.
 
 Empty stdout → no Telegram message (watchdog pattern).
 """
@@ -23,32 +22,36 @@ result = subprocess.run(
 
 output = result.stdout.strip()
 
-# Only surface red-level sections
-RED_MARKERS = [
+ALERT_MARKERS = [
     "## 🔴 ID conflicts",
+    "## 🔴 Non-unique aliases",
     "## 🔴 Missing ID",
     "## 🔴 Missing daily_note",
+    "## 🔴 Wrong folder",
     "## ⚠️  Move conflicts",
+    "## ⚠️ Ghost Links",
+    "## ⚠️ Orphan Notes",
+    "## ⚠️ Source linkage",
+    "## ⚠️ Citation & Reading URL Issues",
+    "## ⚠️ Legacy path links",
 ]
 
-red_lines = []
-in_red_section = False
+alert_lines = []
+in_alert_section = False
 
 for line in output.splitlines():
-    is_header = any(line.startswith(m) for m in RED_MARKERS)
-    is_green  = line.startswith("## ✅")
+    is_header = any(line.startswith(m) for m in ALERT_MARKERS)
     is_any_section = line.startswith("## ")
 
     if is_header:
-        in_red_section = True
-        red_lines.append(line)
-    elif in_red_section:
+        in_alert_section = True
+        alert_lines.append(line)
+    elif in_alert_section:
         if is_any_section and not is_header:
-            in_red_section = False
+            in_alert_section = False
         else:
-            red_lines.append(line)
+            alert_lines.append(line)
 
-if red_lines:
+if alert_lines:
     print("**Vault hygiene issues found:**\n")
-    print("\n".join(red_lines))
-# else: silent — no message sent
+    print("\n".join(alert_lines))
