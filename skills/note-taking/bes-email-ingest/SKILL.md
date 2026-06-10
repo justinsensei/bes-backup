@@ -126,8 +126,8 @@ Use `mcp_todoist_add_tasks` to add a single task to Justin's Todoist **Inbox** (
 ## Other Intent Shapes (Legacy Support)
 
 If Justin explicitly uses the following phrasing, support these specific paths:
-- **Person note:** *"Person note for <Name>"* or *"<Name> works at <Org>"* → Create/update `<lowercase-fullname-slug>.md` under `people/` using `New Person` frontmatter format.
-- **Company/Organization note:** *"New company <Name>"*, *"Company note for <Name>"*, or *"<Name> is a new company"* → Create `<lowercase-name-slug>.md` under `companies/` using Organization formatting (executive summary, Role/Company/Relationship state, and creation Timeline).
+- **Person note:** *"Person note for <Name>"* or *"<Name> works at <Org>"* → Create a brand-new Person note named `<Capitalized Spaced Full Name>.md` in `/home/justin.guest/vault/inbox/` (or update the existing note in-place if it already exists under `/Contacts/` or `/inbox/`).
+- **Company/Organization note:** *"New company <Name>"*, *"Company note for <Name>"*, or *"<Name> is a new company"* → Create a brand-new Organization note named `<Capitalized Spaced Name>.md` in `/home/justin.guest/vault/inbox/` (or update the existing note in-place if it already exists under `/Contacts/` or `/inbox/`).
 - **Project note:** *"New project <Name>"*, *"Project note for <Name>"*, or *"<Name> is a new project"* → Create `<lowercase-name-slug>.md` under `projects/` using Project formatting (executive summary, Status: Active, and creation Timeline).
 - **Append to existing note:** *"Add to <note title>"*, *"Append to <note title>"*, or *"Add [content] to the <note title> note"* → Find the closest match vault-wide (the user may say "in my inbox" or guess the wrong folder, but the note often resides in its correct MECE directory like `personal/trips/` or `projects/`) and append a dated bullet point (format: `- YYYY-MM-DD | Ingest — <context/details>`).
 - **Calendar scheduling:** *"Schedule this"* or *"Add this to my calendar"* → Parse event details and call `gws_multi.py --account personal-main|work calendar create`.
