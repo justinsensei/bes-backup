@@ -547,6 +547,31 @@ if missing_daily_notes:
     for p in sorted(missing_daily_notes):
         lines.append(f"  - {p}")
 
+# ⚠️ Ghost Links
+if ghost_links:
+    lines.append("\n## ⚠️ Ghost Links")
+    for p in sorted(ghost_links.keys()):
+        for target in sorted(list(ghost_links[p])):
+            lines.append(f"  - {p} links to non-existent: [[{target}]]")
+
+# ⚠️ Orphan Notes
+orphan_notes = []
+for note in sorted(list(all_audited_notes)):
+    if len(incoming_links[note]) == 0 and len(outgoing_links[note]) == 0:
+        orphan_notes.append(note)
+
+if orphan_notes:
+    lines.append("\n## ⚠️ Orphan Notes")
+    for note in orphan_notes:
+        lines.append(f"  - {note}")
+
+# ⚠️ Citation & Source Issues
+if citation_issues:
+    lines.append("\n## ⚠️ Citation & Source Issues")
+    for p in sorted(citation_issues.keys()):
+        for url, err in citation_issues[p]:
+            lines.append(f"  - {p}: [{err}] {url}")
+
 if lines:
     print("\n".join(lines))
 else:
