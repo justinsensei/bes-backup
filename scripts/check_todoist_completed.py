@@ -6,8 +6,8 @@ import os
 def main():
     token = "3da5350b4d7ba82b7a95e08fdcbc105254f20be3"
     params = {
-        "since": "2026-06-05T00:00:00Z",
-        "until": "2026-06-05T23:59:59Z",
+        "since": "2026-06-09T00:00:00Z",
+        "until": "2026-06-09T23:59:59Z",
         "limit": 100
     }
     url = "https://api.todoist.com/api/v1/tasks/completed/by_completion_date?" + urllib.parse.urlencode(params)
