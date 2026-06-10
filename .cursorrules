@@ -1,0 +1,90 @@
+# Cursor Rules for Bes Backup Repository
+
+This file guides Cursor (and the user) when creating, modifying, and validating skills or system files in the `bes-backup` workspace. It ensures alignment with Hermes Agent standards and the safe bidirectional syncing workflow.
+
+---
+
+## 1. Syncing Workflow (How Changes Reach the VM)
+
+This repository is bi-directionally synced with a headless VM (`bes-vm`) via a custom push-and-pull protocol:
+* **Host $\rightarrow$ VM:** When editing in Cursor, **commit and push your changes to GitHub**, then run `bes-pull` in your host terminal (or ask your agent to run it). This stops the daemon, pulls/rebases safely, reverse-syncs files to the active `~/.hermes/` runtime folder, and restarts the backup daemon.
+* **VM $\rightarrow$ Host:** Live changes in `~/.hermes/` (such as memories or dynamic scripts) are automatically committed and pushed to GitHub by the `bes-autocommit` service. Run `git pull` in Cursor to fetch them.
+
+---
+
+## 2. Skill Authoring Conventions (SKILL.md Schema)
+
+When creating or editing a skill under `skills/<category>/<skill-name>/SKILL.md`, you **must** obey the following rigid standards:
+
+### required Frontmatter Constraints
+The skill file must start with valid YAML frontmatter containing `name` and `description` fields.
+* **`name`:** Lowercase, hyphens only, maximum 64 characters.
+* **`description`:** Starts with *"Use when ..."*, describes the trigger class (not just the one task), and must be **$\le$ 1024 characters**.
+* **Closing:** Must be followed by a clean newline, closed with `---`, and have non-empty content below.
+
+Example:
+```yaml
+---
+name: did-i-already-do-this
+description: Use when the user asks whether they already performed an action, completed a task, or had a conversation. Looks up past notes and transcripts.
+version: 1.0.0
+author: Hermes Agent
+license: MIT
+metadata:
+  hermes:
+    tags: [search, memory, validation]
+    related_skills: [obsidian, todoist]
+---
+```
+
+### Peer-Matched Structure
+Every skill file should follow this standard structural layout:
+```markdown
+# Skill Title
+
+## Overview
+Brief explanation of what the skill is and why it exists.
+
+## When to Use
+* **Bullet list of triggers**
+* "Don't use for:" counter-triggers to prevent accidental invocation.
+
+## [Detailed Topic Sections]
+* Actionable recipes, reference tables, exact command snippets.
+
+## Common Pitfalls
+Numbered list of pitfalls, gotchas, and how to avoid them.
+
+## Verification Checklist
+- [ ] Checklist of post-action verifications.
+```
+
+### Size Limits
+* **Full File:** $\le$ 100,000 characters. Aim for the **8,000 to 14,000 character range**. If a skill is growing larger, split detailed facts or schemas into supporting files under `references/*.md`.
+
+---
+
+## 3. Supporting Files Allowlist
+
+A skill is not limited to `SKILL.md`. You can create and reference supporting files inside the skill's folder, but they **must** be nested under one of the allowed directories:
+* `skills/<category>/<name>/references/` (Markdown documents, schemas, APIs)
+* `skills/<category>/<name>/templates/` (Config files, YAML structures)
+* `skills/<category>/<name>/scripts/` (Python/Bash tools)
+* `skills/<category>/<name>/assets/` (Visual assets, SVGs)
+
+---
+
+## 4. Gitignore Safety (Force-Tracking)
+
+The repository's `.gitignore` excludes most bundled skill directories by default to avoid tracking unedited files.
+* **When customizing or creating a skill:** You must either:
+  1. Add an explicit re-include block at the end of `.gitignore` (e.g., `!skills/note-taking/my-skill/` and `!skills/note-taking/my-skill/**`), OR
+  2. Use `git add -f skills/category/my-skill/SKILL.md` to force-track the changes.
+
+---
+
+## 5. Script Guidelines
+
+* **Absolute Paths:** Always use absolute paths or resolve them relative to the user's home directory.
+* **Interpreter Commands:** Use absolute paths to interpreters inside subagents (e.g. `/usr/bin/python3` or fully qualified absolute executable paths) to avoid PATH bugs.
+* **Dependencies:** Do not assume non-standard packages are installed; list requirements clearly.
