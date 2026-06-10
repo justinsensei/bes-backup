@@ -1,6 +1,7 @@
 import os
 import json
 import re
+from collections import defaultdict
 from datetime import datetime, timedelta
 
 def load_watermark():
@@ -304,6 +305,32 @@ def scan_file_for_unresolved_links(file_path, content, entities, vault_path, all
             
     return discovered
 
+def scan_file_for_ambiguous_mentions(file_path, content, entities, key_to_paths, ambiguous_keys, vault_path):
+    discovered = []
+    
+    # Remove pre-existing links to avoid matching inside brackets
+    content_no_links = re.sub(r'\[\[([^\]]+)\]\]', r'\1', content)
+    
+    for key in ambiguous_keys:
+        # Ignore very short/junk keys
+        if len(key.strip()) < 2 or not re.search(r'[a-zA-Z0-9]', key):
+            continue
+            
+        pattern = rf'\b{re.escape(key)}\b'
+        if re.search(pattern, content_no_links, re.IGNORECASE):
+            # Resolve candidates: names of files that share this alias
+            paths = key_to_paths[key.lower()]
+            candidates = []
+            for p in paths:
+                candidates.append(os.path.basename(p)[:-3])
+            
+            discovered.append({
+                "alias": key,
+                "context_file": os.path.relpath(file_path, vault_path),
+                "candidates": sorted(list(set(candidates)))
+            })
+    return discovered
+
 def main():
     vault_path = os.environ.get('OBSIDIAN_VAULT_PATH', '/home/justin.guest/vault')
     now_dt = datetime.now()
@@ -313,6 +340,15 @@ def main():
     
     # Load all existing entities
     entities = get_existing_entities(vault_path)
+    
+    # Identify non-unique (ambiguous) aliases
+    key_to_paths = defaultdict(list)
+    for ent_key, ent_info in entities.items():
+        key_to_paths[ent_info["title"].lower()].append(ent_info["path"])
+        for alias in ent_info.get("aliases", []):
+            key_to_paths[alias.lower()].append(ent_info["path"])
+            
+    ambiguous_keys = {k for k, paths in key_to_paths.items() if len(set(paths)) > 1}
     
     # Find all modified markdown files
     modified_files = []
@@ -334,6 +370,7 @@ def main():
     
     enriched_counts = {"person": 0, "organization": 0, "project": 0}
     all_discovered = []
+    all_ambiguous = []
     
     # Build list of all existing vault filenames
     all_vault_filenames = get_all_vault_filenames(vault_path)
@@ -351,6 +388,10 @@ def main():
             # 2. Discover unresolved links as candidates
             unresolved = scan_file_for_unresolved_links(file_path, content, entities, vault_path, all_vault_filenames)
             all_discovered.extend(unresolved)
+            
+            # 2.5 Discover ambiguous mentions in plain text
+            ambiguous = scan_file_for_ambiguous_mentions(file_path, content, entities, key_to_paths, ambiguous_keys, vault_path)
+            all_ambiguous.extend(ambiguous)
         except Exception as e:
             print(f"Error scanning {file_path}: {e}")
             
@@ -363,6 +404,13 @@ def main():
             
     discovered_list = list(deduped_discovered.values())
     
+    # Deduplicate ambiguous mentions
+    deduped_ambiguous = {}
+    for item in all_ambiguous:
+        key = (item['alias'].lower(), item['context_file'].lower())
+        if key not in deduped_ambiguous:
+            deduped_ambiguous[key] = item
+            
     # Output report
     out = {
         "status": "ok",
@@ -371,7 +419,8 @@ def main():
         "discovered_entities": {
             "people": [item for item in discovered_list if item['type'] == 'person'],
             "organizations": [item for item in discovered_list if item['type'] == 'organization']
-        }
+        },
+        "ambiguous_mentions": list(deduped_ambiguous.values())
     }
     
     print(json.dumps(out, indent=2))

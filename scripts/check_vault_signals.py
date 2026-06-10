@@ -370,6 +370,7 @@ def main():
     
     enriched_counts = {"person": 0, "organization": 0, "project": 0}
     all_discovered = []
+    all_ambiguous = []
     
     # Build list of all existing vault filenames
     all_vault_filenames = get_all_vault_filenames(vault_path)
@@ -387,6 +388,10 @@ def main():
             # 2. Discover unresolved links as candidates
             unresolved = scan_file_for_unresolved_links(file_path, content, entities, vault_path, all_vault_filenames)
             all_discovered.extend(unresolved)
+            
+            # 2.5 Discover ambiguous mentions in plain text
+            ambiguous = scan_file_for_ambiguous_mentions(file_path, content, entities, key_to_paths, ambiguous_keys, vault_path)
+            all_ambiguous.extend(ambiguous)
         except Exception as e:
             print(f"Error scanning {file_path}: {e}")
             
@@ -399,6 +404,13 @@ def main():
             
     discovered_list = list(deduped_discovered.values())
     
+    # Deduplicate ambiguous mentions
+    deduped_ambiguous = {}
+    for item in all_ambiguous:
+        key = (item['alias'].lower(), item['context_file'].lower())
+        if key not in deduped_ambiguous:
+            deduped_ambiguous[key] = item
+            
     # Output report
     out = {
         "status": "ok",
@@ -407,7 +419,8 @@ def main():
         "discovered_entities": {
             "people": [item for item in discovered_list if item['type'] == 'person'],
             "organizations": [item for item in discovered_list if item['type'] == 'organization']
-        }
+        },
+        "ambiguous_mentions": list(deduped_ambiguous.values())
     }
     
     print(json.dumps(out, indent=2))
