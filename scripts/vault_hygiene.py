@@ -375,10 +375,38 @@ reconcile_granola_meetings(VAULT)
 entities = get_existing_entities(VAULT)
 auto_link_recent_daily_notes(VAULT, entities)
 
-# 2. Walk the vault to detect ID conflicts, missing ID, missing daily_note
+# 2. Walk the vault to detect ID conflicts, missing ID, missing daily_note, ghost links, and build graph for orphan notes
 id_to_paths = defaultdict(list)
 missing_ids = []
 missing_daily_notes = []
+
+# Build catalogs of all existing files and directories across the entire vault (no skipping) for link resolution
+existing_rel_paths = {}      # lowercase rel_path -> original rel_path
+existing_basenames = defaultdict(list)  # lowercase basename -> list of original rel_paths
+
+for root, dirs, files in os.walk(VAULT):
+    for d in dirs:
+        full_path = Path(root) / d
+        rel_path = full_path.relative_to(VAULT)
+        rel_str = str(rel_path).replace("\\", "/")
+        existing_rel_paths[rel_str.lower()] = rel_str
+        
+    for f in files:
+        full_path = Path(root) / f
+        rel_path = full_path.relative_to(VAULT)
+        rel_str = str(rel_path).replace("\\", "/")
+        existing_rel_paths[rel_str.lower()] = rel_str
+        
+        f_lower = f.lower()
+        existing_basenames[f_lower].append(rel_str)
+        if f_lower.endswith(".md"):
+            existing_basenames[f_lower[:-3]].append(rel_str)
+
+# Ghost links detection variables
+ghost_links = defaultdict(set)
+incoming_links = defaultdict(set)
+outgoing_links = defaultdict(set)
+all_audited_notes = set()
 
 # Folders to skip for manual checks
 skip_dirs = {"Readwise", "Utilities", ".git", ".trash", ".cursor", ".claude", "sources", "Daily Notes"}
@@ -406,6 +434,9 @@ for root, dirs, files in os.walk(VAULT):
                     daily_note = dn_match.group(1).strip()
         
         rel_path = path.relative_to(VAULT)
+        rel_str_f = str(rel_path).replace("\\", "/")
+        all_audited_notes.add(rel_str_f)
+        
         if note_id:
             id_to_paths[note_id].append(rel_path)
         else:
@@ -413,6 +444,63 @@ for root, dirs, files in os.walk(VAULT):
             
         if not daily_note or "[[" not in daily_note:
             missing_daily_notes.append(rel_path)
+            
+        # Parse wikilinks
+        wikilinks = re.findall(r'\[\[([^\]]+)\]\]', text)
+        for link in wikilinks:
+            # Parse link target (before '#' or '|')
+            target_part = link.split('|')[0].strip()
+            file_target = target_part.split('#')[0].strip()
+            
+            if not file_target:
+                continue
+                
+            norm_target = file_target.replace("\\", "/").lower().strip()
+            resolved = None
+            if norm_target in existing_rel_paths:
+                resolved = existing_rel_paths[norm_target]
+            elif (norm_target + ".md") in existing_rel_paths:
+                resolved = existing_rel_paths[norm_target + ".md"]
+            elif norm_target in existing_basenames:
+                resolved = existing_basenames[norm_target][0]
+            elif (norm_target + ".md") in existing_basenames:
+                resolved = existing_basenames[norm_target + ".md"][0]
+                
+            if not resolved:
+                ghost_links[rel_str_f].add(file_target)
+            else:
+                outgoing_links[rel_str_f].add(resolved)
+                incoming_links[resolved].add(rel_str_f)
+
+# 2.5 Citation & Web Source Validation
+citation_issues = defaultdict(list)
+sources_dir = VAULT / "Logs" / "Sources"
+url_cache = {}
+
+if sources_dir.exists():
+    print("Auditing Citation & Web Sources in Logs/Sources/...")
+    for path in sorted(sources_dir.glob("**/*.md")):
+        rel_src_path = path.relative_to(VAULT)
+        rel_src_str = str(rel_src_path).replace("\\", "/")
+        try:
+            content = path.read_text(encoding="utf-8", errors="replace")
+            # Find standard markdown links [Text](URL)
+            md_links = re.findall(r'\[([^\]]*)\]\(((?:https?://|www\.)[^\s\)]+)\)', content)
+            
+            for text, url in md_links:
+                if url.startswith("www."):
+                    url = "https://" + url
+                
+                if url in url_cache:
+                    error_msg = url_cache[url]
+                else:
+                    error_msg = verify_url(url)
+                    url_cache[url] = error_msg
+                    
+                if error_msg:
+                    citation_issues[rel_src_str].append((url, error_msg))
+        except Exception as e:
+            print(f"  Error reading source file {path.name}: {e}")
 
 # 3. Format output for vault_hygiene_cron.py
 lines = []
