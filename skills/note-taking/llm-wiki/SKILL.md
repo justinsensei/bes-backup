@@ -133,6 +133,8 @@ One-time `Logs/` → `Inputs/` via `scripts/migrate_logs_to_inputs.py`. See [tax
 3. Auto-promoting maturity tiers — belongs to obsidian-suggest-promotions, not llm-wiki.
 4. Linking Concepts directly to Readings — use Source as intermediary.
 5. Running integrate-full from cron without approval — light pass only in autonomous runs.
+6. Generating dense, bulky notes during query synthesis — keep integrations and syntheses highly atomic and focused, avoiding oversized multi-topic summaries.
+7. Attempting to write timeline or related inputs lists to contact or project notes — automated timelines are disabled in favor of native backlinks; only update project `## State` on decisions/status.
 
 ## Verification Checklist
 
