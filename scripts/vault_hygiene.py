@@ -394,6 +394,25 @@ if id_conflicts:
         for p in paths:
             lines.append(f"  - {p}: id={nid} shared by {len(paths)} notes")
 
+# Check for non-unique aliases
+alias_to_paths = defaultdict(list)
+for ent_key, ent_info in entities.items():
+    title_lower = ent_info["title"].lower()
+    alias_to_paths[title_lower].append(ent_info["path"])
+    for alias in ent_info.get("aliases", []):
+        alias_to_paths[alias.lower()].append(ent_info["path"])
+
+duplicate_aliases = []
+for alias, paths in sorted(alias_to_paths.items()):
+    unique_paths = list(set(paths))
+    if len(unique_paths) > 1:
+        shared_files = ", ".join(str(Path(p).relative_to(VAULT)) for p in unique_paths)
+        duplicate_aliases.append(f"  - {alias!r} shared by: {shared_files}")
+
+if duplicate_aliases:
+    lines.append("\n## 🔴 Non-unique aliases")
+    lines.extend(duplicate_aliases)
+
 # Missing ID
 if missing_ids:
     lines.append("\n## 🔴 Missing ID")
