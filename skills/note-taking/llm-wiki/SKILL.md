@@ -16,7 +16,7 @@ metadata:
 
 Orchestrates Karpathy-style wiki maintenance across Justin's three-layer taxonomy: immutable **Inputs**, compiled bibliographical **Sources**, and the unchanged **maturity ladder** (Notes→Thoughts→Concepts→Beliefs→References). Hybrid integration: light log append after ingest, full compile on demand, query synthesis for durable answers.
 
-Deep reference: [architecture](references/architecture.md) | [integrate-light](references/integrate-light.md) | [integrate-full](references/integrate-full.md) | [integrate-query](references/integrate-query.md) | [lint](references/lint.md) | [index-and-log](references/index-and-log.md) | [taxonomy-migration](references/taxonomy-migration.md)
+Deep reference: [architecture](references/architecture.md) | [integrate-light](references/integrate-light.md) | [integrate-entities](references/integrate-entities.md) | [integrate-full](references/integrate-full.md) | [integrate-query](references/integrate-query.md) | [lint](references/lint.md) | [index-and-log](references/index-and-log.md) | [taxonomy-migration](references/taxonomy-migration.md)
 
 ## When to Use
 
@@ -49,10 +49,11 @@ Deep reference: [architecture](references/architecture.md) | [integrate-light](r
 | Pass | When | Actions |
 |------|------|---------|
 | **integrate-light** | Every explicit ingest; cron post-steps | Append `Utilities/log.md` with daily note wikilink. **Never modify Input bodies.** No index or notepad updates. |
+| **integrate-entities** | After integrate-light; meeting reconcile | Append hub sections on existing contacts/projects (Timeline, Related inputs, State on decisions). Update-only — no stub creation. |
 | **integrate-full** | Wind-down Step 5; manual triggers | Reading→Source promotion, project/contact cross-refs, contradiction flags |
 | **integrate-query** | Interactive durable Q&A | Synthesize → file to maturity category + light pass |
 
-Cron runs **integrate-light only**. No auto-vault from raw streams.
+Cron runs **integrate-light + integrate-entities**. No auto-vault from raw streams.
 
 ## integrate-light (default after ingest)
 
@@ -60,6 +61,8 @@ See [integrate-light.md](references/integrate-light.md).
 
 1. Append one line to `Utilities/log.md` (time, type, note wikilink, path, daily note wikilink)
 2. Create `Utilities/log.md` from `templates/log.md` if missing (see [integrate-light.md](references/integrate-light.md))
+3. Run `integrate_entities.py` on the ingest (see [integrate-entities.md](references/integrate-entities.md))
+4. Confirm hub updates from JSON report; set ingest `project:` frontmatter when script matches exactly one project
 
 **Immutability:** Do not edit bodies under `Inputs/Readings/`, `Inputs/Emails/`, `Inputs/Slack/`.
 
@@ -130,6 +133,7 @@ One-time `Logs/` → `Inputs/` via `scripts/migrate_logs_to_inputs.py`. See [tax
 ## Verification Checklist
 
 - [ ] integrate-light appended log line with daily note wikilink
+- [ ] integrate-entities updated matched hub pages (or report shows unmatched only)
 - [ ] No Input body edits on Readings/Emails/Slack
 - [ ] Compiled Sources have `## Raw inputs` with Reading links
 - [ ] Layer 3 notes untouched unless integrate-full explicitly scoped

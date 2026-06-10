@@ -127,8 +127,8 @@ Use `mcp_todoist_add_tasks` to add a single task to Justin's Todoist **Inbox** (
 If Justin explicitly uses the following phrasing, support these specific paths:
 - **Person note:** *"Person note for <Name>"* or *"<Name> works at <Org>"* → Create a brand-new Person note named `<Capitalized Spaced Full Name>.md` in `/home/justin.guest/vault/inbox/` (or update the existing note in-place if it already exists under `/Contacts/` or `/inbox/`).
 - **Company/Organization note:** *"New company <Name>"*, *"Company note for <Name>"*, or *"<Name> is a new company"* → Create a brand-new Organization note named `<Capitalized Spaced Name>.md` in `/home/justin.guest/vault/inbox/` (or update the existing note in-place if it already exists under `/Contacts/` or `/inbox/`).
-- **Project note:** *"New project <Name>"*, *"Project note for <Name>"*, or *"<Name> is a new project"* → Create `<lowercase-name-slug>.md` under `projects/` using Project formatting (executive summary, Status: Active, and creation Timeline).
-- **Append to existing note:** *"Add to <note title>"*, *"Append to <note title>"*, or *"Add [content] to the <note title> note"* → Find the closest match vault-wide (the user may say "in my inbox" or guess the wrong folder, but the note often resides in its correct MECE directory like `personal/trips/` or `projects/`) and append a dated bullet point (format: `- YYYY-MM-DD | Ingest — <context/details>`).
+- **Project note:** *"New project <Name>"*, *"Project note for <Name>"*, or *"<Name> is a new project"* → Create `<Capitalized Name>.md` in `/home/justin.guest/vault/inbox/` using project hub schema (`category: "[[Projects]]"`, executive summary, Status: Active, State/Timeline/Related inputs sections).
+- **Append to existing note:** *"Add to <note title>"*, *"Append to <note title>"*, or *"Add [content] to the <note title> note"* → Find the closest match vault-wide (the user may say "in my inbox" or guess the wrong folder, but the note often resides in its correct MECE directory like `personal/trips/` or `Notes/Projects/`) and append a dated bullet under the appropriate section (`## Timeline` for contacts/projects, `## Related inputs` for projects, `## State` for status updates). Format: `- YYYY-MM-DD | [[source|title]] — <gist>`.
 - **Calendar scheduling:** *"Schedule this"* or *"Add this to my calendar"* → Parse event details and call `gws_multi.py --account personal-main|work calendar create`.
 
 ---
@@ -145,6 +145,7 @@ For each message ID detected by the poller:
 3. **Execute actions:**
    - If filing: Generate and write the markdown note to `inbox/` or `Inputs/Emails/`.
    - After filing, run `llm-wiki` integrate-light: append `Utilities/log.md` only (daily note wikilink as last field).
+   - Then run `python3 ~/.hermes/scripts/integrate_entities.py <ingest_rel_path> [--gist "..."]` on each filed note. Include hub updates in Telegram report: `→ updated [[Project]], [[Contact]]`.
    - If creating a task: Call `mcp_todoist_add_tasks` and then `mcp_todoist_add_comments` with the email summary.
    - If both: Do both operations.
 4. **Report back:** Output a single concise line per email in your final response (for Telegram delivery):

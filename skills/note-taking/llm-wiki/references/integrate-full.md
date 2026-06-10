@@ -25,8 +25,9 @@ For each new/modified Reading in scope:
 
 ## Project / contact compile
 
+- integrate-entities handles per-ingest hub append (Timeline, Related inputs, State on decisions) at cron time — see [integrate-entities.md](integrate-entities.md)
+- integrate-full **refreshes** State/summaries and cross-refs for a scoped batch (wind-down, manual)
 - Link today's ingests to active `[[Projects]]` hubs where contextually clear
-- Add back-links on project notes under `## Related inputs` (append only)
 - Do not relocate contacts — inbox rule unchanged
 
 ## Contradiction scan (lightweight)

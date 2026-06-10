@@ -1,6 +1,6 @@
 ---
 name: wind-down
-description: "Interactive daily wrap-up: 1. Log candidates; 2. Discovered contacts; 3. Source review; 4. Everything In Its Right Place (EIIRP) Vault Hygiene & Triage; 5. Work log draft/write; 6. Next day's calendar preview."
+description: "Interactive daily wrap-up: 1. Log candidates; 2. Discovered contacts; 2b. Discovered projects; 3. Source review; 4. Everything In Its Right Place (EIIRP) Vault Hygiene & Triage; 5. Work log draft/write; 6. Next day's calendar preview."
 version: 1.3.0
 author: Bes
 license: MIT
@@ -154,7 +154,58 @@ If Justin selects any:
      ```
 3. Report success and confirm creation in the inbox directory.
 
-If no discovered contacts are found, proceed to Phase 3.
+If no discovered contacts are found, proceed to Phase 2b.
+
+---
+
+### Phase 2b — Discovered Projects
+
+Project discovery runs at **wrap-up**, not morning briefing. Surface candidates from today's ingests that look like project names but have no matching `Notes/Projects/` hub.
+
+1. Run live at wind-down start:
+   ```bash
+   python3 ~/.hermes/scripts/check_vault_signals.py --discover-projects
+   ```
+2. Also read today's unmatched candidates from `~/.hermes/state/integrate_entities_unmatched.json` (keyed by today's date).
+3. Merge and dedupe both sources.
+
+If no discovered projects are found, skip this phase and proceed to Phase 3.
+
+Format:
+```
+📁 N discovered project candidates:
+
+1. [K12 GTM] — first mentioned in [[inbox/2026-06-10 - Decision - K12 GTM]]
+2. [SignLab Classroom] — from integrate_entities_unmatched
+
+Would you like to create project hub notes for any of these? (e.g. "yes, 1", or "skip")
+```
+
+If Justin selects any:
+1. Create stub in `/home/justin.guest/vault/inbox/<Title>.md` with project hub schema:
+   ```yaml
+   ---
+   id: <timestamp_id>
+   daily_note: "[[<YYYY-MM-DD Weekday>]]"
+   category: "[[Projects]]"
+   ---
+   ```
+   ```markdown
+   > Executive summary: <One-line project purpose>.
+
+   Status: Active
+
+   ## State
+   -
+
+   ## Timeline
+   - <Date> | Discovered — Mentioned in [[<context_file>]].
+
+   ## Related inputs
+   -
+   ```
+2. Clear processed entries from `integrate_entities_unmatched.json` for today's date after session.
+3. Report success.
 
 ---
 
@@ -344,7 +395,7 @@ Preview tomorrow's schedule to establish mental readiness, coordinate upcoming t
 - **Frontmatter Safety & Infinite Loops:** Avoid extracting body content in a way that includes leading newlines, preventing infinite overwrite loops during hygiene tasks. Always `.lstrip()` body content immediately upon extraction.
 - **Dangling Closing Dividers:** Ensure any automated or manual procedure that adds or updates properties writes back the closing divider (`---`) on a *fresh line*. Writing it without an intervening newline will append it directly to the end of the last property string (e.g., `daily_note: '...'---`), which corrupts properties.
 - **Non-Unique Aliases Guard:** Always skip auto-linking any alias that is non-unique (shared by more than one distinct contact path) to avoid incorrect connections in the vault.
-- **Timelines Deactivation:** Active bot-enriched timeline enrichment is completely deactivated. Do not append `## Timeline` bullets to contact cards; rely on Obsidian's native Backlinks panel instead.
+- **Timelines Deactivation (manual wind-down):** Do not manually append `## Timeline` bullets to contact cards during wind-down; rely on Obsidian's native Backlinks panel instead. **`integrate-entities`** is the sanctioned automated append path for both contacts and projects at ingest time — cron and meeting reconcile use it.
 
 ## Verification Checklist
 
