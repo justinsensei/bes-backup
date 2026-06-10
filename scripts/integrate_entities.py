@@ -311,24 +311,14 @@ def integrate_ingest(vault_path, ingest_rel_path, gist_override=None, unmatched_
     update_state = needs_state_update(fm, body, ingest_path)
 
     for proj in projects:
+        if not update_state:
+            continue
         proj_path = proj["path"]
         with open(proj_path, encoding="utf-8", errors="replace") as f:
             proj_content = f.read()
 
         changed = False
-        if not section_exists_with_link(proj_content, "## Related inputs", slug):
-            proj_content = append_to_section(proj_content, "## Related inputs", timeline_bullet)
-            changed = True
-        else:
-            report["skipped"].append(f"{proj['title']}:Related inputs")
-
-        if not section_exists_with_link(proj_content, "## Timeline", slug):
-            proj_content = append_to_section(proj_content, "## Timeline", timeline_bullet)
-            changed = True
-        else:
-            report["skipped"].append(f"{proj['title']}:Timeline")
-
-        if update_state and not section_exists_with_link(proj_content, "## State", slug):
+        if not section_exists_with_link(proj_content, "## State", slug):
             proj_content = append_to_section(proj_content, "## State", state_bullet)
             changed = True
 
@@ -337,19 +327,9 @@ def integrate_ingest(vault_path, ingest_rel_path, gist_override=None, unmatched_
                 f.write(proj_content)
             report["updated"]["projects"].append(proj["title"])
 
+    # Timeline updates on contacts are disabled in favor of native backlinks
     for contact in contacts:
-        c_path = contact["path"]
-        with open(c_path, encoding="utf-8", errors="replace") as f:
-            c_content = f.read()
-
-        if section_exists_with_link(c_content, "## Timeline", slug):
-            report["skipped"].append(f"{contact['title']}:Timeline")
-            continue
-
-        c_content = append_to_section(c_content, "## Timeline", timeline_bullet)
-        with open(c_path, "w", encoding="utf-8") as f:
-            f.write(c_content)
-        report["updated"]["contacts"].append(contact["title"])
+        report["skipped"].append(f"{contact['title']}:Timeline")
 
     if len(projects) == 1 and not explicit_project:
         new_content = set_frontmatter_project(content, projects[0]["title"])
