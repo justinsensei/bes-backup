@@ -330,6 +330,10 @@ def reconcile_granola_meetings(vault_path):
 # 1. Reconcile raw Granola meetings from external syncing
 reconcile_granola_meetings(VAULT)
 
+# 1.5 Auto-link recent daily notes
+entities = get_existing_entities(VAULT)
+auto_link_recent_daily_notes(VAULT, entities)
+
 # 2. Walk the vault to detect ID conflicts, missing ID, missing daily_note
 id_to_paths = defaultdict(list)
 missing_ids = []
