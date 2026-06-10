@@ -28,8 +28,8 @@ For every file modified since the watermark, the script searches for references 
 2.  **Exact Text Matches**: Checks for the lowercased filename as a word-bounded phrase (e.g., `\bmac lawrence\b`).
 3.  **Alias Matches**: Checks for any of the contact's aliases as a word-bounded phrase (e.g., `\bmac\b`).
 
-If a match is found, the script automatically prepends a reverse-chronological timeline bullet to the target contact note:
-` - YYYY-MM-DD | Mentioned in [[source_rel_path|source_title]]`
+If a match is found, the script automatically prepends a reverse-chronological timeline bullet to the target contact note using case-preserved shortest-path wikilinks:
+` - YYYY-MM-DD | Mentioned in [[source_title]]` (or `[[link_target|source_title]]` if a name collision exists like `Cracking the Pm Career`).
 
 ### 3. Unresolved Link Discovery (`scan_file_for_unresolved_links`)
 The script parses all wikilinks of the form `[[Link]]` or `[[Link|display_text]]` in scanned files. It filters out system names, daily notes, image attachments, and slashes.
