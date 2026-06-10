@@ -110,7 +110,7 @@ Notes are categorized with a single `category` YAML property containing a quoted
 | `Inputs/Readings/` | `category: "[[Readings]]"` | Raw reading imports — Readwise, clippings (immutable) | `llm-wiki` |
 | `Inputs/Emails/` | `category: "[[Emails]]"` | Email thread summaries | `bes-email-dispatch` |
 | `Inputs/Slack/` | `category: "[[Slack]]"` | Slack conversation summaries | `slack` |
-| `Inputs/Scraps/` | `category: "[[Scraps]]"` | Fleeting brain dumps, raw quick-captures, scraps | `obsidian-notes` |
+| `Scratchpad/` | `category: "[[Scraps]]"` | Fleeting brain dumps, raw quick-captures, scraps | `obsidian-notes` |
 | `Utilities/` | `category: "[[Categories]]"` | Category definition notes (`Utilities/Categories/`) | `obsidian-utilities` |
 
 ---
