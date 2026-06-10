@@ -31,6 +31,7 @@ This script performs:
 1. **Misplaced Daily Notes:** Detects daily notes located outside `/Daily Notes/` and relocates them.
 2. **Tag-to-Category Conversion:** Converts inline tags like `#people` or `#meeting` into formal category YAML frontmatter and removes the inline tag from the body.
 3. **Identifier Diagnostics:** Performs high-speed scans for missing or duplicate `id` keys, or malformed `daily_note` links.
+4. **Auto-Linking of Unlinked Mentions:** Automatically converts plain-text mentions of known contacts and projects (by title and aliases like "Tor", "Anya", "Dave") into proper wikilinks inside newly reconciled Granola meetings and Daily Notes modified within the last 7 days. This builds a robust, tight knowledge graph automatically without manual overhead.
 
 ---
 
@@ -49,11 +50,11 @@ Regularly verify that link targets are correct and not broken.
 
 ---
 
-### Step 4 — Timeline & List Spacing Hygiene
-When notes undergo automated or manual editing (including script-based timeline additions):
-- **Timeline Heading Spacing:** Ensure there is exactly one empty line between the `## Timeline` heading and the first bullet point list item.
-- **Bullet List Compaction:** Ensure there are NO empty lines between individual bullet list items (they should remain compact list items, not double-spaced).
-- **Script-Based Append Pitfall:** When appending bullets dynamically in Python, do not include leading newlines inside the bullet string (e.g., use `- Item` instead of `\n- Item`) to prevent joins from creating compounding empty lines.
+### Step 4 — Deactivation of Timelines & Transition to Native Backlinks
+In June 2026, Justin transitioned away from bot-enriched timeline sections in favor of Obsidian's native **Backlinks** panel, which dynamically displays all mentions of a file with real-time context.
+- **Read-Only Mentions:** Active timeline enrichment (appending `## Timeline` bullets to notes) has been completely deactivated.
+- **Unresolved Link & Plain-Text Discovery:** The signals script (`check_vault_signals.py`) has been refactored to be read-only. It scans for both bracketed unresolved links AND plain-text candidates of new contacts (not yet in the vault) and feeds them to the Morning Briefing as candidates for contact card creation.
+- **Manual Timeline Spacing (Legacy):** If any manual timelines are edited or maintained, keep exactly one empty line between the heading and the first item, with no blank lines between individual bullet points.
 
 ---
 
