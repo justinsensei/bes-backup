@@ -39,7 +39,7 @@ Justin asks a research/knowledge question where the answer should persist:
 ## Workflow
 
 1. **Search** — `semantic_pointer.py search` + vault grep for relevant Inputs/Sources/Concepts/Projects/Contacts
-2. **Synthesize** — compose answer citing upstream links (Concept→Source→Reading)
+2. **Synthesize** — compose answer citing upstream links (Concept→Source→Reading). **Keep the synthesis highly atomic, focused, and concise.** Avoid creating bulky, dense, multi-topic summaries unless explicitly requested by the user.
 3. **Create or update** — if updating an existing note, update it in its current folder. If creating a new note, write it to the `inbox/` folder as `inbox/ID Title.md` (retaining correct `category` in frontmatter) for manual review.
 4. **Post-file** — print the complete note content in the chat channel, run log append, optional entity integration.
 
