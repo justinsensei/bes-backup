@@ -54,3 +54,11 @@ When notes undergo automated or manual editing (including script-based timeline 
 - **Timeline Heading Spacing:** Ensure there is exactly one empty line between the `## Timeline` heading and the first bullet point list item.
 - **Bullet List Compaction:** Ensure there are NO empty lines between individual bullet list items (they should remain compact list items, not double-spaced).
 - **Script-Based Append Pitfall:** When appending bullets dynamically in Python, do not include leading newlines inside the bullet string (e.g., use `- Item` instead of `\n- Item`) to prevent joins from creating compounding empty lines.
+
+---
+
+### Step 5 — Frontmatter Parsing and Overwrite Pitfalls
+
+When designing or patching automated hygiene scripts that read, clean, and write back markdown files:
+- **Infinite Overwrite Loops:** Avoid extracting `body_content` in a way that includes leading newlines (e.g. `text[fm_end+4:]`) and then checking if it needs an update using `.lstrip()` (e.g. `body_content != original_body`). Since writing the file adds a newline after the frontmatter closing delimiter `---`, the next read will extract the leading newline again, causing an endless loop of "fixing" and rewriting unchanged files. Always `.lstrip()` immediately upon extraction.
+- **Massive Re-indexing Overhead:** Constantly rewriting files modifies their `mtime` and hash, which triggers heavy background semantic embedding and indexing runs. Always check if real changes occurred before writing the file back to disk.
