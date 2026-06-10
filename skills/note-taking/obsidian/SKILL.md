@@ -7,7 +7,7 @@ license: MIT
 metadata:
   hermes:
     tags: [obsidian, core, conventions, paths, frontmatter, triage, sorting]
-    related_skills: [obsidian-contacts, obsidian-notes, obsidian-logs, obsidian-utilities]
+    related_skills: [obsidian-contacts, obsidian-notes, obsidian-inputs, obsidian-utilities, llm-wiki, obsidian-hygiene]
 ---
 
 # Obsidian: Core Vault Conventions & Triage Routing
@@ -65,7 +65,7 @@ category: "[[CategoryName]]"         # Single category link (quoted shortest-pat
 
 ### Link Conventions
 - **Shortest-Path Wikilinks:** Always use cleanest, shortest-path wikilinks (e.g., `[[Note Name]]` or `[[Note Name|Display Text]]`) instead of full folder path links (e.g., `[[Folder/Note Name]]`). 
-- **Name Collisions:** Full paths are only permitted if a direct name collision actually exists in the vault (meaning two separate files share the exact same base filename in different directories). Currently, there is only one known collision in the vault: `Cracking the Pm Career` (in both `Logs/Readings/` and `Logs/Sources/`).
+- **Name Collisions:** Full paths are only permitted if a direct name collision actually exists in the vault (meaning two separate files share the exact same base filename in different directories). Known collision: `Cracking the Pm Career` (Readings merge — resolve during migration).
 - **Formatting:** Keep display names concise and avoid full path leaks in normal note body reading.
 
 ### Formatting Rules
@@ -74,7 +74,8 @@ category: "[[CategoryName]]"         # Single category link (quoted shortest-pat
 - **Filename Conventions:**
   - **Daily Notes:** Must be `YYYY-MM-DD Weekday.md` (e.g. `2026-06-09 Tuesday.md`).
   - **Notes, Decisions, Thoughts, Memories, Concepts:** Must be `ID Title.md` (e.g. `20260609120000 Spaced Title.md`).
-  - **References, Beliefs, Sources:** Must be `Title.md` (no timestamp prefix, e.g. `Spaced Title.md`).
+  - **References, Beliefs, Sources (compiled):** Must be `Title.md` (no timestamp prefix, e.g. `Spaced Title.md`).
+  - **Readings (raw inputs):** `Title.md` or Readwise-exported names under `Inputs/Readings/` (no forced rename).
   - **Projects:** Must be `Title.md` under `Notes/Projects/` (e.g. `Spaced Title.md`).
   - **Contacts (People/Organizations):** Must be `Title.md` (e.g. `Aly Lalji.md`, `SignLab.md`).
   - **Meetings:** Must be `YYYY-MM-DD - Spaced Meeting Title.md` (e.g. `2026-06-09 - SignLab Product Alignment.md`).
@@ -96,17 +97,20 @@ Notes are categorized with a single `category` YAML property containing a quoted
 | `Contacts/` | `category: "[[People]]"` | Individual contacts, friends, family, collaborators | `obsidian-people` |
 | `Contacts/` | `category: "[[Organizations]]"` | Companies, schools, institutions, legal entities | `obsidian-organizations` |
 | `Notes/` | `category: "[[Notes]]"` | Default category for conceptual, structured, or raw notes | `obsidian-notes` |
+| `Notes/` | `category: "[[Sources]]"` | Compiled bibliographical records per work; links down to raw Readings | `llm-wiki` |
 | `Notes/` | `category: "[[References]]"` | Useful facts, cheat sheets, guidelines, checklists | `obsidian-references-sources` |
-| `Notes/` | `category: "[[Concepts]]"` | Other people's thinking, summaries, book reviews, articles | `obsidian-references-sources` |
+| `Notes/` | `category: "[[Concepts]]"` | Other people's models/theories extracted from Sources | `obsidian-references-sources` |
 | `Notes/` | `category: "[[Thoughts]]"` | Personal ideas, current opinions, research questions | `obsidian-thoughts-beliefs` |
 | `Notes/` | `category: "[[Beliefs]]"` | Evolved concepts/thoughts - trusted models, core guiding principles | `obsidian-thoughts-beliefs` |
 | `Notes/` | `category: "[[Decisions]]"` | Team or individual decisions and reasoning logs | `obsidian-decisions` |
 | `Notes/` | `category: "[[Memories]]"` | Journal-like personal notes of things I want to remember | |
 | `Notes/Projects/` | `category: "[[Projects]]"` | Hubs for notes about ongoing work, milestones, travel | `obsidian-projects` |
 | `Daily Notes/` | `category: "[[Daily Notes]]"` | Daily notes containing schedules and work logs | `obsidian-daily-notes` |
-| `Logs/` | `category: "[[Meetings]]"` | Chronological meeting agendas, summaries, outcomes | `obsidian-meetings` |
-| `Logs/` | `category: "[[Sources]]"` | Raw reading notes and bibliographical information | |
-| `Utilities/` | `category: "[[Categories]]"` | Category representation notes themselves (in `Utilities/Categories/`) | `obsidian-utilities` |
+| `Inputs/Meetings/` | `category: "[[Meetings]]"` | Meeting agendas, summaries, outcomes (Granola reconcile) | `obsidian-meetings` |
+| `Inputs/Readings/` | `category: "[[Readings]]"` | Raw reading imports — Readwise, clippings (immutable) | `llm-wiki` |
+| `Inputs/Emails/` | `category: "[[Emails]]"` | Email thread summaries | `bes-email-dispatch` |
+| `Inputs/Slack/` | `category: "[[Slack]]"` | Slack conversation summaries | `slack` |
+| `Utilities/` | `category: "[[Categories]]"` | Category definition notes (`Utilities/Categories/`) | `obsidian-utilities` |
 
 ---
 

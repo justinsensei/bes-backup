@@ -17,7 +17,79 @@ import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-VAULT = Path("/home/justin.guest/vault")
+VAULT = Path(os.environ.get("OBSIDIAN_VAULT_PATH", "/home/justin.guest/vault"))
+
+
+def inputs_base(vault_path):
+    vault = Path(vault_path)
+    if (vault / "Inputs").exists():
+        return vault / "Inputs"
+    return vault / "Logs"
+
+
+def readings_dirs(vault_path):
+    vault = Path(vault_path)
+    dirs = []
+    for candidate in [
+        vault / "Inputs" / "Readings",
+        vault / "Logs" / "Readings",
+        vault / "Logs" / "Sources",
+    ]:
+        if candidate.exists():
+            dirs.append(candidate)
+    return dirs
+
+
+def expected_folder_prefix(category, vault_path):
+    base = str(inputs_base(vault_path)).replace("\\", "/")
+    rules = {
+        "Readings": f"{base}/Readings/",
+        "Meetings": f"{base}/Meetings/",
+        "Emails": f"{base}/Emails/",
+        "Slack": f"{base}/Slack/",
+        "Sources": "Notes/",
+        "Notes": "Notes/",
+        "Thoughts": "Notes/",
+        "Concepts": "Notes/",
+        "Beliefs": "Notes/",
+        "References": "Notes/",
+        "Decisions": "Notes/",
+        "Memories": "Notes/",
+        "Projects": "Notes/Projects/",
+    }
+    return rules.get(category)
+
+
+def acceptable_folder_prefixes(category, vault_path):
+    vault = Path(vault_path)
+    base_inputs = str(inputs_base(vault_path)).replace("\\", "/")
+    base_logs = str(vault / "Logs").replace("\\", "/")
+    input_cats = {"Readings", "Meetings", "Emails", "Slack"}
+    if category in input_cats:
+        prefixes = [f"{base_inputs}/{category}/"]
+        if (vault / "Logs").exists() and base_inputs != base_logs:
+            prefixes.append(f"{base_logs}/{category}/")
+        if category == "Readings":
+            prefixes.extend([f"{base_logs}/Sources/", f"{base_logs}/Readings/"])
+        return prefixes
+    expected = expected_folder_prefix(category, vault_path)
+    return [expected] if expected else []
+
+
+def parse_category(fm_raw):
+    m = re.search(r'^category:\s*["\']?\[\[([^\]]+)\]\]["\']?', fm_raw, re.MULTILINE)
+    return m.group(1).strip() if m else ""
+
+
+def is_immutable_input_path(rel_str):
+    parts = rel_str.replace("\\", "/").split("/")
+    if len(parts) < 2:
+        return False
+    top = parts[0]
+    if top not in ("Inputs", "Logs"):
+        return False
+    sub = parts[1]
+    return sub in ("Readings", "Emails", "Slack", "Sources")
 
 def verify_url(url):
     try:
@@ -234,14 +306,14 @@ def reconcile_granola_meetings(vault_path):
     meetings_dir = Path(vault_path) / "meetings"
     meetings_dir.mkdir(parents=True, exist_ok=True)
     
-    dest_dir = Path(vault_path) / "Logs" / "Meetings"
+    dest_dir = inputs_base(vault_path) / "Meetings"
     dest_dir.mkdir(parents=True, exist_ok=True)
         
     print("Reconciling meetings from Granola...")
     
     # Pre-scan vault for existing IDs to avoid collisions
     existing_ids = set()
-    skip_dirs = {"Readwise", "Utilities", ".git", ".trash", ".cursor", ".claude", "sources", "Daily Notes"}
+    skip_dirs = {"Readwise", "Utilities", ".git", ".trash", ".cursor", ".claude", "Daily Notes"}
     for root, dirs, files in os.walk(vault_path):
         dirs[:] = [d for d in dirs if not d.startswith(".") and d not in skip_dirs]
         for f in files:
@@ -260,7 +332,12 @@ def reconcile_granola_meetings(vault_path):
             except Exception:
                 pass
 
-    for src_dir, is_raw in [(meetings_dir, True), (dest_dir, False)]:
+    src_dirs = [(meetings_dir, True), (dest_dir, False)]
+    legacy_dest = Path(vault_path) / "Logs" / "Meetings"
+    if legacy_dest.exists() and legacy_dest.resolve() != dest_dir.resolve():
+        src_dirs.append((legacy_dest, False))
+
+    for src_dir, is_raw in src_dirs:
         for path in sorted(src_dir.glob("*.md")):
             filename = path.name
             # Match YYYY-MM-DD at start of filename
@@ -350,8 +427,12 @@ def reconcile_granola_meetings(vault_path):
                 needs_update = True
                 
             if is_raw or needs_update:
-                # Construct clean frontmatter and write to dest_dir
-                new_fm = f"---\nid: {note_id}\ndaily_note: '{daily_note}'\n---\n"
+                new_fm = (
+                    f"---\nid: {note_id}\n"
+                    f"daily_note: '{daily_note}'\n"
+                    f"category: \"[[Meetings]]\"\n"
+                    f"---\n"
+                )
                 new_text = new_fm + body_content
                 dest_path = dest_dir / filename
                 dest_path.write_text(new_text, encoding="utf-8")
@@ -408,8 +489,12 @@ incoming_links = defaultdict(set)
 outgoing_links = defaultdict(set)
 all_audited_notes = set()
 
-# Folders to skip for manual checks
-skip_dirs = {"Readwise", "Utilities", ".git", ".trash", ".cursor", ".claude", "sources", "Daily Notes"}
+skip_dirs = {"Readwise", "Utilities", ".git", ".trash", ".cursor", ".claude", "Daily Notes"}
+
+wrong_folder = []
+source_linkage_issues = []
+legacy_path_links = defaultdict(set)
+category_fixes = []
 
 for root, dirs, files in os.walk(VAULT):
     dirs[:] = [d for d in dirs if not d.startswith(".") and d not in skip_dirs]
@@ -419,9 +504,10 @@ for root, dirs, files in os.walk(VAULT):
         path = Path(root) / f
         text = path.read_text(encoding="utf-8", errors="replace")
         
-        # Parse frontmatter
         note_id = ""
         daily_note = ""
+        category = ""
+        fm_raw = ""
         if text.startswith("---"):
             end = text.find("\n---", 3)
             if end > 0:
@@ -432,10 +518,58 @@ for root, dirs, files in os.walk(VAULT):
                     note_id = id_match.group(1).strip()
                 if dn_match:
                     daily_note = dn_match.group(1).strip()
-        
+                category = parse_category(fm_raw)
+
         rel_path = path.relative_to(VAULT)
         rel_str_f = str(rel_path).replace("\\", "/")
         all_audited_notes.add(rel_str_f)
+
+        if category and rel_str_f.startswith(("Inputs/Readings/", "Logs/Readings/", "Logs/Sources/")):
+            if category == "Sources":
+                new_fm = re.sub(
+                    r'^category:\s*["\']?\[\[Sources\]\]["\']?',
+                    'category: "[[Readings]]"',
+                    fm_raw,
+                    count=1,
+                    flags=re.MULTILINE,
+                )
+                if new_fm != fm_raw:
+                    new_text = f"---\n{new_fm}\n---\n" + text[end + 4:]
+                    path.write_text(new_text, encoding="utf-8")
+                    category_fixes.append(rel_str_f)
+                    category = "Readings"
+                    fm_raw = new_fm
+                    text = new_text
+
+        if category:
+            expected = expected_folder_prefix(category, VAULT)
+            prefixes = acceptable_folder_prefixes(category, VAULT)
+            if category == "Sources":
+                if not rel_str_f.startswith("Notes/") or rel_str_f.startswith("Notes/Projects/"):
+                    wrong_folder.append((rel_str_f, category, expected or "Notes/"))
+            elif category == "Projects":
+                if not rel_str_f.startswith("Notes/Projects/"):
+                    wrong_folder.append((rel_str_f, category, expected or "Notes/Projects/"))
+            elif category == "Readings" and rel_str_f.startswith("Notes/"):
+                wrong_folder.append((rel_str_f, category, expected or prefixes[0]))
+            elif prefixes and not any(rel_str_f.startswith(p.rstrip("/")) for p in prefixes):
+                wrong_folder.append((rel_str_f, category, expected or prefixes[0]))
+
+        if category == "Sources" and rel_str_f.startswith("Notes/") and not rel_str_f.startswith("Notes/Projects/"):
+            raw_section = re.search(r"^## Raw inputs\s*$", text, re.MULTILINE | re.IGNORECASE)
+            if not raw_section:
+                source_linkage_issues.append((rel_str_f, "missing ## Raw inputs section"))
+            else:
+                section_text = text[raw_section.end():]
+                next_heading = re.search(r"^## ", section_text, re.MULTILINE)
+                if next_heading:
+                    section_text = section_text[:next_heading.start()]
+                reading_links = re.findall(r"\[\[([^\]|#]+)", section_text)
+                if not reading_links:
+                    source_linkage_issues.append((rel_str_f, "no Reading wikilinks in ## Raw inputs"))
+
+        for legacy_link in re.findall(r"\[\[(Logs/[^\]|#]+)", text):
+            legacy_path_links[rel_str_f].add(legacy_link)
         
         if note_id:
             id_to_paths[note_id].append(rel_path)
@@ -472,14 +606,15 @@ for root, dirs, files in os.walk(VAULT):
                 outgoing_links[rel_str_f].add(resolved)
                 incoming_links[resolved].add(rel_str_f)
 
-# 2.5 Citation & Web Source Validation
 citation_issues = defaultdict(list)
-sources_dir = VAULT / "Logs" / "Sources"
 url_cache = {}
+readings_audit_dirs = readings_dirs(VAULT)
 
-if sources_dir.exists():
-    print("Auditing Citation & Web Sources in Logs/Sources/...")
-    all_source_files = sorted(sources_dir.glob("**/*.md"))
+if readings_audit_dirs:
+    print("Auditing Citation & Reading URLs in Inputs/Readings/...")
+    all_source_files = []
+    for readings_dir in readings_audit_dirs:
+        all_source_files.extend(sorted(readings_dir.glob("**/*.md")))
     unique_urls = set()
     file_to_urls = {}
     
@@ -589,12 +724,30 @@ if orphan_notes:
     for note in orphan_notes:
         lines.append(f"  - {note}")
 
-# ⚠️ Citation & Source Issues
+if wrong_folder:
+    lines.append("\n## 🔴 Wrong folder")
+    for p, cat, expected in sorted(wrong_folder):
+        lines.append(f"  - {p}: category [[{cat}]] expected under {expected}")
+
+if source_linkage_issues:
+    lines.append("\n## ⚠️ Source linkage")
+    for p, reason in sorted(source_linkage_issues):
+        lines.append(f"  - {p}: {reason}")
+
+if legacy_path_links:
+    lines.append("\n## ⚠️ Legacy path links")
+    for p in sorted(legacy_path_links.keys()):
+        for target in sorted(legacy_path_links[p]):
+            lines.append(f"  - {p} links to legacy path: [[{target}]]")
+
 if citation_issues:
-    lines.append("\n## ⚠️ Citation & Source Issues")
+    lines.append("\n## ⚠️ Citation & Reading URL Issues")
     for p in sorted(citation_issues.keys()):
         for url, err in citation_issues[p]:
             lines.append(f"  - {p}: [{err}] {url}")
+
+if category_fixes:
+    print(f"Auto-fixed {len(category_fixes)} legacy [[Sources]] → [[Readings]] on input paths.")
 
 if lines:
     print("\n".join(lines))

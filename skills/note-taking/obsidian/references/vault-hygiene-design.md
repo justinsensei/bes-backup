@@ -2,54 +2,102 @@
 
 Scripts: `~/.hermes/scripts/vault_hygiene.py` (main), `~/.hermes/scripts/vault_hygiene_cron.py` (cron wrapper).
 
-Cron job id: `0b12d967fdf6`, schedule: daily 8am, deliver: telegram (red issues only).
+Cron job id: `0b12d967fdf6`, schedule: daily 9pm, deliver: telegram (red + taxonomy warnings).
 
 ## Architecture
 
 Two-tier design:
 - **Auto-fix tier**: runs silently, applies safe structural corrections
-- **Report tier**: emits findings to stdout; cron wrapper filters to 🔴 sections before Telegram delivery
+- **Report tier**: emits findings to stdout; cron wrapper passes 🔴 and taxonomy-relevant ⚠️ sections to Telegram
 
-The cron wrapper (`vault_hygiene_cron.py`) imports stdout from the main script and only passes through lines under `## 🔴` or `## ⚠️  Move conflicts` headers. Clean runs and auto-fix-only runs produce no output → no Telegram message (watchdog pattern).
+The cron wrapper imports stdout from the main script and passes through lines under alert headers (ID conflicts, wrong folder, ghost links, source linkage, legacy paths, citation issues). Clean runs and auto-fix-only runs produce no Telegram message (watchdog pattern).
+
+## Three-layer taxonomy (Inputs / Sources / maturity)
+
+| Layer | Folder | Category | Hygiene may edit body? |
+|-------|--------|----------|------------------------|
+| 1 — Inputs | `Inputs/Readings/`, `Meetings/`, `Emails/`, `Slack/` | `[[Readings]]`, `[[Meetings]]`, etc. | Metadata only on Readings/Emails/Slack; Meetings get entity auto-link |
+| 2 — Compiled biblio | `Notes/` | `[[Sources]]` | Yes (summary kept current by llm-wiki integrate-full) |
+| 3 — Maturity | `Notes/` (+ subfolders) | Notes, Thoughts, Concepts, Beliefs, References, Decisions, Memories, Projects | Yes |
+
+**Transition:** Script feature-detects `Inputs/` vs legacy `Logs/` paths until migration completes.
 
 ## Auto-fix decisions
 
 ### Misplaced daily notes
 **Detection:** filename matches `YYYY-MM-DD (Weekday).md` exactly — no extra words after the weekday name.
-**Rationale:** meeting notes also have date prefixes but always have a topic word after the date. Pure `YYYY-MM-DD Weekday.md` = daily note that landed in the wrong folder.
 **Action:** move to `Daily Notes/`.
 
 ### Tag-to-category conversion
-**Always convert:** `#people`, `#person`, `#organizations`, `#organization` — these are unambiguous object-note indicators.
-**Date-prefix only:** `#meetings`/`#meeting`, `#projects`/`#project` — these tags are used loosely on non-object notes (e.g. workshop attendee notes get `#project`). Only convert if the filename starts `YYYY-MM-DD`, which signals it was created as an intentional object note.
+**Always convert:** `#people`, `#person`, `#organizations`, `#organization`.
+**Date-prefix only:** `#meetings`/`#meeting`, `#projects`/`#project` — only if filename starts `YYYY-MM-DD`.
+**Readings:** `#readings` / `#reading` → `category: "[[Readings]]"` (no date prefix required).
+**Sources (context-aware):** `#sources` under `Inputs/` paths → `[[Readings]]`; under `Notes/` → `[[Sources]]`.
 **Action:** write `category: "[[Wikilink]]"` to frontmatter, remove tag from body.
 
-**Pitfall discovered:** `Dianne AI Workshop 20260420141613.md` had `#project` but was workshop pre-work, not a project object note. No date prefix → correctly skipped.
+### Legacy category on input paths
+**Detection:** `category: "[[Sources]]"` on file under `Inputs/Readings/` (or legacy `Logs/Readings/`, `Logs/Sources/`).
+**Action:** auto-rewrite to `category: "[[Readings]]"`.
+
+### Granola meeting reconcile
+**Source:** `meetings/` (raw Granola sync).
+**Destination:** `Inputs/Meetings/` (fallback `Logs/Meetings/` during transition).
+**Action:** write `id`, `daily_note`, `category: "[[Meetings]]"`; auto-link entities in meeting body; delete raw file after reconcile.
 
 ### Granola-to-Project linking
-**Detection:** matches key specific terms/phrases of active project notes in the meeting note.
-**Action:** appends a `### Related` section at the bottom of the Granola note containing a wikilink to the relevant project note (linking from meeting summary to the project note only). Ignores transcripts. Safe and idempotent.
+**Detection:** matches key terms of active project notes in meeting body.
+**Action:** appends `### Related` at bottom with project wikilink. Meetings only — never on Readings/Emails/Slack.
+
+### Input immutability
+- **Auto-link bodies:** `Inputs/Meetings/` and recent `Daily Notes/` only
+- **Do not auto-link:** `Inputs/Readings/`, `Inputs/Emails/`, `Inputs/Slack/` (preserve raw import text)
+- **Do not append `### Related`:** Readings, Emails, Slack
 
 ## Report-only decisions
 
-### Wrong folder
-Any note with a `category:` wikilink outside `Notebook/` or vault root. Root is allowed because project notes intentionally live there (manage-projects convention). `Categories/` is excluded — those notes legitimately live there.
+### Wrong folder (`## 🔴 Wrong folder`)
+| Category | Expected location |
+|----------|-------------------|
+| `[[Readings]]` | `Inputs/Readings/` |
+| `[[Meetings]]` | `Inputs/Meetings/` |
+| `[[Emails]]` | `Inputs/Emails/` |
+| `[[Slack]]` | `Inputs/Slack/` |
+| `[[Sources]]` (compiled) | `Notes/` (not `Notes/Projects/`) |
+| `[[Readings]]` on `Notes/` | Report — never auto-move |
+| Maturity tiers | `Notes/` per triage table |
+
+### Source linkage (`## ⚠️ Source linkage`)
+Compiled `[[Sources]]` notes under `Notes/` must have `## Raw inputs` with at least one Reading wikilink.
+
+### Legacy path links (`## ⚠️ Legacy path links`)
+Wikilinks still containing `Logs/` after migration — feeds gap detection for `migrate_logs_to_inputs.py`.
+
+### Citation & Reading URL Issues
+URL validation on markdown links in `Inputs/Readings/` (legacy: `Logs/Sources/`, `Logs/Readings/`).
 
 ### ID conflicts / Missing ID / Missing daily_note
-Report but never auto-fix — these require human judgment about which value is canonical or what the creation date actually was.
+Report but never auto-fix.
 
-### What's intentionally skipped
+## Hygiene vs llm-wiki lint split
+
+| Check | Owner |
+|-------|-------|
+| ID, ghost links, orphans, wrong folder, URLs, legacy paths | `vault_hygiene.py` / `obsidian-hygiene` |
+| Contradictions, stale compiled summaries | `llm-wiki` `references/lint.md` (on-demand) |
+| Reading→Source promotion | `llm-wiki` integrate-full only |
+| Notes→Thoughts→Beliefs promotion | `obsidian-suggest-promotions` (unchanged) |
+
+## What's intentionally skipped
 
 | Folder | Reason |
 |--------|--------|
-| Logs/Granola/ | Third-party schema skipped in general walks; summaries are explicitly processed for applying [[Meetings]] category and linking to relevant Project notes. Transcripts are skipped. |
-| `Readwise/` | Plugin-managed, gets overwritten on sync |
-| `Daily Notes/` | Backfilling daily_note is low-value; daily notes don't self-reference that way |
-| `Templates/` | Contains live Templater syntax — never auto-edit |
-| `Categories/` | Notes legitimately live in their own folder |
-| Root daily notes | `YYYY-MM-DD Weekday.md` in root = today's current note, not a misplacement |
+| `Readwise/` | Plugin-managed, overwritten on sync |
+| `Daily Notes/` | Backfilling daily_note is low-value |
+| `Templates/` | Live Templater syntax — never auto-edit |
+| `Utilities/Categories/` | Category definition notes legitimately live here |
+| Root daily notes | Today's note in vault root is intentional |
 
-## Known persistent issues (as of 2026-05-22)
+## Known persistent issues (as of 2026-06-10)
 
-- `References/2026-06 Sienna PA Registration.md` — no frontmatter, just a PDF embed. Will keep alerting until manually fixed.
-- Today's daily note `2026-05-21 Thursday.md` had stale `id: "20260127154919"` (hardcoded in template). Check `Templates/Daily Note.md` to ensure Templater expression generates fresh timestamps.
+- Today's daily note may have stale hardcoded `id` from template — check `Utilities/Templates/Daily Note.md`.
+- `Cracking the Pm Career` collision in Readings/Sources — resolve during migration, do not auto-delete.
