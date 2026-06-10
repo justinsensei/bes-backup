@@ -72,7 +72,7 @@ def reconcile_granola_meetings(vault_path):
                 if fm_end > 0:
                     has_frontmatter = True
                     fm_content = text[3:fm_end]
-                    body_content = text[fm_end+4:]
+                    body_content = text[fm_end+4:].lstrip()
                     
             # Parse fields from frontmatter if it exists
             note_id = ""
