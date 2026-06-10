@@ -479,7 +479,11 @@ url_cache = {}
 
 if sources_dir.exists():
     print("Auditing Citation & Web Sources in Logs/Sources/...")
-    for path in sorted(sources_dir.glob("**/*.md")):
+    all_source_files = sorted(sources_dir.glob("**/*.md"))
+    unique_urls = set()
+    file_to_urls = {}
+    
+    for path in all_source_files:
         rel_src_path = path.relative_to(VAULT)
         rel_src_str = str(rel_src_path).replace("\\", "/")
         try:
@@ -487,20 +491,40 @@ if sources_dir.exists():
             # Find standard markdown links [Text](URL)
             md_links = re.findall(r'\[([^\]]*)\]\(((?:https?://|www\.)[^\s\)]+)\)', content)
             
+            urls_in_file = []
             for text, url in md_links:
                 if url.startswith("www."):
                     url = "https://" + url
-                
-                if url in url_cache:
-                    error_msg = url_cache[url]
-                else:
-                    error_msg = verify_url(url)
-                    url_cache[url] = error_msg
-                    
-                if error_msg:
-                    citation_issues[rel_src_str].append((url, error_msg))
+                unique_urls.add(url)
+                urls_in_file.append(url)
+            if urls_in_file:
+                file_to_urls[rel_src_str] = urls_in_file
         except Exception as e:
             print(f"  Error reading source file {path.name}: {e}")
+            
+    # Check URLs in parallel using ThreadPoolExecutor
+    if unique_urls:
+        print(f"  Verifying {len(unique_urls)} unique URLs in parallel...")
+        from concurrent.futures import ThreadPoolExecutor
+        
+        def check_one(url):
+            return url, verify_url(url)
+            
+        with ThreadPoolExecutor(max_workers=20) as executor:
+            futures = [executor.submit(check_one, url) for url in unique_urls]
+            for fut in futures:
+                try:
+                    url, err = fut.result()
+                    url_cache[url] = err
+                except Exception:
+                    pass
+                    
+    # Map results back to files
+    for rel_src_str, urls in file_to_urls.items():
+        for url in urls:
+            err = url_cache.get(url)
+            if err:
+                citation_issues[rel_src_str].append((url, err))
 
 # 3. Format output for vault_hygiene_cron.py
 lines = []
