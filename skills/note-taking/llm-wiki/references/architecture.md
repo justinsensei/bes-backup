@@ -61,7 +61,7 @@ Never link a Reading directly from a Concept when a Source note exists.
 
 | Pass | Trigger | Scope |
 |------|---------|-------|
-| integrate-light | After explicit ingest | `Utilities/log.md`, `Utilities/index.md`, daily notepad |
+| integrate-light | After explicit ingest | `Utilities/log.md` only |
 | integrate-full | Wind-down EIIRP Step 5, manual | Reading→Source, projects, contradictions |
 | integrate-query | Interactive Q&A | Durable synthesis → appropriate maturity category |
 

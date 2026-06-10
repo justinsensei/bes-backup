@@ -27,6 +27,7 @@ This skill governs the system configurations, automation scripts, metadata linti
   - `/Utilities/Categories/` (Category representation files).
   - `/Utilities/Templates/` (Reusable layouts and structural models).
   - `/Utilities/Attachments/` (Native images, PDFs, media storage).
+- **Wiki log:** `/Utilities/log.md` — append-only ingest audit trail maintained by `llm-wiki` integrate-light (see `skills/note-taking/llm-wiki/references/index-and-log.md`).
 
 ---
 

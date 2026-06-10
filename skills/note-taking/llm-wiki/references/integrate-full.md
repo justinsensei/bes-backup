@@ -47,3 +47,5 @@ Report only — do not auto-resolve. Full semantic lint: `references/lint.md`.
 ## Wind-down integration
 
 Phase 4 EIIRP Step 5: after Justin approves triage report, run integrate-full for today's Reading ingest scope. Offer Source note creation for items surfaced in Phase 3 Reading Review.
+
+When creating or refreshing a Source note, append a `source-compile` line to `Utilities/log.md` (see [index-and-log.md](index-and-log.md)). No `Utilities/index.md` maintenance.

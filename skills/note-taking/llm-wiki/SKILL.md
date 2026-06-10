@@ -14,7 +14,7 @@ metadata:
 
 ## Overview
 
-Orchestrates Karpathy-style wiki maintenance across Justin's three-layer taxonomy: immutable **Inputs**, compiled bibliographical **Sources**, and the unchanged **maturity ladder** (Notes→Thoughts→Concepts→Beliefs→References). Hybrid integration: light auto-indexing after ingest, full compile on demand, query synthesis for durable answers.
+Orchestrates Karpathy-style wiki maintenance across Justin's three-layer taxonomy: immutable **Inputs**, compiled bibliographical **Sources**, and the unchanged **maturity ladder** (Notes→Thoughts→Concepts→Beliefs→References). Hybrid integration: light log append after ingest, full compile on demand, query synthesis for durable answers.
 
 Deep reference: [architecture](references/architecture.md) | [integrate-light](references/integrate-light.md) | [integrate-full](references/integrate-full.md) | [integrate-query](references/integrate-query.md) | [lint](references/lint.md) | [index-and-log](references/index-and-log.md) | [taxonomy-migration](references/taxonomy-migration.md)
 
@@ -48,7 +48,7 @@ Deep reference: [architecture](references/architecture.md) | [integrate-light](r
 
 | Pass | When | Actions |
 |------|------|---------|
-| **integrate-light** | Every explicit ingest; cron post-steps | Append `Utilities/log.md`, update `Utilities/index.md`, daily notepad bullet. **Never modify Input bodies.** |
+| **integrate-light** | Every explicit ingest; cron post-steps | Append `Utilities/log.md` (daily note wikilink on each line). **Never modify Input bodies.** |
 | **integrate-full** | Wind-down Step 5; manual triggers | Reading→Source promotion, project/contact cross-refs, contradiction flags |
 | **integrate-query** | Interactive durable Q&A | Synthesize → file to maturity category + light pass |
 
@@ -58,9 +58,8 @@ Cron runs **integrate-light only**. No auto-vault from raw streams.
 
 See [integrate-light.md](references/integrate-light.md).
 
-1. Append one line to `Utilities/log.md`
-2. Add entry under correct `Utilities/index.md` section (Inputs / Sources / Concepts / Projects / Entities)
-3. Append notepad bullet to today's daily note
+1. Append one line to `Utilities/log.md` with daily note wikilink as last field
+2. Create `Utilities/log.md` from template if missing (see [integrate-light.md](references/integrate-light.md))
 
 **Immutability:** Do not edit bodies under `Inputs/Readings/`, `Inputs/Emails/`, `Inputs/Slack/`.
 
@@ -123,14 +122,14 @@ One-time `Logs/` → `Inputs/` via `scripts/migrate_logs_to_inputs.py`. See [tax
 ## Common Pitfalls
 
 1. Compiling into Reading bodies — Inputs are immutable; compile to Source notes only.
-2. Skipping integrate-light after cron ingest — index and log drift.
+2. Skipping integrate-light after cron ingest — log drift.
 3. Auto-promoting maturity tiers — belongs to obsidian-suggest-promotions, not llm-wiki.
 4. Linking Concepts directly to Readings — use Source as intermediary.
 5. Running integrate-full from cron without approval — light pass only in autonomous runs.
 
 ## Verification Checklist
 
-- [ ] integrate-light updated log, index, and daily notepad
+- [ ] integrate-light appended log line with daily note wikilink
 - [ ] No Input body edits on Readings/Emails/Slack
 - [ ] Compiled Sources have `## Raw inputs` with Reading links
 - [ ] Layer 3 notes untouched unless integrate-full explicitly scoped

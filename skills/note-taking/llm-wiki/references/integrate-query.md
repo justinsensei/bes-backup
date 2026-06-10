@@ -23,7 +23,7 @@ Justin asks a research/knowledge question where the answer should persist:
 | Trusted principle | `[[Beliefs]]` | `Notes/` |
 | Decision record | `[[Decisions]]` | `Notes/` |
 
-4. **integrate-light** — log + index + daily notepad bullet
+4. **integrate-light** — append one line to `Utilities/log.md` with daily note wikilink
 
 ## Link rules
 

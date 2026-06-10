@@ -1,55 +1,40 @@
-# Utilities Index & Log
+# Utilities Wiki Log
 
 Paths relative to `$OBSIDIAN_VAULT_PATH` (vault root).
 
 ## Utilities/log.md
 
-Chronological ingest log. Append-only lines:
+Chronological ingest log. Append-only lines grouped by date:
 
 ```markdown
+# Wiki Log
+
+Append-only record of ingests, compiles, and filed queries. Do not edit prior lines.
+
 ## YYYY-MM-DD
 
-- HH:MM | reading | [[Title]] | Inputs/Readings/Title.md
-- HH:MM | meeting | [[YYYY-MM-DD - Title]] | Inputs/Meetings/...
-- HH:MM | email | [[YYYY-MM-DD - Subject]] | Inputs/Emails/...
-- HH:MM | slack | [[YYYY-MM-DD - Title]] | Inputs/Slack/...
-- HH:MM | query | [[Synthesis Title]] | Notes/...
-- HH:MM | source-compile | [[Source Title]] | Notes/Title.md
+- HH:MM | slack | [[YYYY-MM-DD - Title]] | inbox/foo.md | [[2026-06-10 Tuesday]]
+- HH:MM | email | [[YYYY-MM-DD - Subject]] | Inputs/Emails/foo.md | [[2026-06-10 Tuesday]]
+- HH:MM | source-compile | [[Source Title]] | Notes/Title.md | [[2026-06-10 Tuesday]]
 ```
 
-## Utilities/index.md
-
-Curated map of vault knowledge. Suggested sections:
-
-```markdown
-# Vault Index
-
-## Inputs
-### Readings
-- [[Title]] — one-line
-
-### Meetings
-### Emails
-### Slack
-
-## Sources
-- [[Compiled Source Title]] — links to Readings
-
-## Concepts
-## Projects
-## Entities
-### People
-### Organizations
-```
+Fields: `time | type | wikilink-to-note | vault-relative-path | wikilink-to-daily-note`
 
 ## integrate-light updates
 
-- **log.md:** one line per ingest
-- **index.md:** add entry under correct section; do not remove existing entries
-- **Daily note:** notepad bullet with wikilink + gist
+- **log.md:** one line per ingest with daily note wikilink as last field
+- No index.md maintenance
+- No daily notepad bullets from integrate-light
 
 ## integrate-full updates
 
-- Refresh Source entries under `## Sources`
-- Add cross-refs under Concepts/Projects when compile creates new links
-- Log `source-compile` lines in log.md
+- Append `source-compile` lines to log.md when creating or refreshing Source notes
+- No index.md maintenance
+
+## Bootstrap
+
+Copy `skills/note-taking/llm-wiki/templates/log.md` to `$OBSIDIAN_VAULT_PATH/Utilities/log.md` once before the first ingest. integrate-light creates the file from template if missing.
+
+## Deferred: Utilities/index.md
+
+A human browse catalog (`index.md`) is **not** maintained. Agents use `semantic_pointer.py`, folder taxonomy, and frontmatter instead. Revisit at semantic lint (item 5) only if a curated catalog becomes necessary — until then, `log.md` + semantic search suffice.

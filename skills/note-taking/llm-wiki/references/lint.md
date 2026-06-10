@@ -46,3 +46,5 @@ Concept links directly to Reading when Source note exists → suggest relink thr
 ## Delegation
 
 Run `python3 ~/.hermes/scripts/vault_hygiene.py` first for structural baseline. Semantic lint builds on that report.
+
+Read recent entries in `Utilities/log.md` (not `index.md`) to scope what was ingested or compiled since the last lint pass.

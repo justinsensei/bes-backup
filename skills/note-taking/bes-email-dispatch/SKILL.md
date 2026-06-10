@@ -144,7 +144,7 @@ For each message ID detected by the poller:
    - Or both!
 3. **Execute actions:**
    - If filing: Generate and write the markdown note to `inbox/` or `Inputs/Emails/`.
-   - After filing, run `llm-wiki` integrate-light (log + index + daily notepad).
+   - After filing, run `llm-wiki` integrate-light: append `Utilities/log.md` only (daily note wikilink as last field).
    - If creating a task: Call `mcp_todoist_add_tasks` and then `mcp_todoist_add_comments` with the email summary.
    - If both: Do both operations.
 4. **Report back:** Output a single concise line per email in your final response (for Telegram delivery):

@@ -2,45 +2,34 @@
 
 Runs after every **explicit** ingest. Never modifies Input bodies.
 
-## Outputs
+## Output
 
-1. **`Utilities/log.md`** — append ingest line with timestamp, type, title, path
-2. **`Utilities/index.md`** — update relevant section (Inputs, Sources, Projects, Entities)
-3. **Daily note notepad** — one bullet under `## 🗒 Notepad`
+Append one line to **`Utilities/log.md`** only. No `Utilities/index.md` updates. No daily notepad bullets.
 
-## Per input type
-
-### Reading (Readwise, clipper → `Inputs/Readings/`)
+## Log line format
 
 ```markdown
-* <HH:MM> | Reading ingested: [[Reading Title]] — <one-line gist>
+- HH:MM | slack | [[YYYY-MM-DD - Title]] | inbox/foo.md | [[2026-06-10 Tuesday]]
 ```
 
-Index: add under `## Inputs / Readings` if not present.
+Fields: `time | type | wikilink-to-note | vault-relative-path | wikilink-to-daily-note`
 
-### Meeting (Granola → `Inputs/Meetings/`)
+The daily note wikilink comes from the ingested note's `daily_note` frontmatter, or is computed from the ingest date (`[[YYYY-MM-DD Weekday]]`).
 
-```markdown
-* <HH:MM> | Meeting logged: [[YYYY-MM-DD - Title]] — <one-line gist>
-```
+## Type tokens
 
-Index: `## Inputs / Meetings`
+| Input | type token |
+|-------|------------|
+| Readwise / clipper → `Inputs/Readings/` | `reading` |
+| Granola → `Inputs/Meetings/` | `meeting` |
+| Email dispatch → `Inputs/Emails/` | `email` |
+| Slack brain → `inbox/` or `Inputs/Slack/` | `slack` |
+| integrate-query filed synthesis | `query` |
+| integrate-full Source promotion | `source-compile` |
 
-### Email (`Inputs/Emails/`)
+## Bootstrap
 
-```markdown
-* <HH:MM> | Email logged: [[YYYY-MM-DD - Subject]] — <one-line gist>
-```
-
-Index: `## Inputs / Emails`
-
-### Slack (`Inputs/Slack/` or inbox → triaged)
-
-```markdown
-* <HH:MM> | Slack logged: [[YYYY-MM-DD - Title]] — <one-line gist>
-```
-
-Index: `## Inputs / Slack`
+If `Utilities/log.md` does not exist, create it from `skills/note-taking/llm-wiki/templates/log.md` before appending. No historical backfill.
 
 ## Immutability
 
@@ -54,4 +43,4 @@ After `bes-email-dispatch` or `slack-brain` cron completes filing:
 
 1. Load this reference
 2. Run integrate-light for each new file
-3. Confirm `Utilities/log.md` and index updated
+3. Confirm `Utilities/log.md` has one new line per ingest with daily note wikilink
