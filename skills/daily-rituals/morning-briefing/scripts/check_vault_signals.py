@@ -102,28 +102,26 @@ def get_existing_entities(vault_path):
                         "aliases": aliases
                     }
                 
-    # 2. Projects (from Notes/ with type: project)
-    notes_dir = os.path.join(vault_path, 'Notes')
-    if os.path.exists(notes_dir):
-        for f in os.listdir(notes_dir):
+    # 2. Projects (from Notes/Projects/)
+    projects_dir = os.path.join(vault_path, 'Notes', 'Projects')
+    if os.path.exists(projects_dir):
+        for f in os.listdir(projects_dir):
             if f.endswith('.md'):
-                file_path = os.path.join(notes_dir, f)
+                file_path = os.path.join(projects_dir, f)
                 try:
                     with open(file_path, encoding='utf-8', errors='replace') as file_obj:
                         content = file_obj.read()
-                        m_type = re.search(r'^type:\s*[\'"]?project[\'"]?', content, re.MULTILINE)
-                        if m_type:
-                            name_key = f[:-3].lower()
-                            # Clean up trailing date suffix if present in name_key
-                            # e.g., adhd treatment 2026 -> adhd treatment
-                            clean_name = re.sub(r'\s*\d{4,14}$', '', f[:-3]).lower().strip()
-                            
-                            entities[name_key] = {
-                                "path": file_path,
-                                "type": "project",
-                                "title": f[:-3],
-                                "aliases": [clean_name] if clean_name != name_key else []
-                            }
+                        name_key = f[:-3].lower()
+                        # Clean up trailing date suffix if present in name_key
+                        # e.g., adhd treatment 2026 -> adhd treatment
+                        clean_name = re.sub(r'\s*\d{4,14}$', '', f[:-3]).lower().strip()
+                        
+                        entities[name_key] = {
+                            "path": file_path,
+                            "type": "project",
+                            "title": f[:-3],
+                            "aliases": [clean_name] if clean_name != name_key else []
+                        }
                 except Exception:
                     pass
                     
@@ -135,35 +133,69 @@ def add_timeline_entry(entity_path, event_date, source_rel_path, source_title):
             content = f.read()
             
         # Check if already mentioned
-        # e.g., if source_rel_path is in the file
         slug = source_rel_path[:-3].replace(os.path.sep, '/')
-        if slug in content:
+        link_target = source_title if source_title.lower() != "cracking the pm career" else slug
+        
+        # Already cited if either target is linked
+        if f"[[{link_target}]]" in content or f"[[{link_target}|" in content or f"[[{slug}]]" in content or f"[[{slug}|" in content:
             return False # already cited
+            
+        # Format shortest-path wikilink
+        if link_target == source_title:
+            link_str = f"[[{source_title}]]"
+        else:
+            link_str = f"[[{link_target}|{source_title}]]"
             
         # Find ## Timeline section
         timeline_match = re.search(r'^## Timeline\s*$', content, re.MULTILINE)
         if not timeline_match:
             # If no timeline, append it at the bottom
-            content += f"\n\n## Timeline\n- {event_date} | Mentioned in [[{slug}|{source_title}]]\n"
+            content += f"\n\n## Timeline\n- {event_date} | Mentioned in {link_str}\n"
         else:
             idx = timeline_match.end()
-            # Find insertion point: insert right after ## Timeline
-            # Let's see if there is whitespace or existing entries
-            lines = content[idx:].split('\n')
-            inserted = False
-            for i, line in enumerate(lines):
-                # Look for first bullet or non-empty line
-                if line.strip().startswith('-'):
-                    # Insert right above the first timeline bullet to keep it chronological or reverse chronological (we place newest at top under ## Timeline)
-                    new_bullet = f"\n- {event_date} | Mentioned in [[{slug}|{source_title}]]"
-                    lines.insert(i, new_bullet)
-                    inserted = True
-                    break
-            if not inserted:
-                # If no bullets exist yet under ## Timeline
-                lines.insert(0, f"\n- {event_date} | Mentioned in [[{slug}|{source_title}]]")
+            # Parse everything after ## Timeline
+            tail = content[idx:]
+            
+            # Find all bullets under ## Timeline
+            lines = tail.split('\n')
+            bullets = []
+            other_lines = []
+            reached_non_timeline = False
+            
+            for line in lines:
+                striped = line.strip()
+                if reached_non_timeline:
+                    other_lines.append(line)
+                elif striped.startswith('-'):
+                    bullets.append(line)
+                elif striped == '':
+                    continue # skip extra blank lines under Timeline
+                elif striped.startswith('---') or striped.startswith('#'):
+                    # Reached divider or another heading, exit timeline section
+                    reached_non_timeline = True
+                    other_lines.append(line)
+                else:
+                    # Some other non-bullet content, means we exited the timeline section
+                    reached_non_timeline = True
+                    other_lines.append(line)
+                    
+            # Add the new bullet at the top of the bullets list (reverse chronological)
+            new_bullet = f"- {event_date} | Mentioned in {link_str}"
+            bullets.insert(0, new_bullet)
+            
+            # Reconstruct tail: one blank line after ## Timeline, then bullets, then one blank line, then the rest
+            new_tail_parts = []
+            new_tail_parts.append("") # exactly one empty line after heading
+            for b in bullets:
+                new_tail_parts.append(b)
                 
-            content = content[:idx] + '\n'.join(lines)
+            if other_lines:
+                new_tail_parts.append("")
+                new_tail_parts.extend(other_lines)
+            else:
+                new_tail_parts.append("") # trailing newline
+                
+            content = content[:idx] + '\n'.join(new_tail_parts)
             
         with open(entity_path, 'w', encoding='utf-8') as f:
             f.write(content)
