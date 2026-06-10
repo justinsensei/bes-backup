@@ -109,7 +109,12 @@ Pick the closest existing category. For Bes notes and workflows, `note-taking` o
 1. **Survey peers** in the target category:
    For example: `note-taking/obsidian` or `note-taking/work-log`.
 2. **Draft** with `skill_manage(action='create', ...)` to create the user-local skill.
-3. **Verify** using `skill_view(name=...)` once created (or in a fresh session).
+3. **Validate conformance**: Run the automated skill validation script to verify formatting, YAML properties, headings, and link integrity:
+   ```bash
+   python3 ~/.hermes/scripts/test_skills_conformance.py --skill <skill-name>
+   ```
+   *Note: Ensure there are no warnings or errors, particularly in strict mode (`--strict`).*
+4. **Verify** using `skill_view(name=...)` once created (or in a fresh session).
 
 ## Editing Existing Skills
 
@@ -164,6 +169,7 @@ Because both the local VM and remote edits modify metadata and files concurrentl
 ## Verification Checklist
 
 - [ ] File created successfully via `skill_manage` (lives in `~/.hermes/skills/`)
+- [ ] Run the automated validator `test_skills_conformance.py` on the skill and verify a PASS status (no errors or strict warnings)
 - [ ] Frontmatter starts at byte 0 with `---`, closes with `\n---\n`
 - [ ] No embedded `| python3 -c`, `| bash`, `| node -e`, or `curl ... | sh` patterns in example commands or subagent context blocks
 - [ ] `name`, `description`, `version`, `author`, `license`, `metadata.hermes.{tags, related_skills}` all present
