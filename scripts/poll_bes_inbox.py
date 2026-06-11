@@ -30,7 +30,7 @@ GAPI = HERMES_HOME / "skills" / "productivity" / "google-workspace" / "scripts" 
 WATERMARK_PATH = HERMES_HOME / "state" / "bes-inbox-watermark.json"
 
 ACCOUNT = "personal-main"
-GMAIL_QUERY = 'label:"Bes/Inbox" newer_than:7d'  # 7d guardrail; watermark de-dupes
+GMAIL_QUERY = 'label:"Bes/Inbox" in:inbox newer_than:7d'  # Only search for emails in the inbox (excludes archived)
 MAX_RESULTS = 25
 SCHEMA_VERSION = 1
 
