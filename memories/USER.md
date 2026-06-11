@@ -1,15 +1,11 @@
 Head of Product at SignLab (B2C sign language edtech). Alumnus of Duolingo/PowerSchool. Playbook: premium apps funding future free-to-play pivot.
 §
-Todoist structure: status-based Projects (Now, Next, Soon, Maybe Later), Shopping, and Inbox. No Work/Home/Other top-level projects or GTD sub-projects.
+Todoist: Now/Next/Soon/Maybe Later, Shopping, Inbox. No other top-level/GTD subprojects. Prefer filter views. Add 1-sentence source comment on create. Week ends Sun. No auto-vault additions from raw feeds.
 §
-Week ends Sun. Captures completions. No auto-vault additions from raw feeds.
-§
-Prefers Todoist filter views. Always add a 1-sentence comment (source & why) immediately after task creation.
-§
-Pittsburgh, PA. Family: Nana Massie (wife); Sam (Gr 7 Fall '26, b.11/22/13), Jamie (legal James; they/them, Gr 6 Fall '26, b.05/08/15), Rosie (Rosa; she/her, Gr 4 Fall '26, b.05/16/17). Default family. Wikilinks: [[Nana]], [[Sam]], [[Jamie]], [[Rosie]].
+Pittsburgh, PA. Family: Nana (wife); Sam (G7, 11/22/13), Jamie (they, G6, 05/08/15), Rosie (she, G4, 05/16/17). Wikilinks: [[Nana]], [[Sam]], [[Jamie]], [[Rosie]] (manually linked by Justin only).
 §
 Accurately attribute decisions to the actual decision-maker (e.g. colleagues or family members) in work logs/summaries, rather than assuming Justin made them.
 §
 Vault taxonomy: Inputs/Readings (raw immutable), Notes/Sources (compiled bibliographical), then maturity ladder — Notes (fleeting), Thoughts (opinions), Beliefs (axioms), Concepts (others' thinking), References (permanent/reusable decision patterns). Deletes stubs. Batches of 10: show remaining count, omit "Current Category" column.
 §
-Do not attempt to deduce or automatically generate family links on People notes. Justin maintains these manually.
+Admin automation (sync/ingest/lint) must be hands-off and fail loudly. Knowledge creation and work logs must never be automated (strictly manual or interactive reviews).
