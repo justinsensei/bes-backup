@@ -18,6 +18,25 @@ This is the foundational skill for interacting with Justin's Obsidian vault. It 
 
 ---
 
+## Automation & Governance Principles
+
+To maintain high quality, trust, and alignment, the PKMS operates under a strict division of labor between automation and human oversight:
+
+1. **Simple Administration (Hands-off & Automated):**
+   - Administrative tasks like ingesting raw inputs (emails, Slack, Linear), linting, fixing broken links, and file moving are fully automated and run hands-off.
+   - **Fail-Loudly Rule:** All automated admin scripts and cron jobs must fail loudly. If a script, API connection, token, or platform fetcher fails or crashes, the wrapper must propagate the exit code and print error logs so that the cron system raises an immediate, conspicuous alert. No exceptions can be silently caught or swallowed (e.g., returning empty lists on platform fetch failures is prohibited).
+
+2. **Knowledge Creation & Modification (Strictly Human-in-the-Loop):**
+   - Any process that creates or modifies knowledge in the vault (writing concepts, thoughts, beliefs, or editing daily notes/work logs) must keep Justin in the loop.
+   - These processes must **never run automatically in the background** via cron or daemon. They can only be triggered manually in chat, or chained to interactive, reviewed routines (like the morning briefing or evening wind-down).
+   - All newly generated knowledge notes must be saved under the `inbox/` directory for active manual review and triage.
+
+3. **Gray Area (Case-by-Case):**
+   - Tasks like **Work Logs** must be reviewed and aligned in chat before being written to the daily note. This review is a key step of the interactive daily wind-down and morning briefing rituals.
+   - For any brand-new administrative automation, begin with a human-in-the-loop manual process to ensure stability and accuracy before fully automating it.
+
+---
+
 ## Note Hierarchy (The Three-Tier System)
 The vault utilizes a unidirectional, three-tier conceptual hierarchy to manage the evolution of knowledge:
 
