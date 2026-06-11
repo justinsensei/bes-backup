@@ -166,12 +166,12 @@ def auto_link_text(text, entities, current_file_title):
         masked_line = re.sub(r'\[\[[^\]]+\]\]', mask_link, line)
         masked_line = re.sub(r'`[^`]+`', mask_code, masked_line)
         
+        new_links = []
         for key, ent_info in all_keys:
             if key.lower() == current_file_title.lower():
                 continue
                 
             pattern = rf'\b{re.escape(key)}\b'
-            new_links = []
             
             def replace_key(match):
                 matched_text = match.group(0)
@@ -185,8 +185,8 @@ def auto_link_text(text, entities, current_file_title):
                 
             masked_line = re.sub(pattern, replace_key, masked_line, flags=re.IGNORECASE)
             
-            for idx, link_str in enumerate(new_links):
-                masked_line = masked_line.replace(f"__NEW_LINK_MASK_{idx}__", link_str)
+        for idx, link_str in enumerate(new_links):
+            masked_line = masked_line.replace(f"__NEW_LINK_MASK_{idx}__", link_str)
                 
         for idx, link_str in enumerate(links):
             masked_line = masked_line.replace(f"__LINK_MASK_{idx}__", link_str)
