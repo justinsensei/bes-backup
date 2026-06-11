@@ -1,0 +1,222 @@
+diff --git a/agent/gemini_native_adapter.py b/agent/gemini_native_adapter.py
+index b0d903372..fa4a98bc6 100644
+--- a/agent/gemini_native_adapter.py
++++ b/agent/gemini_native_adapter.py
+@@ -622,6 +622,7 @@ def translate_stream_event(event: Dict[str, Any], model: str, tool_call_indices:
+     cand = candidates[0] if isinstance(candidates[0], dict) else {}
+     parts = ((cand.get("content") or {}).get("parts") or []) if isinstance(cand, dict) else []
+     chunks: List[_GeminiStreamChunk] = []
++    has_function_call = False
+ 
+     for part_index, part in enumerate(parts):
+         if not isinstance(part, dict):
+@@ -633,9 +634,10 @@ def translate_stream_event(event: Dict[str, Any], model: str, tool_call_indices:
+             chunks.append(_make_stream_chunk(model=model, content=part["text"]))
+         fc = part.get("functionCall")
+         if isinstance(fc, dict) and fc.get("name"):
++            has_function_call = True
+             name = str(fc["name"])
+             try:
+-                args_str = json.dumps(fc.get("args") or {}, ensure_ascii=False, sort_keys=True)
++                args_str = json.dumps(fc.get("args") or {}, ensure_ascii=False)
+             except (TypeError, ValueError):
+                 args_str = "{}"
+             thought_signature = part.get("thoughtSignature") if isinstance(part.get("thoughtSignature"), str) else ""
+@@ -652,17 +654,26 @@ def translate_stream_event(event: Dict[str, Any], model: str, tool_call_indices:
+                 slot = {
+                     "index": len(tool_call_indices),
+                     "id": f"call_{uuid.uuid4().hex[:12]}",
+-                    "last_arguments": "",
++                    "last_arguments_stripped": "",
+                 }
+                 tool_call_indices[call_key] = slot
+-            emitted_arguments = args_str
+-            last_arguments = str(slot.get("last_arguments") or "")
+-            if last_arguments:
+-                if args_str == last_arguments:
++
++            finish_reason_raw = str(cand.get("finishReason") or "")
++            if not finish_reason_raw:
++                args_str_stripped = args_str.rstrip().rstrip("}")
++            else:
++                args_str_stripped = args_str
++
++            emitted_arguments = args_str_stripped
++            last_arguments_stripped = str(slot.get("last_arguments_stripped") or "")
++            if last_arguments_stripped:
++                if args_str_stripped == last_arguments_stripped:
+                     emitted_arguments = ""
+-                elif args_str.startswith(last_arguments):
+-                    emitted_arguments = args_str[len(last_arguments):]
+-            slot["last_arguments"] = args_str
++                elif args_str_stripped.startswith(last_arguments_stripped):
++                    emitted_arguments = args_str_stripped[len(last_arguments_stripped):]
++
++            slot["last_arguments_stripped"] = args_str_stripped
++
+             chunks.append(
+                 _make_stream_chunk(
+                     model=model,
+@@ -678,6 +689,22 @@ def translate_stream_event(event: Dict[str, Any], model: str, tool_call_indices:
+ 
+     finish_reason_raw = str(cand.get("finishReason") or "")
+     if finish_reason_raw:
++        if not has_function_call:
++            for slot in tool_call_indices.values():
++                if slot.get("last_arguments_stripped"):
++                    chunks.append(
++                        _make_stream_chunk(
++                            model=model,
++                            tool_call_delta={
++                                "index": slot["index"],
++                                "id": slot["id"],
++                                "name": "",
++                                "arguments": "}",
++                            },
++                        )
++                    )
++                    slot["last_arguments_stripped"] = ""
++
+         mapped = "tool_calls" if tool_call_indices else _map_gemini_finish_reason(finish_reason_raw)
+         finish_chunk = _make_stream_chunk(model=model, finish_reason=mapped)
+         # Attach usage from this event's usageMetadata so the streaming
+diff --git a/agent/gemini_schema.py b/agent/gemini_schema.py
+index 7d5385063..34eeb88da 100644
+--- a/agent/gemini_schema.py
++++ b/agent/gemini_schema.py
+@@ -83,9 +83,17 @@ def sanitize_gemini_schema(schema: Any) -> Dict[str, Any]:
+     # model enough guidance; the tool handler still validates the value.
+     enum_val = cleaned.get("enum")
+     type_val = cleaned.get("type")
+-    if isinstance(enum_val, list) and type_val in {"integer", "number", "boolean"}:
+-        if any(not isinstance(item, str) for item in enum_val):
++    if isinstance(enum_val, list):
++        if type_val in {"integer", "number", "boolean"} and any(not isinstance(item, str) for item in enum_val):
+             cleaned.pop("enum", None)
++        else:
++            # Gemini rejects empty strings in enums: any_of[1].enum[0]: cannot be empty
++            # Filter out empty strings from the enum list
++            filtered_enum = [item for item in enum_val if item != ""]
++            if filtered_enum:
++                cleaned["enum"] = filtered_enum
++            else:
++                cleaned.pop("enum", None)
+ 
+     return cleaned
+ 
+diff --git a/gateway/platforms/telegram.py b/gateway/platforms/telegram.py
+index fa55f2db0..8a7ae67d9 100644
+--- a/gateway/platforms/telegram.py
++++ b/gateway/platforms/telegram.py
+@@ -1621,6 +1621,10 @@ class TelegramAdapter(BasePlatformAdapter):
+             # Handle inline keyboard button callbacks (update prompts)
+             self._app.add_handler(CallbackQueryHandler(self._handle_callback_query))
+             
++            # Handle user message reactions (to flag sessions for ingest)
++            from telegram.ext import MessageReactionHandler
++            self._app.add_handler(MessageReactionHandler(self._handle_message_reaction))
++            
+             # Start polling — retry initialize() for transient TLS resets
+             try:
+                 from telegram.error import NetworkError, TimedOut
+@@ -5180,6 +5184,51 @@ class TelegramAdapter(BasePlatformAdapter):
+         """
+         return getattr(update, "effective_message", None) or getattr(update, "message", None)
+ 
++    async def _handle_message_reaction(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
++        """Handle incoming telegram message reactions."""
++        reaction_update = getattr(update, "message_reaction", None)
++        if not reaction_update:
++            return
++        
++        # Check if 🧠 is in the new reactions list
++        new_reactions = getattr(reaction_update, "new_reaction", [])
++        has_brain = False
++        for rxn in new_reactions:
++            if getattr(rxn, "emoji", None) == "🧠":
++                has_brain = True
++                break
++                
++        if has_brain:
++            chat_id = str(reaction_update.chat.id)
++            message_id = str(reaction_update.message_id)
++            logger.info("[%s] User reacted with 🧠 to message %s in chat %s", self.name, message_id, chat_id)
++            
++            try:
++                import sqlite3
++                import os
++                db_path = os.path.expanduser("~/.hermes/state.db")
++                conn = sqlite3.connect(db_path)
++                cursor = conn.cursor()
++                # Find the session associated with this message
++                cursor.execute(
++                    "SELECT session_id FROM messages WHERE platform_message_id = ?",
++                    (message_id,)
++                )
++                row = cursor.fetchone()
++                if row:
++                    session_id = row[0]
++                    cursor.execute(
++                        "UPDATE sessions SET brain_flagged = 1 WHERE id = ?",
++                        (session_id,)
++                    )
++                    conn.commit()
++                    logger.info("[%s] Flagged session %s for ingest via 🧠 reaction", self.name, session_id)
++                else:
++                    logger.warning("[%s] Could not find session for platform message id %s", self.name, message_id)
++                conn.close()
++            except Exception as e:
++                logger.error("[%s] Error flagging session for ingest on reaction: %s", self.name, e)
++
+     async def _handle_text_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+         """Handle incoming text messages.
+ 
+diff --git a/hermes_state.py b/hermes_state.py
+index 9c67779a6..0c907c226 100644
+--- a/hermes_state.py
++++ b/hermes_state.py
+@@ -265,6 +265,8 @@ CREATE TABLE IF NOT EXISTS sessions (
+     handoff_error TEXT,
+     rewind_count INTEGER NOT NULL DEFAULT 0,
+     archived INTEGER NOT NULL DEFAULT 0,
++    brain_flagged INTEGER DEFAULT 0,
++    ingested INTEGER DEFAULT 0,
+     FOREIGN KEY (parent_session_id) REFERENCES sessions(id)
+ );
+ 
+diff --git a/skills/productivity/google-workspace/scripts/google_api.py b/skills/productivity/google-workspace/scripts/google_api.py
+index 27855a515..dd3441162 100644
+--- a/skills/productivity/google-workspace/scripts/google_api.py
++++ b/skills/productivity/google-workspace/scripts/google_api.py
+@@ -146,7 +146,7 @@ def _extract_message_body(msg: dict) -> str:
+             if part.get("mimeType") == "text/plain" and part.get("body", {}).get("data"):
+                 body = base64.urlsafe_b64decode(part["body"]["data"]).decode("utf-8", errors="replace")
+                 break
+-        if not body:
++        if not body.strip():
+             for part in payload["parts"]:
+                 if part.get("mimeType") == "text/html" and part.get("body", {}).get("data"):
+                     body = base64.urlsafe_b64decode(part["body"]["data"]).decode("utf-8", errors="replace")
+diff --git a/tests/agent/test_gemini_schema.py b/tests/agent/test_gemini_schema.py
+index 069c99a21..c29c31814 100644
+--- a/tests/agent/test_gemini_schema.py
++++ b/tests/agent/test_gemini_schema.py
+@@ -107,6 +107,18 @@ class TestSanitizeGeminiSchema:
+         assert sanitize_gemini_schema("not a schema") == {}
+         assert sanitize_gemini_schema([1, 2, 3]) == {}
+ 
++    def test_strips_empty_strings_from_enums(self):
++        """Empty strings inside enum lists must be stripped for Gemini."""
++        schema = {"type": "string", "enum": ["exact", "is_not", ""]}
++        cleaned = sanitize_gemini_schema(schema)
++        assert cleaned["enum"] == ["exact", "is_not"]
++
++    def test_strips_empty_string_only_enums_entirely(self):
++        """Enums with only empty strings must be removed entirely."""
++        schema = {"type": "string", "enum": [""]}
++        cleaned = sanitize_gemini_schema(schema)
++        assert "enum" not in cleaned
++
+ 
+ class TestSanitizeGeminiToolParameters:
+     def test_empty_parameters_return_valid_object_schema(self):
