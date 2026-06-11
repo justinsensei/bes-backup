@@ -1,6 +1,6 @@
 ---
 name: todoist-inbox-fill
-description: "Use when Justin asks to 'fill my inbox', 'sync my tasks', 'what am I missing in Todoist', or wants open actions from external sources (Slack, Gmail, Calendar, Obsidian daily notes, iMessages, Linear) surfaced into his Todoist Inbox — without duplicating what's already there. Also detects potential calendar events and surfaces them as Google Calendar event candidates to schedule directly on his behalf. Accepts an optional lookback window (default 48h)."
+description: "Use when Justin asks to 'fill my inbox', 'sync my tasks', 'what am I missing in Todoist', or wants open actions from external sources (Slack, Gmail, Calendar, Obsidian daily notes, Linear) surfaced into his Todoist Inbox — without duplicating what's already there. Also detects potential calendar events and surfaces them as Google Calendar event candidates to schedule directly on his behalf. Accepts an optional lookback window (default 48h)."
 platforms: [linux, macos]
 ---
 
@@ -54,12 +54,11 @@ Pass `TODAY`, `TOMORROW`, `TODAY_SLASH`, `TOMORROW_SLASH`, `WEEK_FROM_NOW`, `LOO
 
 **Budget for every subagent: ≤8 tool calls. Return partial results and stop if budget is exhausted.**
 
-Sources to cover in three batches (concurrency cap is 3):
+Sources to cover in two/three batches (concurrency cap is 3):
 - **Batch 1:** Slack, Gmail, Obsidian daily notes
-- **Batch 2:** Calendar, Linear, iMessages
-- **Batch 3:** Granola meeting notes
+- **Batch 2:** Calendar, Linear, Granola meeting notes
 
-Sources: **Slack, Gmail, Obsidian daily notes, Calendar, Linear, iMessages, Granola.**
+Sources: **Slack, Gmail, Obsidian daily notes, Calendar, Linear, Granola.**
 
 **Do not pipe command output into a language interpreter** (no `... | python3 -c "..."`, no `... | bash`, no `... | node -e "..."`). The security scanner flags `cmd | python3` etc. as `pipe_to_interpreter` (HIGH) regardless of intent and will halt your run for approval. If you need to post-process JSON, use `jq` (installed). If you need real Python, write a short script to a tempfile and run it as `python3 /tmp/foo.py` — the file boundary is what satisfies the scanner.
 
