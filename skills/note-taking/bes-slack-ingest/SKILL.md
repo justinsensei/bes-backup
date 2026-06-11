@@ -12,12 +12,12 @@ metadata:
 
 # Bes Slack Ingest
 
-Captures noteworthy Slack threads and brain-dumps as lightweight pointer records inside `Logs/Slack/`. 
+Captures noteworthy Slack threads and brain-dumps as lightweight pointer records inside `Inputs/Slack/`. 
 
 These notes are intentionally **minimalist**. They must never contain point-by-point summaries, individual quotes, or try to capture decisions or thoughts. They function purely as a index/pointer back to Slack with a brief human-readable description.
 
 ## Synced Path
-- `/home/justin.guest/vault/Logs/Slack/YYYY-MM-DD - Spaced Title.md`
+- `/home/justin.guest/vault/Inputs/Slack/YYYY-MM-DD-slug.md`
 
 ---
 
