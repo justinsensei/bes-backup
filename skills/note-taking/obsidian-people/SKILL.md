@@ -37,6 +37,8 @@ Use the normal capitalized, spaced full name as the filename:
 - `Anya Volosskaya.md` (Not lowercase, not hyphenated).
 
 ### Step 3 — Frontmatter Structure
+Always wrap any bracketed wikilink inside the frontmatter in double quotes to prevent YAML syntax breakage (e.g. `category: "[[People]]"`).
+
 ```yaml
 ---
 id: 'YYYYMMDDHHmmss'

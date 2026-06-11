@@ -35,8 +35,9 @@ Always search both `/Contacts/` and `/inbox/` by name, acronym, or common alias 
 ### Step 2 — Filename
 Use the capitalized, spaced official name as the filename:
 - `Waldorf School of Pittsburgh.md` (Not lowercase, not hyphenated).
-
 ### Step 3 — Frontmatter Structure
+Always wrap any bracketed wikilink inside the frontmatter in double quotes to prevent YAML syntax breakage (e.g. `category: "[[Organizations]]"`).
+
 ```yaml
 ---
 id: 'YYYYMMDDHHmmss'

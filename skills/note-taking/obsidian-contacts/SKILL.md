@@ -112,6 +112,9 @@ To maintain vault cleanliness and hygiene, prune obsolete contact notes periodic
 
 ## Pitfalls & Safeguards
 
+### YAML Quote Hygiene in Frontmatter
+- **Always Wrap Wikilinks in Quotes**: Any bracketed links inside the YAML frontmatter (such as `category: "[[People]]"`, `category: "[[Organizations]]"`, or `daily_note: "[[YYYY-MM-DD]]"`) **must** be wrapped in double quotes. Omitting quotes around brackets causes YAML parser exceptions and breaks vault hygiene scripts.
+
 ### Alias Hygiene & Link-Hijacking Prevention
 - **Avoid Generic First-Name Aliases**: Never add a highly generic or common first name (e.g., `Linda`, `Georgia`, `Drew`) as a generic alias in the frontmatter of a full-name contact note (e.g., `Linda Massie.md` or `Georgia Sullivan.md`) if there are other entities, companies, or plain-text terms (such as `Georgia Tech`, `Lindy Effect`, or the state of `Georgia`) that share that name.
 - **Why**: Broad aliases cause automated background scripts (like `check_vault_signals.py`) and AI parsers to perform "link-hijacking"—incorrectly mapping technical research, company meetings, or regional references onto family members' timeline notes, creating huge amounts of cross-pollution and duplicates.
