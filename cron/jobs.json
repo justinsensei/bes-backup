@@ -118,7 +118,7 @@
       "last_status": "error",
       "last_error": "Script timed out after 120s: /home/justin.guest/.hermes/scripts/vault_hygiene_cron.py",
       "last_delivery_error": null,
-      "deliver": "telegram",
+      "deliver": "telegram:-5174229110",
       "origin": {
         "platform": "telegram",
         "chat_id": "8612970484",
@@ -210,7 +210,7 @@
       "last_status": null,
       "last_error": null,
       "last_delivery_error": null,
-      "deliver": "telegram",
+      "deliver": "telegram:-5174229110",
       "origin": {
         "platform": "telegram",
         "chat_id": "8612970484",
@@ -318,5 +318,5 @@
       "profile": null
     }
   ],
-  "updated_at": "2026-06-11T06:52:29.779475-04:00"
+  "updated_at": "2026-06-11T06:55:53.594301-04:00"
 }
