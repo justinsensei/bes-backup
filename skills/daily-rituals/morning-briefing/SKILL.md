@@ -24,14 +24,15 @@ This skill governs the **interactive phase** of the morning briefing. The 7AM cr
 
 The cron job `d8811ffe259f` (**Morning Briefing — 7AM daily**) runs the background phase of the briefing.
 - **Delivery Target:** Delivers directly to the **Cron Logs** channel (`telegram:-5174229110`).
-- **Overnight Job Reporting:** It reads `~/.hermes/cron/jobs.json` to retrieve the statuses of the overnight cron jobs (**vault-hygiene** and **Daily Work Log**) and appends them to the greeting:
+- **Overnight Job Reporting:** It reads `~/.hermes/cron/jobs.json` to retrieve the statuses of the overnight cron jobs (**vault-hygiene** and any other automated tasks) and appends them to the greeting:
   ```text
   Morning, Justin! Ready to start your day?
 
   **Overnight Cron Jobs:**
   • **vault-hygiene** (9 PM): <status>
-  • **Daily Work Log** (12 AM): <status>
   ```
+- **Strict Separation of Background & Foreground:** The background cron job must **never** write, overwrite, or update yesterday's daily note, work log, or any knowledge notes in the background. It is limited to scanning for changes and writing the cache file `~/.hermes/morning-briefing/YYYY-MM-DD.json`.
+- **Rerouting to Personal DM:** While the background cron job logs to the **Cron Logs** channel, the morning greeting itself and all subsequent interactive phases belong in Justin's personal DM chat (`8612970484`), not the public logs channel.
 
 ## Entry point
 
