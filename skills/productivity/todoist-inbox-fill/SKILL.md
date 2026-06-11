@@ -462,3 +462,6 @@ Once Justin responds:
 - **Slack `--limit` flag.** The Slack CLI may not support `--limit` on all commands. If it errors, drop the flag and let it return the default count.
 - **App Store Connect emails.** These are engineering issues, not Justin's. Filter them out at the Gmail subagent stage.
 - **Never call the Todoist REST API directly (`api.todoist.com`) in custom scripts or subagents.** The sync v9 and REST v2 endpoints are deprecated (HTTP 410 / 404). Always use the native `mcp_todoist_*` tools. If a script inside `execute_code` or a background task absolutely must make raw HTTP requests, use the correct v1 path `https://api.todoist.com/api/v1/` (e.g. `/api/v1/tasks` or `/api/v1/sync` as a POST request) and include the `TODOIST_API_KEY` header.
+
+## References
+- See [references/exclusions.md](references/exclusions.md) for detailed rules on source and state-based candidate filtering.
