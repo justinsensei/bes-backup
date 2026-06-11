@@ -71,6 +71,26 @@ To prevent automatic link-hijacking and timeline pollution from background analy
   - Organizations: Use correct corporate casing (e.g., `Duolingo.md`, `SmartPass.md`, `PowerSchool.md`, `SignOn.md`, `SV Academy.md`).
 - **Renaming & Healing:** If contacts are found with incorrect lowercase filenames, use `git mv` to rename them, and run a vault-wide search-and-replace to update all internal links to use the correct casing, keeping your index perfectly coherent.
 
+### Step 6 — Contact ID Generation & Uniqueness
+Every contact file (including brand-new ones created by Bes) must have an `id` field in its frontmatter.
+- **Format:** The ID must be a 14-digit double-quoted string `id: "YYYYMMDDHHMMSS"` based on the file's birth (creation) timestamp.
+- **Acquiring Birth Time:** On Linux, query the birth timestamp via `stat -c %W <filepath>`. If unsupported or returning `0`, fall back to the modification time (`mtime`).
+- **Enforcing Uniqueness:** Scan all `.md` files in the vault to collect existing IDs before assigning a new one. 
+- **Conflict Resolution:** If the formatted timestamp matches any existing ID in the vault (common when files are imported or created in batches), tweak the last digit or two (e.g., incrementing them) until a completely unique ID is obtained.
+- **Frontmatter Insertion:** Insert the ID as the first field right below the opening `---` of the frontmatter:
+  ```yaml
+  ---
+  id: "20260611074153"
+  category: "[[People]]"
+  ---
+  ```
+
+### Step 7 — Pruning Obsolete Contacts
+To maintain vault cleanliness and hygiene, prune obsolete contact notes periodically. A contact is considered safe to prune/remove if both of the following conditions are met:
+1. **No Backlinks:** There are no wikilinks (`[[Contact Name]]`) or markdown links to the contact filename or any of its registered aliases from any other note in the vault.
+2. **Empty Body:** The body of the note is completely empty (contains nothing except the frontmatter block and whitespace).
+*Always perform a Dry Run and check with the user before deleting files.*
+
 ### Step 6 — Contact ID Convention (Strict ID Uniqueness)
 - **Every contact must have a unique ID** field in its frontmatter:
   ```yaml
