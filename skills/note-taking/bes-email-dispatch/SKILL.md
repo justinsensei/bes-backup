@@ -11,7 +11,7 @@ metadata:
 
 # Bes Email Dispatch
 
-Handler skill for the email-forwarding workflow. Justin forwards an email to `goff.justin+bes@gmail.com` with a one-line instruction at the top of the body (or just a subject prefix); a Gmail filter labels it `Bes/Inbox`; the consolidated cron job **"Unified Brain Feeds Ingest"** (`284c08eb12b7`) executes the poller (`poll_bes_inbox.py --json`) to detect new message IDs alongside other feeds.
+Handler skill for the email-forwarding workflow. Justin forwards an email to `goff.justin+bes@gmail.com` with a one-line instruction at the top of the body (or just a subject prefix); a Gmail filter labels it `Bes/Inbox`; a poller (`poll_bes_inbox.py`) detects it and invokes this skill once per new message ID.
 
 This skill is **read-only on Gmail**. It never archives, marks read, or replies. The source of truth for "has Bes seen this?" is the watermark file (`~/.hermes/state/bes-inbox-watermark.json`), not Gmail label state.
 
@@ -36,34 +36,62 @@ If his instruction contains keywords for **both** (or if he lists them on separa
 See [references/forwarding-examples.md](references/forwarding-examples.md) for concrete mockups of instruction inputs and expected tool outputs.
 
 ### Default Behavior (Fallback)
-If the instruction is empty, has no keywords, or is just "Save as a note", default to **Action 1: Log Email to Inputs/Emails/**.
+If the instruction is empty, has no keywords, or is just "Save as a note", default to **Action 1: Add the email to his vault**.
 
 ---
 
-## Action 1: Log Email (Save to Inputs/Emails/)
+## Action 1: File Email (Save to Vault Inbox)
 
 ### Trigger Keywords
-- Contains: `File this`, `file this`, `file`, `save this`, `save`, `archive this`, `log this`, `log email`, `log thread`, `save as email log`, `log`
-- Or: Instruction is **empty / none** (default fallback)
+- Contains: `File this`, `file this`, `file`, `save this`, `save`, `archive this`
+- Or: Instruction is **empty / none** (default fallback, files to `inbox/`)
 
 ### Storage Destination
-- Create a new markdown note inside the **`Inputs/Emails/`** directory of his vault:
-  `/home/justin.guest/vault/Inputs/Emails/YYYY-MM-DD - Spaced Subject.md`
-  *(Where `YYYY-MM-DD` is the current date or forwarded email date, and `Spaced Subject` is a cleaned, capitalized, spaced version of the subject).*
+- Create a new markdown note inside the **`inbox/`** directory of his vault:
+  `/home/justin.guest/vault/inbox/YYYY-MM-DD-subject-slug.md`
+  *(Where `YYYY-MM-DD` is the current date or forwarded email date, and `subject-slug` is a cleaned, lowercase, hyphen-separated version of the cleaned subject).*
 
 ### Note Structure & Frontmatter
-All new notes must start with the following frontmatter:
+All new notes must start with the `New Note` frontmatter (pre-evaluating Templater values at write time using Justin's local time (America/New_York)):
 
 ```yaml
 ---
 id: "<YYYYMMDDHHmmss at write time, e.g. 20260520143157>"
 daily_note: "[[<YYYY-MM-DD Weekday>|YYYY-MM-DD Weekday]]"
+---
+```
+
+Below the frontmatter, format the note body cleanly:
+1. **Title:** Large H1 heading `# [Cleaned Subject]`
+2. **Email Metadata:** Labeled key-value pairs:
+   - **From:** [Original Sender Name <Email>]
+   - **To:** [Recipient Email]
+   - **Date:** [Original Email Date]
+3. **Context Note:** If Justin provided an instruction or extra thoughts (e.g., "I like the idea about the flux capacitor..."), include them in a `## Context` section.
+4. **Summary:** Add a concise markdown summary of the email's content (who sent it, what it is about).
+5. **Email Content:** A `---` line or `## Email Content` header followed by the cleaned plaintext body of the forwarded email.
+
+---
+
+## Action 1b: Log Email (Save to Inputs/Emails/)
+
+### Trigger Keywords
+- Contains: `log this`, `log email`, `log thread`, `save as email log`, `log`
+
+### Storage Destination
+- Create a new markdown note inside **`Inputs/Emails/`** (`$OBSIDIAN_VAULT_PATH/Inputs/Emails/YYYY-MM-DD - Spaced Subject.md`)
+  *(Where `YYYY-MM-DD` is the current date, and `Spaced Subject` is a cleaned, capitalized, spaced version of the subject).*
+
+### Note Structure & Frontmatter
+All new email log notes must start with this frontmatter format:
+
+```yaml
+---
+id: "<YYYYMMDDHHmmss at write time>"
+daily_note: "[[<YYYY-MM-DD Weekday>|YYYY-MM-DD Weekday]]"
 category: "[[Emails]]"
 type: email
 original_url: "<Gmail message search link, e.g. https://mail.google.com/mail/u/0/#search/rfc822msgid:<Message-ID> or search query>"
-participants:
-  - "Sender Name"
-  - "Recipient Name"
 ---
 ```
 
@@ -71,13 +99,11 @@ Below the frontmatter, format the note body cleanly:
 1. **Title:** Large H1 heading `# 📧 Email Log: [Cleaned Subject]`
 2. **Email Metadata:** Labeled key-value pairs:
    - **From:** [Original Sender Name <Email>]
-   - **To:** [Recipient Email]
    - **Date:** [Original Email Date]
    - **Subject:** [Cleaned Subject]
-   - **Message ID:** [Gmail Message ID]
-3. **Context Note:** If Justin provided an instruction or extra thoughts (e.g., "I like the idea about..."), include them in a `## Context` section.
-4. **Summary:** Add a concise markdown summary of the email's content (who sent it, what it is about).
-5. **Email Content:** A `## Email Content` header followed by the cleaned plaintext body of the forwarded email.
+   - **Message ID:** [Gmail Message ID] (to fetch full email if needed)
+3. **Context Note:** If Justin provided any instruction or extra thoughts, include them in a `## Context` section.
+4. **Summary:** Add a brief summary of the entire thread (concise bullets or paragraph outlining key discussions, decisions, and action items — **do not copy the email contents verbatim**).
 
 ---
 
@@ -101,8 +127,8 @@ Use `mcp_todoist_add_tasks` to add a single task to Justin's Todoist **Inbox** (
 If Justin explicitly uses the following phrasing, support these specific paths:
 - **Person note:** *"Person note for <Name>"* or *"<Name> works at <Org>"* → Create a brand-new Person note named `<Capitalized Spaced Full Name>.md` in `/home/justin.guest/vault/inbox/` (or update the existing note in-place if it already exists under `/Contacts/` or `/inbox/`).
 - **Company/Organization note:** *"New company <Name>"*, *"Company note for <Name>"*, or *"<Name> is a new company"* → Create a brand-new Organization note named `<Capitalized Spaced Name>.md` in `/home/justin.guest/vault/inbox/` (or update the existing note in-place if it already exists under `/Contacts/` or `/inbox/`).
-- **Project note:** *"New project <Name>"*, *"Project note for <Name>"*, or *"<Name> is a new project"* → Create `<Capitalized Name>.md` in `/home/justin.guest/vault/inbox/` using project hub schema (`category: "[[Projects]]"`, executive summary, Status: Active, State/Timeline/Related inputs sections).
-- **Append to existing note:** *"Add to <note title>"*, *"Append to <note title>"*, or *"Add [content] to the <note title> note"* → Find the closest match vault-wide (the user may say "in my inbox" or guess the wrong folder, but the note often resides in its correct MECE directory like `personal/trips/` or `Notes/Projects/`) and append a dated bullet under the appropriate section (such as `## State` for projects, or directly in the note body). Format: `- YYYY-MM-DD | [[source|title]] — <gist>`.
+- **Project note:** *"New project <Name>"*, *"Project note for <Name>"*, or *"<Name> is a new project"* → Create `<lowercase-name-slug>.md` under `projects/` using Project formatting (executive summary, Status: Active, and creation Timeline).
+- **Append to existing note:** *"Add to <note title>"*, *"Append to <note title>"*, or *"Add [content] to the <note title> note"* → Find the closest match vault-wide (the user may say "in my inbox" or guess the wrong folder, but the note often resides in its correct MECE directory like `personal/trips/` or `projects/`) and append a dated bullet point (format: `- YYYY-MM-DD | Ingest — <context/details>`).
 - **Calendar scheduling:** *"Schedule this"* or *"Add this to my calendar"* → Parse event details and call `gws_multi.py --account personal-main|work calendar create`.
 
 ---
@@ -119,7 +145,6 @@ For each message ID detected by the poller:
 3. **Execute actions:**
    - If filing: Generate and write the markdown note to `inbox/` or `Inputs/Emails/`.
    - After filing, run `llm-wiki` integrate-light: append `Utilities/log.md` only (daily note wikilink as last field).
-   - Then run `python3 ~/.hermes/scripts/integrate_entities.py <ingest_rel_path> [--gist "..."]` on each filed note. Include hub updates in Telegram report: `→ updated [[Project]], [[Contact]]`.
    - If creating a task: Call `mcp_todoist_add_tasks` and then `mcp_todoist_add_comments` with the email summary.
    - If both: Do both operations.
 4. **Report back:** Output a single concise line per email in your final response (for Telegram delivery):
@@ -139,9 +164,3 @@ For each message ID detected by the poller:
 ## Troubleshooting & Pitfalls
 
 - **Empty plaintext parts in HTML emails:** Some systems/senders (like Expedia transactional emails) send `multipart/alternative` messages with a nearly empty text/plain part containing only `\r\n` (whitespace). Because `google_api.py` previously checked `if not body:`, this truthy whitespace caused it to skip extracting the actual HTML content. Always ensure `google_api.py` checks `if not body.strip():` when extracting bodies to correctly fall back to the rich HTML content.
-- **Subject / Filename Sanitization:** Forwarded email subjects often contain special characters like `/`, `:`, or `\`. Since these are forbidden or represent directory separators in Linux/Obsidian, they must be cleaned (e.g. replacing `/` with ` - ` or space) before constructing the file path `/home/justin.guest/vault/Inputs/Emails/YYYY-MM-DD - Spaced Subject.md`.
-- **Gmail Token Expiry / Revocation (`invalid_grant` or traceback):** If the poller cron or load context script fails with `invalid_grant` or a traceback involving `gmail_search`, the OAuth credentials for `personal-main` may have expired. Instruct the user to re-authenticate by running:
-  ```bash
-  python3 ~/.hermes/skills/productivity/google-workspace/scripts/setup.py --revoke
-  ```
-  And then follow the standard setup flow to generate a new token.
