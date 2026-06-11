@@ -20,6 +20,12 @@ result = subprocess.run(
     text=True,
 )
 
+if result.returncode != 0:
+    print("## 🔴 CRITICAL: vault_hygiene.py failed with exit code", result.returncode)
+    print("### Error Output:")
+    print(result.stderr.strip())
+    sys.exit(result.returncode)
+
 output = result.stdout.strip()
 
 ALERT_MARKERS = [
