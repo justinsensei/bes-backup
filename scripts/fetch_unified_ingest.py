@@ -40,10 +40,14 @@ def main():
     # Fetch Linear brains
     linear_brains = run_script("fetch_linear_brains.py")
     
+    # Fetch Telegram brains
+    telegram_brains = run_script("fetch_telegram_brains.py")
+    
     # Output unified dict
     unified = {
         "slack": slack_brains,
-        "linear": linear_brains
+        "linear": linear_brains,
+        "telegram": telegram_brains
     }
     print(json.dumps(unified, indent=2))
 
