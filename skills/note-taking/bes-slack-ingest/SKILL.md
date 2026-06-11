@@ -66,3 +66,11 @@ During subsequent vault enrichment runs (e.g., during Wind-Down, Morning Briefin
 2. Read the source Slack thread replies if needed to refine and write a polished **2-3 sentence Topic Description**.
 3. Verify and compile the complete list of **main participants** and ensure they are added to the frontmatter `participants` list.
 4. **Enforce the Constraints:** Actively prune and remove any point-by-point summaries, individual thoughts, quotes, or decision trees that may have leaked into the logs. Keep them strictly as simple pointers.
+
+---
+
+## Unified Feeds Ingest Pattern
+
+The Slack and Linear ingest pipelines are executed together by the unified cron job **"Unified Brain Feeds Ingest"** (`284c08eb12b7`) running every 120 minutes.
+- **Unified Script:** `/home/justin.guest/.hermes/scripts/fetch_unified_ingest.py` runs both `fetch_slack_brains.py` and `fetch_linear_brains.py` in parallel and consolidates candidates into a single JSON object.
+- **Workflow:** The agent processes incoming candidates, saves files to `/inbox/`, appends to today's daily note under `## 🗒 Notepad`, runs the marking-processed commands (`--mark-processed`), appends to `Utilities/log.md`, and runs `integrate_entities.py` to keep project hub states aligned.
