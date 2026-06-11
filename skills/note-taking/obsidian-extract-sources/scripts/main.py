@@ -11,7 +11,7 @@ from datetime import datetime
 VAULT_PATH = os.getenv("OBSIDIAN_VAULT_PATH", "/home/justin.guest/vault")
 INBOX_DIR = os.path.join(VAULT_PATH, "inbox")
 READINGS_DIR = os.path.join(VAULT_PATH, "Inputs", "Readings")
-SOURCES_DIR = os.path.join(VAULT_PATH, "Notes", "Sources") # Still needed for backlink check
+SOURCES_DIR = os.path.join(VAULT_PATH, "Notes", "Sources")
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # --- State File ---
@@ -32,31 +32,42 @@ def load_state():
 
 def find_unprocessed_readings():
     """
-    Finds Reading notes without a corresponding Source note.
-    Returns a list of absolute paths.
+    Finds Reading notes without a corresponding Source note by checking for a specific
+    'reading: "[[...]]"' backlink in the frontmatter of notes in the inbox and sources folder.
     """
-    all_readings = []
-    for root, _, files in os.walk(READINGS_DIR):
-        for file in files:
-            if file.endswith(".md"):
-                all_readings.append(os.path.join(root, file))
+    processed_reading_basenames = set()
+    source_dirs = [SOURCES_DIR, INBOX_DIR]
+    link_regex = re.compile(r'reading:\s*"\[\[([^\]]+)\]\]"')
 
-    source_dirs = [SOURCES_DIR, INBOX_DIR] # Check both final destination and inbox
-    source_content_cache = ""
     for directory in source_dirs:
         if os.path.exists(directory):
             for root, _, files in os.walk(directory):
                 for file in files:
                     if file.endswith(".md"):
-                        with open(os.path.join(root, file), 'r', encoding='utf-8') as f:
-                            source_content_cache += f.read()
+                        filepath = os.path.join(root, file)
+                        try:
+                            with open(filepath, 'r', encoding='utf-8') as f:
+                                content = f.read()
+                                match = link_regex.search(content)
+                                if match:
+                                    # Extract the basename from the linked path
+                                    linked_path = match.group(1)
+                                    processed_reading_basenames.add(os.path.basename(linked_path))
+                        except Exception:
+                            # Ignore files that can't be read
+                            continue
+
+    all_readings = []
+    unprocessed_readings = []
+    if os.path.exists(READINGS_DIR):
+        for root, _, files in os.walk(READINGS_DIR):
+            for file in files:
+                if file.endswith(".md"):
+                    if file not in processed_reading_basenames:
+                        unprocessed_readings.append(os.path.join(root, file))
     
-    unprocessed = [
-        r for r in all_readings 
-        if f"[[{os.path.relpath(r, VAULT_PATH).replace(os.sep, '/')}]]" not in source_content_cache
-        and f"[[{os.path.basename(r)}]]" not in source_content_cache
-    ]
-    return unprocessed
+    return unprocessed_readings
+
 
 def generate_and_preview(reading_path):
     """
@@ -70,7 +81,6 @@ def generate_and_preview(reading_path):
         )
         proposed_content = result.stdout
         
-        # Save state for the confirmation step
         state = {'proposed_content': proposed_content}
         save_state(state)
         
@@ -99,7 +109,6 @@ def write_note_to_inbox():
         print("Error: No proposed content found to write.", file=sys.stderr)
         return
 
-    # Extract title and ID from content to form the filename
     title_match = re.search(r'^#\s*(.*)', content, re.MULTILINE)
     id_match = re.search(r"id:\s*'(\d+)'", content)
     
@@ -123,7 +132,6 @@ def write_note_to_inbox():
     except Exception as e:
         print(f"Error writing note to inbox: {e}", file=sys.stderr)
     finally:
-        # Clean up state file
         if os.path.exists(STATE_FILE):
             os.remove(STATE_FILE)
 
@@ -133,8 +141,6 @@ def handle_selection(user_choice, choice_map):
         return
     
     if user_choice == "Show another 5 random readings":
-        # The agent needs to re-run the script without args
-        print("Showing a new batch...")
         main_unseeded()
         return
 
@@ -143,7 +149,6 @@ def handle_selection(user_choice, choice_map):
         generate_and_preview(reading_path)
     else:
         print(f"Error: Invalid selection '{user_choice}'.", file=sys.stderr)
-
 
 def main_unseeded():
     readings = find_unprocessed_readings()
@@ -155,7 +160,6 @@ def main_unseeded():
     choices = [os.path.splitext(os.path.basename(r))[0] for r in sample]
     choice_map = {choice: path for choice, path in zip(choices, sample)}
     
-    # Save the choice map to state so we can access it after the clarify call
     save_state({"choice_map": choice_map})
 
     clarify_choices = choices + ["Show another 5 random readings", "Exit"]
@@ -167,20 +171,14 @@ def main_unseeded():
     }
     print(json.dumps(clarify_payload))
 
-
 if __name__ == "__main__":
-    # This script now has modes based on arguments to handle the interactive flow
     if len(sys.argv) == 1:
-        # Mode 1: Initial call, show selection
         main_unseeded()
     elif sys.argv[1] == "--handle-selection":
-        # Mode 2: User has made a selection from the list
         state = load_state()
         choice_map = state.get("choice_map", {})
         handle_selection(sys.argv[2], choice_map)
     elif sys.argv[1] == "--confirm-creation":
-        # Mode 3: User has confirmed 'Yes' to create the note
         write_note_to_inbox()
     else:
         print(f"Error: Unknown argument '{sys.argv[1]}'", file=sys.stderr)
-
