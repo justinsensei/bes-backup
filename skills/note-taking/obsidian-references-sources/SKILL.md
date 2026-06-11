@@ -1,113 +1,73 @@
 ---
-name: obsidian-references-sources
-description: Use when creating or recording cheat sheets, factsheets, guidelines, or other people's conceptual summaries under Notes/.
+name: obsidian-extract-sources
+description: Use when creating or recording cheat sheets, factsheets, guidelines, or other people's conceptual summaries under Notes/. Also contains the workflow for compiling immutable `Inputs/Readings` into mutable `Notes/Sources`.
 version: 1.1.0
 author: Bes
 license: MIT
 metadata:
   hermes:
-    tags: [obsidian, notes, references, sources, readwise]
-    related_skills: [obsidian, obsidian-notes]
+    tags: [obsidian, references, sources, readings, compile]
+    related_skills: [obsidian, obsidian-ingest-log, obsidian-suggest-promotions]
 ---
 
-# Obsidian: References & Concepts Management
+# obsidian-extract-sources
 
 ## Overview
-This skill governs the structure and standard templates for two categories under `Notes/`:
-1. **References:** Highly useful factual notes, guidelines, checklists, cheat sheets, or lookup tables.
-2. **Concepts:** What others say / think (book summaries, articles, web clips, external papers, or other people's synthesized thoughts).
 
----
+This skill has two primary functions:
 
-## References Definition & Boundary
-- **Permanent Value:** References are reserved for permanent, highly durable notes that have long-term lookup value (e.g., API schemas, CLI cheat sheets, organization policies, standard operating procedures) and are expected to be referred to frequently over time.
-- **Project-Bound Ephemera:** Do NOT categorize ephemeral checklists, migration plans, implementation guides, or setup lists connected to specific, time-bound projects as `[[References]]`. These should remain categorized as `[[Notes]]` or `[[Projects]]` within their project context.
+1.  Creating general reference notes like cheat sheets, factsheets, and summaries of external concepts.
+2.  Executing the formal workflow for compiling raw, immutable `Inputs/Readings` into refined, mutable `Notes/Sources` that can be linked to from other parts of the vault.
 
----
+This skill absorbs the `integrate-full` workflow from the deprecated `llm-wiki` skill.
 
-## Folders & Categories
-- **Directory:** `/home/justin.guest/vault/Notes/` (or `/home/justin.guest/vault/inbox/` when drafting).
-- **Categories & Naming:**
-  - **References:** Standard reference notes, checklists, lookup tables.
-    - Category link: `category: "[[References]]"`
-    - Filename format: `Title.md` (no timestamp prefix, e.g. `Spaced Title.md`).
-  - **Concepts:** Book summaries, articles, paper summaries, other people's thinking.
-    - Category link: `category: "[[Concepts]]"`
-    - Filename format: `Title ID.md` (e.g. `Spaced Title 20260609120000.md`).
-  - **Sources (Logs):** Raw reading notes and bibliographical information (synced from Readwise).
-    - Category link: `category: "[[Sources]]"`
-    - Filename format: `Title ID.md` (ID at the end, if retaining creation ID, e.g. `Spaced Title 20260609120000.md`).
+## When to Use
 
----
+-   When Justin asks to create a reference note, cheat sheet, or factsheet.
+-   When explicitly triggered to process the day's or a specific project's readings ("compile today's readings", "extract sources for [[Project]]").
+-   As a step in the `wind-down` ritual.
 
-## Preventing Concept & Note Duplication
-Before proposing, suggesting, or creating any new `[[Concepts]]` (or `[[References]]`), always scan the vault (specifically the `/Notes/` directory) for any existing notes with similar names, synonyms, or highly overlapping content, even if they are currently classified under `category: "[[Notes]]"`.
-- **Search First:** Use `search_files` to verify whether there is an existing raw note that covers the same conceptual territory.
-- **Consolidate & Promote over Creating Fresh:** If an existing raw note is found, do not create a duplicative new note. Instead, propose reclassifying the existing note to `[[Concepts]]`, merging any extra details if necessary.
-- **De-duplication & Pruning:** If multiple similar/duplicate notes exist (e.g., `Continuous interviewing.md` and `Continuous interviewing torres.md`), consolidate the best text, links, and references into a single canonical note under the `[[Concepts]]` category and delete/prune the redundant raw notes to keep the vault clean.
+## Readings → Sources Workflow
 
----
+This is the formal process for promoting a raw input into a structured source that can be used for synthesis.
 
-## References Structure
-Reference notes should be highly scannable, starting with a clear purpose block followed by structured facts:
+**Trigger:** Manual, on-demand. Not run from cron automatically.
 
-```markdown
+**Process:** For each `Reading` note in scope, create or update a corresponding `Source` note in `Notes/`.
+
+### Source Note Template
+
+```yaml
 ---
 id: 'YYYYMMDDHHmmss'
 daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
-category: "[[References]]"
+category: "[[Sources]]"
 ---
 
-# Topic Name Guideline / Checklist
+# Title of Source Material
 
-> Purpose: quick-reference or guidelines for a specific domain.
+- **Author:** [Author Name]
+- **URL:** [Original URL]
+- **Type:** book | article | paper | video
 
----
+## Summary
+A Bes-compiled synthesis of the key ideas from the raw input. This summary is kept up-to-date by subsequent runs of this skill.
 
-## Guidelines & Checklists
-- [ ] Checklist item 1
-- [ ] Checklist item 2
+## Raw inputs
+- [[Link to the original Reading note]]
 
-## Facts & Lookup Tables
-- Labeled facts or lists of properties.
+## Related
+- [[Links to Concepts or Projects that use this source]]
 ```
 
----
+### Key Principles
 
-## Concepts Structure
-Concept notes are simplified narratives that explain a theory, mental model, or concept without any initial heading (since the filename carries the title).
+-   **Link Direction:** The proper link hierarchy is `Concept` → `Source` → `Reading`. Never link a `Concept` or `Thought` directly to a `Reading` if a `Source` note for it exists.
+-   **Confirmation:** Always confirm with Justin before performing bulk creations or edits of `Source` notes.
+-   **Atomicity:** Each `Source` note should correspond to a single `Reading`.
 
-- **Drafting Location:** Always draft new concepts in the inbox (`vault/inbox/`) so the user can tweak and move them later.
+## Pitfalls
 
-```markdown
----
-daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"
-id: YYYYMMDDHHmmss
-category: "[[Concepts]]"
----
-[Concise narrative explaining the concept (1-2 short paragraphs) covering:]
-- What the concept represents / core definition
-- Its mechanics or how it operates
-- Why it matters / context
-
-# Related
-- [[Link to relevant note or log]]
-- [[Link to another log]]
-```
-
----
-
-## Sources (Logs) & Readwise Integration
-- **Readwise Script:** Justin has a sync script located at `~/sync_readwise.py`. 
-- **Trigger:** This script exports any highlight tagged `'vault'` (case-insensitive) from Readwise directly to `/home/justin.guest/vault/Logs/Sources/` (Category: `[[Sources]]`).
-- **Machine Summaries:** Keep automated transcripts, web clips, or summaries under the `/sources/` folder instead of `/Logs/Meetings/` to prevent manual log pollution.
-
-## Web Clipping & Bypassing Paywalls / Cloudflare
-When creating new `[[Concepts]]` from online articles (e.g. Medium, Substack, paywalled or Cloudflare-protected sites), standard `browser_navigate` or raw `curl` commands may fail with a 403 Forbidden or show a bot challenge page.
-To bypass these limitations reliably and retrieve clean markdown content:
-- Use **Jina Reader API (`r.jina.ai`)** via a terminal curl command:
-  ```bash
-  curl -s -L -A "Mozilla/5.0" "https://r.jina.ai/https://example.com/article-slug"
-  ```
-- This retrieves a beautifully cleaned markdown conversion of the page, bypassing Cloudflare mitigation challenges and standard registration screens.
-- Process the retrieved markdown, select key arguments or synthesis, and write it as a new note with a `category: "[[Concepts]]"` property under `Notes/` following the filename convention `Title ID.md`.
+-   **Compiling into Reading bodies:** `Inputs` are immutable. The compiled summary and metadata belong exclusively in the `Source` note.
+-   **Linking directly to Readings:** Bypassing the `Source` note breaks the intended knowledge graph structure and makes it difficult to track how raw information is synthesized.
+-   **Automatic Execution:** This workflow requires judgment and synthesis, and should not be run automatically from cron without explicit approval for the batch.
