@@ -1,5 +1,5 @@
 model:
-  default: gemini-flash-latest
+  default: gemini-2.5-pro
   provider: gemini
   base_url: https://generativelanguage.googleapis.com/v1beta
   max_tokens: 8192
@@ -459,16 +459,16 @@ security:
   tirith_enabled: true
   tirith_path: tirith
   tirith_timeout: 5
-  tirith_fail_open: true
+  tirith_fail_open: false
   website_blocklist:
     enabled: false
     domains: []
     shared_files: []
   acked_advisories: []
-  allow_lazy_installs: true
+  allow_lazy_installs: false
 cron:
   wrap_response: true
-  max_parallel_jobs: null
+  max_parallel_jobs: 3
 kanban:
   dispatch_in_gateway: true
   dispatch_interval_seconds: 60
@@ -515,7 +515,7 @@ streaming:
   cursor: " \u2589"
   fresh_final_after_seconds: 60.0
 sessions:
-  auto_prune: false
+  auto_prune: true
   retention_days: 90
   vacuum_after_prune: true
   min_interval_hours: 24
