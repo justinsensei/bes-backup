@@ -16,6 +16,8 @@ metadata:
 
 Operator docs for `vault_hygiene.py` and its cron wrapper. Enforces the three-layer taxonomy (Inputs → Sources → maturity tiers) with auto-fixes for safe structural issues and reports for human triage.
 
+For the background real-time git synchronization process, see [references/vault-synchronization.md](references/vault-synchronization.md).
+
 ## When to Use
 
 - Morning briefing Job B (tier-1 auto-fixes)
