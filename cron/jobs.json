@@ -149,7 +149,7 @@
       "schedule_display": "0 7 * * *",
       "repeat": {
         "times": null,
-        "completed": 20
+        "completed": 21
       },
       "enabled": true,
       "state": "scheduled",
@@ -157,9 +157,9 @@
       "paused_reason": null,
       "created_at": "2026-05-22T15:05:05.687250-04:00",
       "next_run_at": "2026-06-12T07:00:00-04:00",
-      "last_run_at": "2026-06-10T07:04:18.827431-04:00",
-      "last_status": "ok",
-      "last_error": null,
+      "last_run_at": "2026-06-11T07:05:57.077473-04:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: Morning, Justin! Ready to start your day?\n\n**Overnight Cron Jobs:**\n\u2022 **vault-hygiene** (9 PM): error \u2014 Script timed out after 120s: /home/justin.guest/.hermes/scripts/vault_hygiene_cron.py\n\u2022 **Daily Work Log** (12 AM): ok\n\n---\n\n### Background Tasks Executed (7 AM):\n1. **Work Day Status:** Today is **Thursday, June 11, 2026** (a Work Day). The target log date is **2026-06-10** (Wednesday).\n2. **Change Detection:** A change in personal Gmail threads (37 live vs 34 in daily note footer) triggered an active scan. \n3. **Background Jobs (Parallel Execution):**\n   * **Job A (Work Log):** A comprehensive work log for Wednesday, June 10, is already successfully written and finalized inside your daily note `Notes/Daily Notes/2026-06-10 Wednesday.md` (no overwrite needed).\n   * **Job B (Vault Hygiene Tier 1):** Ran auto-fixes silently (meetings reconciled, daily notes auto-linked, reading URLs cached).\n   * **Job C (Inbox Candidates Gather):** Evaluated and staged inbox Candidates. Staged a new Linear task **MKD-1** (Remove duplicate unsubscribe button from emails) and a potential calendar event (anniversary lunch/dinner with Kathy) from your iMessages.\n   * **Job D (Vault Signals):** Successfully ran contact candidates scan. Staged newly discovered entities from modified files.\n4. **Daily Thought Selected:** \n   * **Note:** `Notes/Go to the genba 20250609091640.md`\n   * **Title:** *Go to the genba*\n   * **Category:** Beliefs\n5. **Briefing Cache:** Stored all structured activity data, daily thoughts, and discovered contact candidates into `~/.hermes/morning-briefing/2026-06-11.json`.\n\n*The background phase has completed successfully. The interactive briefing will start whenever you are ready\u2014just say the word!*",
       "last_delivery_error": null,
       "deliver": "telegram:-5174229110",
       "origin": {
@@ -318,5 +318,5 @@
       "profile": null
     }
   ],
-  "updated_at": "2026-06-11T07:03:22.394810-04:00"
+  "updated_at": "2026-06-11T07:05:57.078836-04:00"
 }
