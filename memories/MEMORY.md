@@ -14,14 +14,14 @@ Justin uses Apple Notes as a "filing cabinet" for references (previously in Obsi
 §
 Google Calendar has write access; Bes can directly schedule events on Justin's behalf (e.g., during morning briefings or from forwarded emails) using `gws_multi.py --account <name> calendar create` instead of creating 'Add to calendar' tasks in Todoist.
 §
-Scraps (ID) default under the vault root (/) as scratchpad. Notes are factual support. Inbox is for Bes-created reviews. Decisions in inbox.
+Scraps default under vault root (/). Inbox is for Bes-created reviews, Decisions, and Query syntheses.
 §
-Any new contact (people or companies) created by Bes must land in /home/justin.guest/vault/inbox/. Existing contacts in Notes/Contacts/ are updated in place and never relocated.
+New contacts created by Bes must land in vault/inbox/. Existing in Notes/Contacts/ updated in place.
 §
 Timelines are disabled in favor of native Backlinks. check_vault_signals.py is read-only, and integrate_entities.py only updates project State on decisions.
-§
-Query syntheses → inbox/ on creation via llm-wiki, printed in channel, log.md append.
 §
 Tier-3 semantic lint (`wiki_semantic_lint.py`) runs monthly (1st, 8am cron `a3f8c2e91b04`). Report-only — orphans (inbound), stale Sources, promotion gaps, contradiction candidates. State: `~/.hermes/state/semantic_lint_last.json`. Structural lint stays in `vault_hygiene.py`.
 §
 Forwarded emails processed by Bes default to the Inputs/Emails/ directory as inputs.
+§
+Linear capture: Poller fetch_linear_brains.py queries comments and updates with obsidian_jg or 🧠 reaction by Justin. Ingested notes save under vault/inbox/ as Inputs/Linear.
