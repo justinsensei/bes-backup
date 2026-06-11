@@ -187,6 +187,31 @@ Sources: **Slack, Gmail, Obsidian daily notes, Calendar, Linear, Granola.**
 
 ---
 
+### Subagent H — Obsidian Vault Notes (New & Modified)
+
+- **Toolsets:** `["terminal"]`
+- **Skill:** `obsidian`
+- **Goal:** Find open actions, commitments, and suggest follow-up/development tasks for new and modified notes in the vault. Budget: 5 tool calls.
+- **Context:**
+  > Run the specialized scanning script:
+  > ```bash
+  > python3 ~/.hermes/scripts/fetch_vault_notes_candidates.py --lookback-hours <LOOKBACK_HOURS> --json
+  > ```
+  > (Replace `<LOOKBACK_HOURS>` with the lookback hours value, e.g. `48` or whatever is set for this run).
+  >
+  > This script scans all non-daily, non-Granola notes in the vault that were created or modified since the previous run. It extracts unchecked tasks (`- [ ]`), commitment statements, and suggests follow-up/development tasks for newly created notes.
+  >
+  > **Task naming rules:**
+  > Format each candidate task exactly as returned by the script:
+  > - Tasks/Commitments: `- [Obsidian] <description> | context: <context>`
+  > - Development Suggestions: `- [Obsidian] <description> | context: <context>`
+  >
+  > End with `Total: N candidates`.
+  >
+  > Budget: 5 tool calls. Return what you have and stop.
+
+---
+
 ### Subagent — Linear
 
 - **Toolsets:** `["terminal"]`

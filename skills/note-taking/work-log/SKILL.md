@@ -1,6 +1,6 @@
 ---
 name: work-log
-description: Use when Justin asks to "create a work log", "log today's work", "write a work log", or otherwise wants today's work activity summarized and appended to today's daily note in the Obsidian vault. Pulls from Slack (SignLab), Linear, Gmail (work + personal-main; personal-junk only on request), Google Calendar (all 3 accounts), Todoist (completed + due-today tasks), plus the daily note and any chat brain-dump.
+description: Use when Justin asks to "create a work log", "log today's work", "write a work log", or otherwise wants today's work activity summarized and appended to today's daily note in the Obsidian vault. Pulls from Slack (SignLab), Linear, Gmail (work + personal-main; personal-junk only on request), Google Calendar (all 3 accounts), Todoist (completed + due-today tasks), local sqlite session history, plus the daily note and any chat brain-dump.
 platforms: [linux, macos]
 ---
 
@@ -44,7 +44,7 @@ If the target daily note does not exist, you must **automatically create it** fr
 
 Spawn **one `delegate_task` subagent per external source** in a single batch so raw API output stays out of your context. Each subagent runs a **specific, pre-canned set of commands** — no exploration — and returns a small filtered summary (bullets, ~10–30 items max). You only see the summaries.
 
-**Direct execution option (Fast-track):** Spawning 5 parallel subagents may hit the max concurrent children limit of 3. If you can, you can execute the commands directly in-context via `terminal()` and the native MCP tools (especially for Todoist). This bypasses subagent overhead, completes in seconds, and is extremely clean when parsed directly by the main agent. A Python helper script is available at `references/direct_execution.py` which fetches Slack, Linear, Google Workspace, and Obsidian Vault git history details in a single automated step to run within `execute_code()`.
+**Direct execution option (Fast-track):** Spawning 5 parallel subagents may hit the max concurrent children limit of 3. If you can, you can execute the commands directly in-context via `terminal()` and the native MCP tools (especially for Todoist). This bypasses subagent overhead, completes in seconds, and is extremely clean when parsed directly by the main agent. A Python helper script is available at `references/direct_execution.py` which fetches Slack, Linear, Google Workspace, local sqlite session history (Telegram/cron chats), and Obsidian Vault git history details in a single automated step.
 
 **Speed discipline:** subagents have a soft budget of **≤8 tool calls each**. If a subagent can't finish inside that, it must return what it has and exit. Tell it so explicitly in the context block ("Budget: 8 tool calls. If you exhaust it, return partial results and stop.").
 
@@ -185,9 +185,26 @@ Return commits and modified files as bullets:
 - `○ [vault] Modified: notes/5-rule-freemium-20250808160844.md`
 - `[repo] sha — subject (commits)`
 
+### Subagent G — Session History (Telegram and Cron)
+
+- **Toolsets:** `[]` (uses built-in `session_search` tool or direct SQLite reads)
+- **Goal:** `"Retrieve active Telegram and Cron chat sessions on <TODAY>. Budget: 5 tool calls."`
+- **Context to pass (verbatim, with TODAY substituted):**
+  > Query the SQLite session database (`~/.hermes/state.db`) for all active sessions on `TARGET_DATE` (<TODAY>).
+  > Group the sessions by source (`telegram` or `cron`).
+  > For each session with messaging activity (message_count > 0):
+  > 1. Get the generated session title (if any).
+  > 2. Summarize or extract the first user message (kickoff goal) and last assistant message (outcome/achievements).
+  >
+  > Format as bullets: `- [Telegram] **Title** (N msgs) — Goal: ... -> Outcome: ...`
+  >
+  > Budget: 5 tool calls. If you exhaust it, return what you have and stop.
+
+**What this feeds:** This captured chat activity is a primary input for summarizing development milestones, design discussions, and system updates. Use it to populate "## 🚀 Highlights & Decisions" (with decisions or designs made during chats) and "## 🏆 Accomplishments" (re-naming conventions, script changes, etc.).
+
 ### After subagents return
 
-You now have 3–5 small summaries. Also do these **in-context** reads/searches — they're cheap:
+You now have 3–6 small summaries. Also do these **in-context** reads/searches — they're cheap:
 
 1. **Read today's daily note** with `read_file`. Scan for decisions, completions, blockers, links, meeting notes Justin wrote himself today.
 2. **Scan for meeting/Granola notes:** Use `search_files` with `target: "files"` to look for files in the vault containing `<TARGET_DATE>` in their name (e.g. under `Granola/`). These notes (like Granola meeting summaries) often contain incredibly rich summaries of design discussions, product decisions, and future plans that won't show up in automated sources.
