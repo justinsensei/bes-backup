@@ -587,22 +587,69 @@ if readings_audit_dirs:
         except Exception as e:
             print(f"  Error reading source file {path.name}: {e}")
             
+    # Load persistent cache
+    cache_path = Path("~/.hermes/state/hygiene_url_cache.json").expanduser()
+    persistent_cache = {}
+    if cache_path.exists():
+        try:
+            persistent_cache = json.loads(cache_path.read_text(encoding="utf-8"))
+        except Exception as e:
+            print(f"  Warning: failed to load URL cache: {e}")
+
+    now_iso = datetime.datetime.now().date().isoformat()
+    urls_to_check = set()
+    
+    for url in unique_urls:
+        if url in persistent_cache:
+            entry = persistent_cache[url]
+            checked_at_str = entry.get("checked_at")
+            err = entry.get("err")
+            
+            try:
+                checked_at = datetime.date.fromisoformat(checked_at_str)
+                age_days = (datetime.date.today() - checked_at).days
+            except (ValueError, TypeError):
+                age_days = 9999
+                
+            # If the URL is fine, cache it for 30 days. If it had an error, recheck every 7 days.
+            ttl_days = 30 if err is None else 7
+            if age_days > ttl_days:
+                urls_to_check.add(url)
+            else:
+                url_cache[url] = err
+        else:
+            urls_to_check.add(url)
+
     # Check URLs in parallel using ThreadPoolExecutor
     if unique_urls:
-        print(f"  Verifying {len(unique_urls)} unique URLs in parallel...")
-        from concurrent.futures import ThreadPoolExecutor
-        
-        def check_one(url):
-            return url, verify_url(url)
+        if urls_to_check:
+            print(f"  Verifying {len(urls_to_check)} unique URLs in parallel (skipped {len(unique_urls) - len(urls_to_check)} cached)...")
+            from concurrent.futures import ThreadPoolExecutor
             
-        with ThreadPoolExecutor(max_workers=20) as executor:
-            futures = [executor.submit(check_one, url) for url in unique_urls]
-            for fut in futures:
-                try:
-                    url, err = fut.result()
-                    url_cache[url] = err
-                except Exception:
-                    pass
+            def check_one(url):
+                return url, verify_url(url)
+                
+            with ThreadPoolExecutor(max_workers=20) as executor:
+                futures = [executor.submit(check_one, url) for url in urls_to_check]
+                for fut in futures:
+                    try:
+                        url, err = fut.result()
+                        url_cache[url] = err
+                        persistent_cache[url] = {
+                            "err": err,
+                            "checked_at": now_iso
+                        }
+                    except Exception:
+                        pass
+                        
+            # Save cache
+            try:
+                cache_path.parent.mkdir(parents=True, exist_ok=True)
+                cache_path.write_text(json.dumps(persistent_cache, indent=2), encoding="utf-8")
+            except Exception as e:
+                print(f"  Warning: failed to save URL cache: {e}")
+        else:
+            print(f"  All {len(unique_urls)} URLs are cached and within TTL.")
                     
     # Map results back to files
     for rel_src_str, urls in file_to_urls.items():
