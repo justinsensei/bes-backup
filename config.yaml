@@ -370,7 +370,7 @@ memory:
   nudge_interval: 10
   flush_min_turns: 6
 delegation:
-  model: gemini-1.5-pro
+  model: gemini-2.5-pro
   provider: gemini
   base_url: ''
   api_key: ''
