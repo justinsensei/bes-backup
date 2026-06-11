@@ -112,6 +112,8 @@ This utility verifies:
 4. Auto-moving wrong-folder notes — hygiene reports only; wind-down EIIRP triages moves.
 5. **Multi-Match Unpacking Gotchas**: In the underlying matching pipeline of `vault_entities.py` (which `vault_hygiene.py` relies on for Granola reconciliations), if multiple project hubs score equally, trying to unpack the candidate list as a tuple (`for _, ent in top_hits`) rather than iterating plain dictionaries (`for ent in top_hits`) triggers a `ValueError: too many values to unpack (expected 2)`.
 6. **Mismatched Test Directories**: Contact paths in the vault migrated from root `/Contacts/` to `/Notes/Contacts/`. If entity unit tests (e.g., `test_integrate_entities.py`) fail to align mock directories with `/Notes/Contacts/`, contact matches will fail silently. Always keep test environments aligned with active production schemas.
+7. **Intermediate Unmasking in Auto-Linkers**: When performing multi-pass regex replacements (such as wrapping contacts in wikilinks based on an alias list), never unmask intermediate replacements during the key-matching loop. Newly generated links must remain masked (e.g. as `__NEW_LINK_MASK_i__`) until *all* pattern passes are completed; otherwise, nested elements (e.g., matching a shorter alias inside a newly wrapped longer link) will trigger infinite bracket nesting (e.g., `[[[[[[[[SignLab]]]]]]]]`).
+8. **Stateless URL Auditing Timeouts**: Performing live HEAD/GET requests on thousands of unique URLs on every hygiene run is extremely prone to script timeouts (120s limit). Always use a persistent cache (e.g., at `~/.hermes/state/hygiene_url_cache.json`) with reasonable TTLs (30 days for success, 7 days for errors) to bypass checking cached URLs.
 
 ## Verification Checklist
 

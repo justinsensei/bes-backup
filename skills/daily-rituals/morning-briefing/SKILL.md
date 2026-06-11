@@ -19,11 +19,22 @@ This skill governs the **interactive phase** of the morning briefing. The 7AM cr
 - **Tier-3 semantic lint state:** `~/.hermes/state/semantic_lint_last.json` — written by monthly `wiki_semantic_lint_cron.py`; surfaced once in Phase 1
 - **Vault:** `/home/justin.guest/vault` (or `$OBSIDIAN_VAULT_PATH`)
 
+## Background Cron Job (7AM daily)
+
+The cron job `d8811ffe259f` (**Morning Briefing — 7AM daily**) runs the background phase of the briefing.
+- **Delivery Target:** Delivers directly to the **Cron Logs** channel (`telegram:-5174229110`).
+- **Overnight Job Reporting:** It reads `~/.hermes/cron/jobs.json` to retrieve the statuses of the overnight cron jobs (**vault-hygiene** and **Daily Work Log**) and appends them to the greeting:
+  ```text
+  Morning, Justin! Ready to start your day?
+
+  **Overnight Cron Jobs:**
+  • **vault-hygiene** (9 PM): <status>
+  • **Daily Work Log** (12 AM): <status>
+  ```
+
 ## Entry point
 
-The cron sends: *"Morning, Justin! Ready to start your day?"*
-
-Justin's reply determines the flow:
+The cron sends the morning greeting (detailed above) to the Cron Logs channel. Justin's reply determines the flow:
 - **"yes" / any affirmative** → full briefing (all phases)
 - **"day off" / "taking the day off" / similar** → skip Phase 1; run remaining phases with personal-only filter
 - **no response within the session** → nothing; cron already ran background jobs
