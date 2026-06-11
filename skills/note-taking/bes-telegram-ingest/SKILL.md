@@ -60,35 +60,26 @@ Every Telegram session log note must use this frontmatter format:
 ```yaml
 ---
 id: 'YYYYMMDDHHmmss'                 # Numerical string based on session start time
-daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]" # Symmetrical daily note link
+daily_note: "[[Daily Notes/YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]" # Symmetrical daily note link
 category: "[[Telegram]]"              # Quoted category link
 session_id: "YYYYMMDD_HHMMSS_xxxxxxxx" # The unique session identifier in state.db
-started_at: "YYYY-MM-DD HH:MM:SS"    # Human-readable start timestamp
-message_count: 42                    # Number of messages in the session
+source_db: "/home/justin.guest/.hermes/state.db" # Database where session resides
 ---
 ```
 
 Below the frontmatter, the body is structured as follows:
 
 ```markdown
-# 🧠 Telegram Session Summary: [Polished Title]
+# 📥 Telegram Session Capture: [Title]
 
 - **Session ID:** `session_id`
-- **Started At:** YYYY-MM-DD HH:MM:SS
-- **Source Database:** `~/.hermes/state.db`
+- **Date:** YYYY-MM-DD
+- **Database:** `/home/justin.guest/.hermes/state.db`
 
----
+## Summary
+- **Topic A:** [Provide a concise, high-quality summary of the session: what was discussed, decisions made, and any open questions.]
+- **Topic B:** [Concise statement, attributing decisions/takeaways accurately]
 
-## 🎯 Topic & Summary
-[A brief, 2-3 sentence overview of the conversation topic, core context, and why the session was flagged.]
-
-## 🚀 Key Takeaways & Decisions
-- **Takeaway/Decision A:** [Concise statement, attributing decisions to the correct decision-maker]
-- **Takeaway/Decision B:** [Concise statement]
-
-## 📋 Action Items
-- [ ] **Task 1** (e.g. linked to Todoist or tracked for project milestones)
-
-## 💬 Conversation Highlights
-[A clean, selective markdown transcript of the key messages or exchanges that carry the core value of the session. Do not dump the entire raw log; curate the high-value passages.]
+## Transcript Highlights
+- **User**: [Clean, selective markdown transcript highlights filtering out tool/system clutter and focusing on high-value user/assistant exchanges.]
 ```
