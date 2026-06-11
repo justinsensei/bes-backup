@@ -5,17 +5,35 @@ import random
 import subprocess
 import json
 import re
+from datetime import datetime
 
 # --- Constants ---
-VAULT_PATH = "/home/justin.guest/vault"
-SOURCES_DIR = os.path.join(VAULT_PATH, "Notes", "Sources")
+VAULT_PATH = os.getenv("OBSIDIAN_VAULT_PATH", "/home/justin.guest/vault")
+INBOX_DIR = os.path.join(VAULT_PATH, "inbox")
 READINGS_DIR = os.path.join(VAULT_PATH, "Inputs", "Readings")
+SOURCES_DIR = os.path.join(VAULT_PATH, "Notes", "Sources") # Still needed for backlink check
 SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# --- State File ---
+STATE_FILE = os.path.join(os.path.expanduser("~"), ".hermes", "state", "extract_sources_state.json")
+
+def save_state(data):
+    """Saves data to the state file."""
+    os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
+    with open(STATE_FILE, 'w') as f:
+        json.dump(data, f)
+
+def load_state():
+    """Loads data from the state file."""
+    if os.path.exists(STATE_FILE):
+        with open(STATE_FILE, 'r') as f:
+            return json.load(f)
+    return {}
 
 def find_unprocessed_readings():
     """
-    Finds all Reading notes that do not have a corresponding Source note linking to them.
-    Returns a list of absolute paths to the unprocessed reading files.
+    Finds Reading notes without a corresponding Source note.
+    Returns a list of absolute paths.
     """
     all_readings = []
     for root, _, files in os.walk(READINGS_DIR):
@@ -23,100 +41,146 @@ def find_unprocessed_readings():
             if file.endswith(".md"):
                 all_readings.append(os.path.join(root, file))
 
-    if not os.path.exists(SOURCES_DIR):
-        return all_readings
-
-    # This is a simple but effective way to check for backlinks.
-    # A more advanced solution might use a pre-built graph, but that's too complex here.
+    source_dirs = [SOURCES_DIR, INBOX_DIR] # Check both final destination and inbox
     source_content_cache = ""
-    for root, _, files in os.walk(SOURCES_DIR):
-        for file in files:
-            if file.endswith(".md"):
-                with open(os.path.join(root, file), 'r', encoding='utf-8') as f:
-                    source_content_cache += f.read()
-
-    unprocessed = []
-    for reading_path in all_readings:
-        # Generate the expected wikilink format
-        reading_relpath = os.path.relpath(reading_path, VAULT_PATH)
-        reading_wikilink_path = reading_relpath.replace(os.sep, '/')
-        
-        # Check if "[[wikilink/path.md]]" or "[[filename]]" is in any source note
-        link_pattern1 = f"[[{reading_wikilink_path}]]"
-        link_pattern2 = f"[[{os.path.basename(reading_path)}]]"
-        
-        if link_pattern1 not in source_content_cache and link_pattern2 not in source_content_cache:
-            unprocessed.append(reading_path)
-
+    for directory in source_dirs:
+        if os.path.exists(directory):
+            for root, _, files in os.walk(directory):
+                for file in files:
+                    if file.endswith(".md"):
+                        with open(os.path.join(root, file), 'r', encoding='utf-8') as f:
+                            source_content_cache += f.read()
+    
+    unprocessed = [
+        r for r in all_readings 
+        if f"[[{os.path.relpath(r, VAULT_PATH).replace(os.sep, '/')}]]" not in source_content_cache
+        and f"[[{os.path.basename(r)}]]" not in source_content_cache
+    ]
     return unprocessed
 
-def select_reading_interactively(readings, batch_size=5):
+def generate_and_preview(reading_path):
     """
-    Presents a random batch of readings to the user and asks for a selection.
-    Handles requesting a new batch. Returns the path of the selected reading or None.
+    Calls the content generation script and prints the proposed content.
     """
-    if not readings:
-        print("No unprocessed readings found.")
-        return None
+    script_path = os.path.join(SCRIPTS_DIR, "generate_source_content.py")
+    try:
+        result = subprocess.run(
+            [sys.executable, script_path, reading_path],
+            capture_output=True, text=True, check=True, timeout=300
+        )
+        proposed_content = result.stdout
+        
+        # Save state for the confirmation step
+        state = {'proposed_content': proposed_content}
+        save_state(state)
+        
+        print("--- PROPOSED NOTE ---")
+        print(proposed_content)
+        
+        clarify_payload = {
+            "tool": "clarify",
+            "question": "Do you want to create this note in your inbox?",
+            "choices": ["Yes, create it.", "No, cancel."],
+            "__interactive_meta": {"type": "creation_confirmation"}
+        }
+        print(json.dumps(clarify_payload))
 
-    sample = random.sample(readings, min(len(readings), batch_size))
+    except subprocess.CalledProcessError as e:
+        print(f"Error generating source note content for '{os.path.basename(reading_path)}':", file=sys.stderr)
+        print(f"Stderr: {e.stderr}", file=sys.stderr)
+
+def write_note_to_inbox():
+    """
+    Writes the content from the state file to a new note in the inbox.
+    """
+    state = load_state()
+    content = state.get('proposed_content')
+    if not content:
+        print("Error: No proposed content found to write.", file=sys.stderr)
+        return
+
+    # Extract title and ID from content to form the filename
+    title_match = re.search(r'^#\s*(.*)', content, re.MULTILINE)
+    id_match = re.search(r"id:\s*'(\d+)'", content)
     
-    # Present choices via clarify
-    choices = [os.path.splitext(os.path.basename(r))[0] for r in sample]
-    choices.append("Show another 5 random readings")
-    choices.append("Exit")
+    if not title_match or not id_match:
+        print("Error: Could not extract title or ID from content. Saving with timestamp name.", file=sys.stderr)
+        title = "Source Note"
+        note_id = datetime.now().strftime('%Y%m%d%H%M%S')
+    else:
+        title = title_match.group(1).strip()
+        note_id = id_match.group(1).strip()
 
-    # This is a placeholder for the actual `clarify` tool call.
-    # The script will print this JSON, and the agent will execute it.
+    sanitized_title = re.sub(r'[\\/*?:"<>|]', "", title)
+    filename = f"{sanitized_title} {note_id}.md"
+    filepath = os.path.join(INBOX_DIR, filename)
+
+    try:
+        os.makedirs(INBOX_DIR, exist_ok=True)
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(content)
+        print(f"Successfully created new Source note in the inbox:\n{filepath}")
+    except Exception as e:
+        print(f"Error writing note to inbox: {e}", file=sys.stderr)
+    finally:
+        # Clean up state file
+        if os.path.exists(STATE_FILE):
+            os.remove(STATE_FILE)
+
+def handle_selection(user_choice, choice_map):
+    if user_choice == "Exit":
+        print("Exiting.")
+        return
+    
+    if user_choice == "Show another 5 random readings":
+        # The agent needs to re-run the script without args
+        print("Showing a new batch...")
+        main_unseeded()
+        return
+
+    reading_path = choice_map.get(user_choice)
+    if reading_path:
+        generate_and_preview(reading_path)
+    else:
+        print(f"Error: Invalid selection '{user_choice}'.", file=sys.stderr)
+
+
+def main_unseeded():
+    readings = find_unprocessed_readings()
+    if not readings:
+        print("Congratulations, all readings have been processed!")
+        return
+    
+    sample = random.sample(readings, min(len(readings), 5))
+    choices = [os.path.splitext(os.path.basename(r))[0] for r in sample]
+    choice_map = {choice: path for choice, path in zip(choices, sample)}
+    
+    # Save the choice map to state so we can access it after the clarify call
+    save_state({"choice_map": choice_map})
+
+    clarify_choices = choices + ["Show another 5 random readings", "Exit"]
     clarify_payload = {
         "tool": "clarify",
         "question": "Which reading would you like to process into a Source note?",
-        "choices": choices,
-        "__interactive_meta": {
-            "type": "reading_selection",
-            "mapping": {choice: path for choice, path in zip(choices, sample)}
-        }
+        "choices": clarify_choices,
+        "__interactive_meta": {"type": "reading_selection"}
     }
-    
     print(json.dumps(clarify_payload))
-    return "__INTERACTIVE__"
-
-
-def run_extraction(reading_path):
-    """
-    Calls the create_source_note.py script on the selected reading.
-    """
-    script_path = os.path.join(SCRIPTS_DIR, "create_source_note.py")
-    try:
-        # We run it and capture output to know the path of the new file.
-        result = subprocess.run(
-            [sys.executable, script_path, reading_path],
-            capture_output=True,
-            text=True,
-            check=True,
-            timeout=300
-        )
-        new_note_path = result.stdout.strip()
-        print(f"Successfully created new Source note at:\n{new_note_path}")
-        return new_note_path
-    except subprocess.CalledProcessError as e:
-        print(f"Error during source note creation for '{reading_path}':", file=sys.stderr)
-        print(f"Stderr: {e.stderr}", file=sys.stderr)
-        return None
-
-def main_unseeded():
-    """
-    Main loop for the unseeded, interactive mode.
-    """
-    unprocessed_readings = find_unprocessed_readings()
-    if not unprocessed_readings:
-        print("Congratulations, all readings have been processed into Source notes!")
-        return
-
-    # This script doesn't loop itself. The agent will re-run it based on user choice.
-    select_reading_interactively(unprocessed_readings)
 
 
 if __name__ == "__main__":
-    # For now, we only have the unseeded mode. We'll add arguments later.
-    main_unseeded()
+    # This script now has modes based on arguments to handle the interactive flow
+    if len(sys.argv) == 1:
+        # Mode 1: Initial call, show selection
+        main_unseeded()
+    elif sys.argv[1] == "--handle-selection":
+        # Mode 2: User has made a selection from the list
+        state = load_state()
+        choice_map = state.get("choice_map", {})
+        handle_selection(sys.argv[2], choice_map)
+    elif sys.argv[1] == "--confirm-creation":
+        # Mode 3: User has confirmed 'Yes' to create the note
+        write_note_to_inbox()
+    else:
+        print(f"Error: Unknown argument '{sys.argv[1]}'", file=sys.stderr)
+
