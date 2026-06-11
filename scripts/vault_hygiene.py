@@ -459,6 +459,15 @@ for root, dirs, files in os.walk(VAULT):
             end = text.find("\n---", 3)
             if end > 0:
                 fm_raw = text[3:end]
+                # Auto-wrap unwrapped wikilinks in frontmatter to prevent YAML parse errors
+                new_fm_raw = re.sub(r"^([a-zA-Z0-9_-]+):\s*(\[\[[^\]\n]+\]\])\s*$", r'\1: "\2"', fm_raw, flags=re.MULTILINE)
+                if new_fm_raw != fm_raw:
+                    new_text = f"---\n{new_fm_raw}\n---\n" + text[end + 4:]
+                    path.write_text(new_text, encoding="utf-8")
+                    fm_raw = new_fm_raw
+                    text = new_text
+                    print(f"  Healed unwrapped frontmatter wikilink in: {f}")
+                
                 id_match = re.search(r"^id:\s*[\"']?(\d+)[\"']?", fm_raw, re.MULTILINE)
                 dn_match = re.search(r"^daily_note:\s*[\"']?([^\"'\n]+)[\"']?", fm_raw, re.MULTILINE)
                 if id_match:
