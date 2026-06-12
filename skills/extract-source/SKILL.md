@@ -16,7 +16,7 @@ metadata:
 
 This skill facilitates the creation of a "reading note" (`Source` note) from a raw `Reading` input. It transforms the previous bibliographic/summary function into an active, human-in-the-loop knowledge integration task.
 
-The process is designed to be interactive. It finds unprocessed readings, allows for selection, ingests the full text from the source URL, generates a synthesis by comparing the reading's concepts against the existing vault, and upon confirmation, creates a new, properly formatted `Source` note in the `inbox/` for final triage.
+The process is designed to be interactive. It finds unprocessed readings, allows for selection, ingests the full text from the source URL, generates a synthesis by comparing the reading's concepts against the existing vault, and upon confirmation, creates a new, properly formatted `Source` note in the `Inbox/` for final triage.
 
 ## When to Use
 
@@ -28,7 +28,7 @@ The process is designed to be interactive. It finds unprocessed readings, allows
 
 ### Phase 1: Ingestion and Parsing
 
-1.  **Find Unprocessed Readings:** Use `terminal` with `rg` or `find` to list files in `Inputs/Readings/` that do not have a corresponding `Source` note in `Notes/Sources/` or `inbox/`.
+1.  **Find Unprocessed Readings:** Use `terminal` with `rg` or `find` to list files in `Inputs/Readings/` that do not have a corresponding `Source` note in `Notes/Sources/` or `Inbox/`.
 2.  **Present Selection:** Present a random sample of 5 unprocessed readings for user selection.
 3.  **Parse Local File:** Read the selected `Reading` file and parse it, extracting the following content to be copied verbatim into the new `Source` note:
     -   Bibliographic data (Author, Title, URL).
@@ -59,10 +59,10 @@ This phase is a strict, interactive sequence. Do not proceed to the next step un
 3.  **Deliver for Review:** Send a message to the user containing:
     -   A brief summary of the synthesis.
     -   The `MEDIA:` tag pointing to the absolute path of the temporary file.
-    -   A direct question asking for approval to proceed (e.g., "Shall I create this note in your `inbox/`?").
+    -   A direct question asking for approval to proceed (e.g., "Shall I create this note in your `Inbox/`?").
     -   **CRITICAL:** Stop and wait for the user's response. Do not perform any file operations on the vault until confirmation is received.
 4.  **Finalize on Confirmation:** Once the user explicitly approves:
-    -   Write the content from the temporary file to its final destination in the `inbox/` directory with the filename `{Original Reading Title}.md`.
+    -   Write the content from the temporary file to its final destination in the `Inbox/` directory with the filename `{Original Reading Title}.md`.
     -   Rename the original `Reading` file to `{Original Reading Title} {YYYY-MM-DD}.md` to mark it as processed.
     -   Clean up the temporary file.
 5.  **Loop:** Offer to process another reading, get a new batch, or exit the workflow.

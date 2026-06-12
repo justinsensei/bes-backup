@@ -49,7 +49,7 @@ As notes become less ephemeral and more authoritative, we de-emphasize the date 
 
 ### Evolution Path (The Scraps-to-Beliefs Pipeline)
 Raw capture flows up the hierarchy as it is refined:
-- **`[[Scraps]]` (Tier 1):** Raw internal brain dumps in `inbox/`.
+- **`[[Scraps]]` (Tier 1):** Raw internal brain dumps in `Inbox/`.
 - **`[[Notes]]` (Tier 2):** Compiled, factual supporting notes in `/Notes/ID Title.md`.
 - **`[[Thoughts]]` (Tier 2):** Emergent opinions or concepts in `/Notes/ID Title.md`.
 - **`[[Beliefs]]` / `[[References]]` (Tier 3):** Canonical, stable patterns in `/Notes/Title.md`.

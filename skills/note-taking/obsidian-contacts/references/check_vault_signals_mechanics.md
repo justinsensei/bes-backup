@@ -17,7 +17,7 @@ The `check_vault_signals.py` script is a background process that runs in Justin'
 ### 1. Entity Indexing (`get_existing_entities`)
 The script builds an index of all existing entities across three folders:
 1.  `vault/Contacts/` (Permanent directory)
-2.  `vault/inbox/` (Bes default landing folder)
+2.  `vault/Inbox/` (Bes default landing folder)
 3.  `vault/Notes/Projects/` (Project notes)
 
 A markdown file is registered as a contact if it has `category: "[[People]]"`, `category: "[[Organizations]]"`, or `type: ...` in its YAML frontmatter. The script extracts the file name (lowercased) as the primary lookup key, and also registers any strings listed in the frontmatter `aliases:` block.

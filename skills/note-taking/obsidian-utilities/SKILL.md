@@ -46,4 +46,4 @@ A consolidated hygiene script runs daily at 9PM (via a system cron job) at `~/.h
    - Duplicate `id` frontmatter values.
    - Missing `id` properties.
    - Missing or malformed `daily_note` links.
-4. **Exclusions:** Ignores the `.git/`, `.trash/`, `Utilities/` templates, and automated external sync folders (like `sources/` or `meetings/`) to prevent processing raw incoming files prematurely.
+4. **Exclusions:** Ignores the `.git/`, `.trash/`, `Utilities/` templates, and automated external sync folders (like `sources/` or `Meetings/`) to prevent processing raw incoming files prematurely.

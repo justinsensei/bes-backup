@@ -134,7 +134,7 @@ def main():
             else:
                 target_path = os.path.join(vault_root, f"notes/{norm_name}.md")
         elif "weekly" in norm_name or "sync" in norm_name or "meeting" in norm_name or b.get("properties", {}).get("tags", []) == ["meeting"]:
-            target_path = os.path.join(vault_root, f"meetings/{norm_name}.md")
+            target_path = os.path.join(vault_root, f"Meetings/{norm_name}.md")
         elif name in ['Benchmarks', 'PostHog SQL']:
             target_path = os.path.join(vault_root, f"concepts/{norm_name}.md")
         elif name == 'Words to live by':
@@ -189,7 +189,7 @@ def main():
                 date_str = name.split()[0]
                 clean_date = date_str.replace("-", "")
                 frontmatter = f"---\nid: {clean_date}120000\n---\n--\n#daily_note \n\n## 🗒 Notepad\n{formatted_markdown}\n\n## 📓 Logbook\n"
-            elif "meetings/" in target_path:
+            elif "Meetings/" in target_path:
                 date_str = name.split()[0] if re.match(r'^\d{4}-\d{2}-\d{2}', name) else "2026-02-23"
                 frontmatter = f"---\nid: {date_str.replace('-', '')}100000\ndaily_note: \"[[daily/{date_str}-monday|{date_str} Monday]]\"\ncategory: \"[[Meetings]]\"\n---\n--\n#meeting \n\n{formatted_markdown}\n"
             elif "concepts/" in target_path:

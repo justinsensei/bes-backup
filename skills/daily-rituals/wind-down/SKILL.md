@@ -124,9 +124,9 @@ Would you like me to create contact notes for any of these? (e.g. "yes, 1 as org
 ```
 
 If Justin selects any:
-1. For each selected item, check if the contact file already exists in `/home/justin.guest/vault/Contacts/<Name>.md` OR in `/home/justin.guest/vault/inbox/<Name>.md`.
+1. For each selected item, check if the contact file already exists in `/home/justin.guest/vault/Contacts/<Name>.md` OR in `/home/justin.guest/vault/Inbox/<Name>.md`.
 2. If the file exists in either location, do NOT overwrite or truncate it (as it contains precious history/timeline entries). Instead, patch the file in its current location to insert the standard frontmatter, executive summary, and state sections at the very top, preserving any existing content (like `## Timeline` and its entries) underneath.
-3. If the file does not exist in either location, create a new file in the inbox directory `/home/justin.guest/vault/inbox/<Name>.md` and format the contact note following these strict standards:
+3. If the file does not exist in either location, create a new file in the inbox directory `/home/justin.guest/vault/Inbox/<Name>.md` and format the contact note following these strict standards:
    * Frontmatter:
      ```yaml
      ---
@@ -174,14 +174,14 @@ Format:
 ```
 📁 N discovered project candidates:
 
-1. [K12 GTM] — first mentioned in [[inbox/2026-06-10 - Decision - K12 GTM]]
+1. [K12 GTM] — first mentioned in [[Inbox/2026-06-10 - Decision - K12 GTM]]
 2. [SignLab Classroom] — from integrate_entities_unmatched
 
 Would you like to create project hub notes for any of these? (e.g. "yes, 1", or "skip")
 ```
 
 If Justin selects any:
-1. Create stub in `/home/justin.guest/vault/inbox/<Title>.md` with project hub schema:
+1. Create stub in `/home/justin.guest/vault/Inbox/<Title>.md` with project hub schema:
    ```yaml
    ---
    id: <timestamp_id>
@@ -215,13 +215,13 @@ This phase implements the formal 7-phase EIIRP cycle to perform comprehensive no
 Wait for Justin's confirmation or feedback at the end of the EIIRP report (Step 7) before executing any folder movements or renaming notes.
 
 1. **Step 1: Inventory (Scan & List)**
-   - Scan the vault inbox directory (`/home/justin.guest/vault/inbox/`) using `search_files(path='/home/justin.guest/vault/inbox', pattern='*')`.
+   - Scan the vault inbox directory (`/home/justin.guest/vault/Inbox/`) using `search_files(path='/home/justin.guest/vault/inbox', pattern='*')`.
    - Identify any other files modified or created in the vault within the last 24 hours (excluding automated/system logs unless they need structural triage).
 
 2. **Step 2: Taxonomy (Classification & Routing)**
    - Classify all inventoried notes based on content analysis and map them to their correct Obsidian folder routes:
      - **`Contacts/`** (Category: `[[People]]` or `[[Organizations]]`):
-       - *Crucial Rule:* Any brand-new contact note created by Bes must land in `/home/justin.guest/vault/inbox/`. Existing contacts already under `Contacts/` are updated in place and must *never* be relocated.
+       - *Crucial Rule:* Any brand-new contact note created by Bes must land in `/home/justin.guest/vault/Inbox/`. Existing contacts already under `Contacts/` are updated in place and must *never* be relocated.
      - **`Inputs/Meetings/`** (Category: `[[Meetings]]`):
        - Meeting syncs, agendas, Granola summaries.
      - **`Inputs/Readings/`** (Category: `[[Readings]]`):
@@ -275,12 +275,12 @@ Wait for Justin's confirmation or feedback at the end of the EIIRP report (Step 
        ```
        📥 EIIRP Vault Hygiene & Triage Report:
 
-       1. **Inventory**: 3 new files found in inbox/ and 2 modified today.
+       1. **Inventory**: 3 new files found in Inbox/ and 2 modified today.
        2. **Taxonomy & Schema**:
           - `20260610090000.md` → Suggest `Notes/Thoughts` (Category: `[[Thoughts]]`). Frontmatter: Valid.
-          - `New Contact.md` → Suggest `inbox/` (Category: `[[People]]`). Frontmatter: Missing daily_note link, will heal.
+          - `New Contact.md` → Suggest `Inbox/` (Category: `[[People]]`). Frontmatter: Missing daily_note link, will heal.
        3. **File & Filing**:
-          - Misplaced daily note `2026-06-09 Tuesday.md` moved from inbox/ to `Daily Notes/` via `vault_hygiene.py`.
+          - Misplaced daily note `2026-06-09 Tuesday.md` moved from Inbox/ to `Daily Notes/` via `vault_hygiene.py`.
        4. **Audit & Verification**:
           - Broken link detected in `20260610090000.md` pointing to non-existent `[[Project Alpha]]`.
           - All other links valid. No orphaned notes.
@@ -303,7 +303,7 @@ Draft today's work log, align with Justin, and write it to today's daily note. T
    - Run `/home/justin.guest/.hermes/skills/note-taking/work-log/references/direct_execution.py` via `terminal` (with `export TARGET_DATE=<YYYY-MM-DD>`) or `execute_code` (setting `os.environ['TARGET_DATE'] = today_date`) to pull Slack, Linear, and Google Workspace calendar/email data in seconds. Using `terminal` is the preferred bulletproof pattern since `execute_code` can be restricted by environment-level approval settings.
    - Query Todoist live for completed tasks today (`mcp_todoist_find_completed_tasks` with `since: <TODAY>`, `until: <TODAY>`, `getBy: "completion"`) and incomplete tasks due today (`mcp_todoist_find_tasks_by_date` with `startDate: <TODAY>`).
    - Read today's existing Obsidian daily note with `read_file` to see manual notepad entries.
-   - Search the vault for any meeting/Granola notes generated today (look in `vault/meetings/` or files containing today's date in their name).
+   - Search the vault for any meeting/Granola notes generated today (look in `vault/Meetings/` or files containing today's date in their name).
    - Read the daily briefing cache `/home/justin.guest/.hermes/morning-briefing/<YYYY-MM-DD>.json` to check the `vault_activity` field, and run a quick terminal find command over the vault to gather any high-level vault restructuring, bulk updates, or manual categorization sweeps that took place during the day.
 
 3. **Synthesize the Work Log Draft:**

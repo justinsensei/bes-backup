@@ -41,7 +41,7 @@ A new synthesis note should be created when the topic meets a certain threshold 
 
 1.  **Search:** Use `session_search` and other tools to find all relevant notes in the vault related to the user's query.
 2.  **Synthesize:** Read the content of the source notes and compose a concise, atomic answer to the question. The synthesis should be original and not merely a concatenation of source text.
-3.  **File:** Write the synthesis to a new markdown file in the `inbox/` directory for manual review and filing by Justin. The note should use a standard template.
+3.  **File:** Write the synthesis to a new markdown file in the `Inbox/` directory for manual review and filing by Justin. The note should use a standard template.
 4.  **Report:** Print the full content of the newly created note directly in the chat for immediate review.
 5.  **Log:** Call the `obsidian-ingest-log` skill to append a record of the new synthesis note to the vault's central log.
 

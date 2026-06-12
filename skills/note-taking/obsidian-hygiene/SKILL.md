@@ -39,7 +39,7 @@ python3 ~/.hermes/scripts/vault_hygiene.py
 
 **Auto-fix tier (silent unless printed):**
 - **Filename Capitalization & Spacing Healing:** Auto-corrects lowercase initialisms/acronyms (`AI`, `ADHD`, `B2C`, `B2B`, `AB`, `GTM`, `ASL`, `DAU`, `WSP`, `SP`, `PR`, `OKR`, `OKRs`, `K12`, `EdTech`, `SPED`), proper nouns (`Amazon`, `Costco`, `PostHog`, `SignLab`, `SmartPass`, `Duolingo`, `PowerSchool`, `Lingvano`, `Raptor`, `Breezeway`), grammar spacing (like `doesn t` -> `doesn't`), and dynamically harvested contact names (filtered through common-word blacklists). Renames on disk and heals all matching wikilink targets across the vault.
-- Reconcile Granola `meetings/` → `Inputs/Meetings/` with `category: "[[Meetings]]"`
+- Reconcile Granola `Meetings/` → `Inputs/Meetings/` with `category: "[[Meetings]]"`
 - Auto-link entities in meeting bodies and recent daily notes (last 7 days)
 - Legacy `[[Sources]]` on `Inputs/Readings/` → `[[Readings]]`
 - Misplaced daily notes → `Daily Notes/`

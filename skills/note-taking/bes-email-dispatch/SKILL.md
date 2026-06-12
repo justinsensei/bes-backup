@@ -44,11 +44,11 @@ If the instruction is empty, has no keywords, or is just "Save as a note", defau
 
 ### Trigger Keywords
 - Contains: `File this`, `file this`, `file`, `save this`, `save`, `archive this`
-- Or: Instruction is **empty / none** (default fallback, files to `inbox/`)
+- Or: Instruction is **empty / none** (default fallback, files to `Inbox/`)
 
 ### Storage Destination
-- Create a new markdown note inside the **`inbox/`** directory of his vault:
-  `/home/justin.guest/vault/inbox/YYYY-MM-DD-subject-slug.md`
+- Create a new markdown note inside the **`Inbox/`** directory of his vault:
+  `/home/justin.guest/vault/Inbox/YYYY-MM-DD-subject-slug.md`
   *(Where `YYYY-MM-DD` is the current date or forwarded email date, and `subject-slug` is a cleaned, lowercase, hyphen-separated version of the cleaned subject).*
 
 ### Note Structure & Frontmatter
@@ -125,8 +125,8 @@ Use `mcp_todoist_add_tasks` to add a single task to Justin's Todoist **Inbox** (
 ## Other Intent Shapes (Legacy Support)
 
 If Justin explicitly uses the following phrasing, support these specific paths:
-- **Person note:** *"Person note for <Name>"* or *"<Name> works at <Org>"* → Create a brand-new Person note named `<Capitalized Spaced Full Name>.md` in `/home/justin.guest/vault/inbox/` (or update the existing note in-place if it already exists under `/Contacts/` or `/inbox/`).
-- **Company/Organization note:** *"New company <Name>"*, *"Company note for <Name>"*, or *"<Name> is a new company"* → Create a brand-new Organization note named `<Capitalized Spaced Name>.md` in `/home/justin.guest/vault/inbox/` (or update the existing note in-place if it already exists under `/Contacts/` or `/inbox/`).
+- **Person note:** *"Person note for <Name>"* or *"<Name> works at <Org>"* → Create a brand-new Person note named `<Capitalized Spaced Full Name>.md` in `/home/justin.guest/vault/Inbox/` (or update the existing note in-place if it already exists under `/Contacts/` or `/Inbox/`).
+- **Company/Organization note:** *"New company <Name>"*, *"Company note for <Name>"*, or *"<Name> is a new company"* → Create a brand-new Organization note named `<Capitalized Spaced Name>.md` in `/home/justin.guest/vault/Inbox/` (or update the existing note in-place if it already exists under `/Contacts/` or `/Inbox/`).
 - **Project note:** *"New project <Name>"*, *"Project note for <Name>"*, or *"<Name> is a new project"* → Create `<lowercase-name-slug>.md` under `projects/` using Project formatting (executive summary, Status: Active, and creation Timeline).
 - **Append to existing note:** *"Add to <note title>"*, *"Append to <note title>"*, or *"Add [content] to the <note title> note"* → Find the closest match vault-wide (the user may say "in my inbox" or guess the wrong folder, but the note often resides in its correct MECE directory like `personal/trips/` or `projects/`) and append a dated bullet point (format: `- YYYY-MM-DD | Ingest — <context/details>`).
 - **Calendar scheduling:** *"Schedule this"* or *"Add this to my calendar"* → Parse event details and call `gws_multi.py --account personal-main|work calendar create`.
@@ -143,7 +143,7 @@ For each message ID detected by the poller:
    - Create a Todoist task (`Task` / `TODO` / `to do`)
    - Or both!
 3. **Execute actions:**
-   - If filing: Generate and write the markdown note to `inbox/` or `Inputs/Emails/`.
+   - If filing: Generate and write the markdown note to `Inbox/` or `Inputs/Emails/`.
    - After filing, run `llm-wiki` integrate-light: append `Utilities/log.md` only (daily note wikilink as last field).
    - If creating a task: Call `mcp_todoist_add_tasks` and then `mcp_todoist_add_comments` with the email summary.
    - If both: Do both operations.

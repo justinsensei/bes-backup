@@ -14,7 +14,7 @@ metadata:
 # Obsidian: Core Vault Conventions & Triage Routing
 
 ## Overview
-This is the foundational skill for interacting with Justin's Obsidian vault. It defines paths, general note-creation rules, frontmatter fields, standard formatting conventions, and global note-triage routing rules. Interactive synthesis filing (durable Q&A answers) → `llm-wiki` integrate-query (saved to `inbox/` on creation).
+This is the foundational skill for interacting with Justin's Obsidian vault. It defines paths, general note-creation rules, frontmatter fields, standard formatting conventions, and global note-triage routing rules. Interactive synthesis filing (durable Q&A answers) → `llm-wiki` integrate-query (saved to `Inbox/` on creation).
 
 ---
 
@@ -29,7 +29,7 @@ To maintain high quality, trust, and alignment, the PKMS operates under a strict
 2. **Knowledge Creation & Modification (Strictly Human-in-the-Loop):**
    - Any process that creates or modifies knowledge in the vault (writing concepts, thoughts, beliefs, or editing daily notes/work logs) must keep Justin in the loop.
    - These processes must **never run automatically in the background** via cron or daemon. They can only be triggered manually in chat, or chained to interactive, reviewed routines (like the morning briefing or evening wind-down).
-   - All newly generated knowledge notes must be saved under the `inbox/` directory for active manual review and triage.
+   - All newly generated knowledge notes must be saved under the `Inbox/` directory for active manual review and triage.
 
 3. **Gray Area (Case-by-Case):**
    - Tasks like **Work Logs** must be reviewed and aligned in chat before being written to the daily note. This review is a key step of the interactive daily wind-down and morning briefing rituals.
@@ -131,7 +131,7 @@ Notes are categorized with a single `category` YAML property containing a quoted
 | `Inputs/Emails/` | `category: "[[Emails]]"` | Email thread summaries | `bes-email-dispatch` |
 | `Inputs/Slack/` | `category: "[[Slack]]"` | Slack conversation summaries | `slack` |
 | `Inputs/Telegram/` | `category: "[[Telegram]]"` | Telegram session summaries | `bes-telegram-ingest` |
-| inbox/ | category: "[[Scraps]]" | Fleeting brain dumps, raw quick-captures, scraps | `obsidian-notes` |
+| Inbox/ | category: "[[Scraps]]" | Fleeting brain dumps, raw quick-captures, scraps | `obsidian-notes` |
 | `Utilities/` | `category: "[[Categories]]"` | Category definition notes (`Utilities/Categories/`) | `obsidian-utilities` |
 
 ---
@@ -139,7 +139,7 @@ Notes are categorized with a single `category` YAML property containing a quoted
 ## Action Steps for Triage
 1. **Determine Category:** Read note content and title. Map it to exactly one category above. Convert legacy inline tags (e.g. `#meeting`) to the property and remove from body.
 2. **Update YAML:** Set `category: "[[<CategoryName>]]"` using targeted `patch`.
-3. **Move File:** Relocate the file from `inbox/` to its corresponding target folder. Create folders with `mkdir -p` if missing.
+3. **Move File:** Relocate the file from `Inbox/` to its corresponding target folder. Create folders with `mkdir -p` if missing.
 
 ---
 

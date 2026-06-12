@@ -28,7 +28,7 @@ Read the note content and title. Map the note to **exactly one** category from t
 | `category: "[[People]]"` | `Contacts/` | **`obsidian-people`** |
 | `category: "[[Organizations]]"` | `Contacts/` | **`obsidian-organizations`** |
 | `category: "[[Notes]]"` | `Notes/` | **`obsidian-notes`** |
-| `category: "[[Scraps]]"` | inbox/ | **`obsidian-notes`** |
+| `category: "[[Scraps]]"` | Inbox/ | **`obsidian-notes`** |
 | `category: "[[References]]"` | `Notes/` | **`obsidian-references-sources`** |
 | `category: "[[Sources]]"` | `Notes/` | **`obsidian-references-sources`** |
 | `category: "[[Thoughts]]"` | `Notes/` | **`obsidian-thoughts-beliefs`** |
@@ -91,7 +91,7 @@ To avoid naive categorization, distinguish clearly between the five main types u
 
 ### 8. Scraps (`[[Scraps]]`) — Fleeting Internal Quick-Captures
 * **Criteria**: Fleeting brain dumps, off-the-cuff jottings, scratchpad-style reflections, unrefined jottings, and work-in-progress scraps (e.g. *Where I am this morning*, *On ADHD productivity apps* early draft, fleeting thoughts about code/WIP).
-* **Rule**: Keep these in `category: "[[Scraps]]"`. These are highly temporal, messy, private, and require zero formatting. They reside in `inbox/`.
+* **Rule**: Keep these in `category: "[[Scraps]]"`. These are highly temporal, messy, private, and require zero formatting. They reside in `Inbox/`.
 
 ---
 
@@ -112,6 +112,6 @@ When performing large-scale triage or backlog classification sweeps (e.g., in ba
 
 ## Common Pitfalls
 - **Multiple Categories:** Never assign multiple categories to a single note. Every note gets **exactly one** category.
-- **Leaking Inbox:** Do not leave notes in `inbox/` once categorized. All processed notes must reside in their taxonomy folders.
+- **Leaking Inbox:** Do not leave notes in `Inbox/` once categorized. All processed notes must reside in their taxonomy folders.
 - **Ephemeral Project Guides as References:** Do not categorize temporary checklists or migration guides tied to a specific project as `[[References]]`. References are reserved for permanent, long-term lookup documents. Project-bound checklists/guides belong under `[[Notes]]` or `[[Projects]]`.
 - **Links Verification:** moves are generally safe since Obsidian auto-resolves links by note name regardless of folder structure.

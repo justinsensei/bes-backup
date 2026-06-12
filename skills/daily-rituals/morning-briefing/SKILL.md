@@ -58,7 +58,7 @@ The 7AM cron writes `~/.hermes/morning-briefing/YYYY-MM-DD.json` with this struc
     "tier1_summary": "Moved 2 daily notes.",
     "tier2_issues": [
       "sources/note.md — missing ID",
-      "meetings/other.md — malformed ID field"
+      "Meetings/other.md — malformed ID field"
     ]
   },
   "inbox_candidates": {

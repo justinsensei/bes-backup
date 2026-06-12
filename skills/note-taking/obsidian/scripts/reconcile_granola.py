@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-reconcile_granola.py — Reconciles raw Granola meeting notes in meetings/ with standard vault frontmatter.
+reconcile_granola.py — Reconciles raw Granola meeting notes in Meetings/ with standard vault frontmatter.
 Adds id, daily_note, and category: "[[Meetings]]", and cleans up typical markdown anomalies.
 """
 

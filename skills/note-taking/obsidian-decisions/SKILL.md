@@ -18,7 +18,7 @@ This skill governs the capture and structured recording of individual or team de
 ---
 
 ## Folder & Category
-- **Directory:** Always draft decision notes in the inbox: `/home/justin.guest/vault/inbox/` (the user will review and move them later).
+- **Directory:** Always draft decision notes in the inbox: `/home/justin.guest/vault/Inbox/` (the user will review and move them later).
 - **Category link:** `category: "[[Decisions]]"`
 
 ---
@@ -48,5 +48,5 @@ category: "[[Decisions]]"
 ## Core Rules
 - **Accurate Attribution:** Always attribute the decision to the actual decision-maker. Do not assume or state Justin made a decision unless he explicitly did.
 - **Capitalized spaced names:** Use `Title ID.md` format for the filename (where ID is the creation timestamp, e.g. `Pause app-to-web payment flow 20260609170500.md`).
-- **Drafting Location:** Always place new decision notes in the inbox folder (`vault/inbox/`).
+- **Drafting Location:** Always place new decision notes in the inbox folder (`vault/Inbox/`).
 - **No Pipe Tables:** Avoid using markdown pipe tables; represent trade-offs or lists using clean bulleted list structures.

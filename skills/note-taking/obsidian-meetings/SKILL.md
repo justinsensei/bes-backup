@@ -57,4 +57,4 @@ category: "[[Meetings]]"
 ---
 
 ## Ingestion & Sync Pipeline
-- **Granola Sync:** Raw transcripts and notes dropped into `/meetings/` are automatically swept and processed into your formatted Meetings directory. This ingestion logic is handled by the **`bes-granola-ingest`** skill.
+- **Granola Sync:** Raw transcripts and notes dropped into `/Meetings/` are automatically swept and processed into your formatted Meetings directory. This ingestion logic is handled by the **`bes-granola-ingest`** skill.

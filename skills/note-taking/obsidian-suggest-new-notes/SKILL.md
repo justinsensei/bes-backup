@@ -13,7 +13,7 @@ metadata:
 # Obsidian: Suggest New Notes
 
 ## Overview
-This skill scans recent logs (Daily Notes, Meetings, and Sources) to identify conceptual gaps, insights, or missing definitions that are ripe for being captured as dedicated files. When Justin approves a suggestion, Bes immediately initializes the note in the `inbox/` directory with correct YAML frontmatter and a standard template.
+This skill scans recent logs (Daily Notes, Meetings, and Sources) to identify conceptual gaps, insights, or missing definitions that are ripe for being captured as dedicated files. When Justin approves a suggestion, Bes immediately initializes the note in the `Inbox/` directory with correct YAML frontmatter and a standard template.
 
 ---
 
@@ -46,9 +46,9 @@ Present the 5 suggestions as a numbered list in this exact format:
 ### Step 4: Approval & Creation
 Ask Justin which suggestions he would like to approve. For each approved note:
 1. Generate a unique 14-character ID: `YYYYMMDDHHmmss` (based on the current timestamp).
-2. Create the file at `/home/justin.guest/vault/inbox/[Proposed Note Title].md` (Capitalized, spaced, with no numerical prefix or ID in the filename).
+2. Create the file at `/home/justin.guest/vault/Inbox/[Proposed Note Title].md` (Capitalized, spaced, with no numerical prefix or ID in the filename).
 3. Populate the file with standard frontmatter and the corresponding category template (see "Templates" below).
-4. Report successful creation of the stubs in the `inbox/` folder.
+4. Report successful creation of the stubs in the `Inbox/` folder.
 
 ---
 
@@ -138,7 +138,7 @@ Core summary of the note topic.
 
 ## Common Pitfalls
 1. **Duplicate Creation:** Before pitching any note title or suggesting a new Concept, check if a file with that name, a synonym, or overlapping content already exists in the vault (even if currently classified under `category: \"[[Notes]]\"`). If it exists, do not suggest a brand-new note. Instead, propose reclassifying, merging, and consolidating the existing notes according to the **Preventing Concept & Note Duplication** guidelines in `obsidian-references-sources`.
-2. **Path Misplacement:** Approved notes *must* always be written to the `/home/justin.guest/vault/inbox/` directory first, allowing manual review and triage later.
+2. **Path Misplacement:** Approved notes *must* always be written to the `/home/justin.guest/vault/Inbox/` directory first, allowing manual review and triage later.
 3. **Overwriting Frontmatter:** Ensure frontmatter strings use single or double quotes around the ID and wikilink to avoid parsing breaks.
 
 ---
@@ -147,4 +147,4 @@ Core summary of the note topic.
 - [ ] Log scan output parsed successfully
 - [ ] Exactly 5 suggestions presented with the correct pitch format
 - [ ] Verified that none of the 5 candidate titles exist in the vault
-- [ ] Approved notes written to `/home/justin.guest/vault/inbox/` with valid YAML frontmatter and proper templates
+- [ ] Approved notes written to `/home/justin.guest/vault/Inbox/` with valid YAML frontmatter and proper templates

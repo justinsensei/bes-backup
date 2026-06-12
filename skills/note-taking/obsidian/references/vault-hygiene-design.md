@@ -40,7 +40,7 @@ The cron wrapper imports stdout from the main script and passes through lines un
 **Action:** auto-rewrite to `category: "[[Readings]]"`.
 
 ### Granola meeting reconcile
-**Source:** `meetings/` (raw Granola sync).
+**Source:** `Meetings/` (raw Granola sync).
 **Destination:** `Inputs/Meetings/` (fallback `Logs/Meetings/` during transition).
 **Action:** write `id`, `daily_note`, `category: "[[Meetings]]"`; auto-link entities in meeting body; delete raw file after reconcile.
 

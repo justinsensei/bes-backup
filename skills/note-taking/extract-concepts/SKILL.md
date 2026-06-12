@@ -27,7 +27,7 @@ The skill begins by interpreting the user-provided seed.
 1.  **Receive Seed:** The user provides either a path to a specific `Source` note or a general topic/query.
 2.  **Identify Target Sources:**
     *   If the seed is a path, that file is the single target `Source`.
-    *   If the seed is a query, use the `obsidian-semantic-pointer` tool to search for relevant notes within the `~/vault/Notes/Sources/` and `~/vault/inbox/` directory. The top 3-5 results become the target `Source` notes.
+    *   If the seed is a query, use the `obsidian-semantic-pointer` tool to search for relevant notes within the `~/vault/Notes/Sources/` and `~/vault/Inbox/` directory. The top 3-5 results become the target `Source` notes.
 
     ```bash
     # Example for a query seed
@@ -63,12 +63,12 @@ Once the plan is approved, the skill executes it in a granular, one-by-one inter
     *   For the first concept marked for revision, generate and display a diff of the proposed changes.
     *   The user can approve the changes or request modifications.
     *   Upon approval, the `patch` tool applies the changes to the original note.
-    *   The updated note is then moved to `~/vault/inbox/` using `mv`.
+    *   The updated note is then moved to `~/vault/Inbox/` using `mv`.
     *   This process repeats for each concept on the revision list.
 3.  **Create New Concepts (One by One):**
     *   For the first new concept, generate and display the full draft of the note content.
     *   The user can approve the draft or request modifications.
-    *   Upon approval, the `write_file` tool creates the new note directly in `~/vault/inbox/` using the following template:
+    *   Upon approval, the `write_file` tool creates the new note directly in `~/vault/Inbox/` using the following template:
 
         ```markdown
         ---

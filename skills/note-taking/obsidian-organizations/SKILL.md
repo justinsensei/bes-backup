@@ -1,6 +1,6 @@
 ---
 name: obsidian-organizations
-description: Use when creating or updating contact notes representing company, school, or institutional entities under Contacts/ or inbox/ with category "[[Organizations]]".
+description: Use when creating or updating contact notes representing company, school, or institutional entities under Contacts/ or Inbox/ with category "[[Organizations]]".
 version: 1.1.0
 author: Bes
 license: MIT
@@ -18,7 +18,7 @@ This skill governs the structure and standard templates for institutional entiti
 ---
 
 ## Folder & Category
-- **New Contacts Landing Directory:** `/home/justin.guest/vault/inbox/`
+- **New Contacts Landing Directory:** `/home/justin.guest/vault/Inbox/`
 - **Permanent Directory:** `/home/justin.guest/vault/Contacts/`
 - **Category link:** `category: "[[Organizations]]"`
 
@@ -27,10 +27,10 @@ This skill governs the structure and standard templates for institutional entiti
 ## Creation and Update Workflow
 
 ### Step 1 — Check for Duplicates
-Always search both `/Contacts/` and `/inbox/` by name, acronym, or common alias before writing a new organization note.
-- **Relocation Boundary**: Only brand-new contacts created by Bes should land in `/home/justin.guest/vault/inbox/`. Never relocate or move existing contact notes already in `/home/justin.guest/vault/Contacts/` (created by Justin or prior processes) to the inbox. Always update them in-place.
+Always search both `/Contacts/` and `/Inbox/` by name, acronym, or common alias before writing a new organization note.
+- **Relocation Boundary**: Only brand-new contacts created by Bes should land in `/home/justin.guest/vault/Inbox/`. Never relocate or move existing contact notes already in `/home/justin.guest/vault/Contacts/` (created by Justin or prior processes) to the inbox. Always update them in-place.
 - If the note already exists in either folder, update the existing note in-place in its current folder.
-- If the note does not exist anywhere, create a brand-new note in `/home/justin.guest/vault/inbox/`.
+- If the note does not exist anywhere, create a brand-new note in `/home/justin.guest/vault/Inbox/`.
 
 ### Step 2 — Filename
 Use the capitalized, spaced official name as the filename:
