@@ -1,7 +1,7 @@
 ---
-name: extract-sources
-description: An interactive workflow for compiling immutable `Inputs/Readings` into mutable, synthesis-focused `Notes/Sources`.
-version: 2.0.0
+name: extract-source
+description: An interactive workflow for compiling an immutable `Inputs/Reading` into a mutable, synthesis-focused `Notes/Source`.
+version: 2.1.0
 author: Bes
 license: MIT
 metadata:
@@ -10,11 +10,11 @@ metadata:
     related_skills: [obsidian, obsidian-ingest-log, synthesize-notes, web]
 ---
 
-# extract-sources
+# extract-source
 
 ## Overview
 
-This skill facilitates the creation of "reading notes" (`Source` notes) from raw `Reading` inputs. It transforms the previous bibliographic/summary function into an active, human-in-the-loop knowledge integration task.
+This skill facilitates the creation of a "reading note" (`Source` note) from a raw `Reading` input. It transforms the previous bibliographic/summary function into an active, human-in-the-loop knowledge integration task.
 
 The process is designed to be interactive. It finds unprocessed readings, allows for selection, ingests the full text from the source URL, generates a synthesis by comparing the reading's concepts against the existing vault, and upon confirmation, creates a new, properly formatted `Source` note in the `inbox/` for final triage.
 
@@ -49,21 +49,14 @@ This is the core knowledge-creation step.
 
 ### Phase 3: Assembly and Confirmation
 
-- **Assemble Note:** Assemble the final `Source` note.
-  - **Frontmatter:** Include standard frontmatter (`id`, `daily_note`, `category`, `reading`) and all bibliographic information from the `Reading` file's `At a Glance` section (Author, Title, URL, etc.).
-  - **Body:**
-    1. Copy the `Document Note` block from the `Reading` file, if present.
-    2. Copy the `Summary` block from the `Reading` file, if present.
-    ### Phase 3: Assembly and Confirmation
-
-    1.  **Assemble Note:** Assemble the final `Source` note using the `Utilities/Templates/New Source.md` template.
-        -   **Frontmatter:** Populate `id`, `daily_note`, `category`, `reading`, and bibliographic data (`author`, `full_title`, `url`).
-        -   **Body:** Copy the `Document Note` (if present) and `Summary` from the `Reading` file.
-        -   **Synthesis:** Place the generated `Agreement`, `Tension/Challenge`, and `Application & Insights` sections under a `## My Synthesis` heading.
-    2.  **Add Quick Thoughts:** If the user provides additional "quick thoughts" during the interactive session, append them under a `### Quick Thoughts` heading.
-    3.  **Preview:** Present the complete, final Markdown content of the proposed note for user review.
-    4.  **Create Note and Rename Reading:** Upon user confirmation, write the `Source` note to the `inbox/` directory with the filename `{Original Reading Title}.md`. Then, rename the original `Reading` file to `{Original Reading Title} {YYYY-MM-DD}.md` to mark it as processed.
-    5.  **Loop:** Offer to process another reading, get a new batch, or exit the workflow.
+1.  **Assemble Note:** Assemble the final `Source` note using the `Utilities/Templates/New Source.md` template.
+    -   **Frontmatter:** Populate `id`, `daily_note`, `category`, `reading`, and bibliographic data (`author`, `full_title`, `url`).
+    -   **Body:** Copy the `Document Note` (if present) and `Summary` from the `Reading` file.
+    -   **Synthesis:** Place the generated `Agreement`, `Tension/Challenge`, and `Application & Insights` sections under a `## My Synthesis` heading.
+2.  **Add Quick Thoughts:** If the user provides additional "quick thoughts" during the interactive session, append them under a `### Quick Thoughts` heading.
+3.  **Preview:** Present the complete, final Markdown content of the proposed note for user review.
+4.  **Create Note and Rename Reading:** Upon user confirmation, write the `Source` note to the `inbox/` directory with the filename `{Original Reading Title}.md`. Then, rename the original `Reading` file to `{Original Reading Title} {YYYY-MM-DD}.md` to mark it as processed.
+5.  **Loop:** Offer to process another reading, get a new batch, or exit the workflow.
 
 ## Implementation Pitfalls & Lessons Learned
 
