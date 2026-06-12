@@ -24,7 +24,7 @@ def run_command(command):
 def get_todoist_loops():
     """Fetches incomplete Todoist tasks due today or overdue."""
     print("Checking Todoist for open loops...")
-    command = "hermes mcp todoist find-tasks-by-date --json --startDate today --overdueOption include-overdue --responsibleUserFiltering unassignedOrMe"
+    command = "hermes tool mcp_todoist_find_tasks_by_date --json --startDate today --overdueOption include-overdue --responsibleUserFiltering unassignedOrMe"
     output = run_command(command)
     if not output:
         return []
