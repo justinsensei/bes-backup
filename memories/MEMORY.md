@@ -25,3 +25,7 @@ A deep semantic vault lint runs monthly via cron, reporting on orphans, stale so
 Linear comments and updates are captured as vault inputs when Justin reacts with a 🧠 emoji.
 §
 Executive summaries in Obsidian notes should be formatted as a blockquote without the Executive summary: prefix. Example: > This is the summary.
+§
+New `Source` notes created by the `extract-sources` skill should be named `{Original Reading Title} {YYYY-MM-DD}.md`.
+§
+When creating `Source` notes from `Readings`, the primary goal is synthesis, not just summarization. This involves connecting the new information to existing notes in the vault by identifying points of agreement, tension, and practical application.
