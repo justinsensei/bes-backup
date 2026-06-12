@@ -208,28 +208,7 @@ If Justin selects any:
 
 ---
 
-### Phase 3 — Reading Review
-
-Review raw reading imports added or updated today. Offer compiled Source note creation via `llm-wiki` integrate-full.
-
-1. **Find Today's Readings:**
-   - Scan `$OBSIDIAN_VAULT_PATH/Inputs/Readings/` (legacy `Logs/Sources/`, `Logs/Readings/` during migration) for files modified in the last 24 hours.
-   - Check for `category: "[[Readings]]"` and `daily_note: "[[<TODAY_DATE> ...]]"` in frontmatter.
-
-2. **Summarize Today's Readings:**
-   - If new readings are found, read highlights using `read_file`.
-   - Present concise summary per reading (title, author, URL, 2-3 key takeaways).
-   - Note any without a compiled Source in `Notes/` — offer integrate-full promotion.
-   - If none found: *"No new readings added today."*
-
-3. **Present & Check Action Items:**
-   - Ask if Justin wants Todoist tasks from highlights, or Source note compilation:
-     *"Any highlights for Todoist, compile any into Source notes, or move to vault triage?"*
-   - **Wait for Justin's response.**
-
----
-
-### Phase 4 — Everything In Its Right Place (EIIRP) Vault Hygiene & Triage
+### Phase 3 — Everything In Its Right Place (EIIRP) Vault Hygiene & Triage
 
 This phase implements the formal 7-phase EIIRP cycle to perform comprehensive note hygiene, frontmatter validation, and inbox triage across the entire vault. This ensures files are clean, metadata is valid, and the knowledge graph is richly linked.
 
@@ -316,7 +295,7 @@ Wait for Justin's confirmation or feedback at the end of the EIIRP report (Step 
 
 ---
 
-### Phase 5 — Work Log Draft & Alignment
+### Phase 4 — Work Log Draft & Alignment
 
 Draft today's work log, align with Justin, and write it to today's daily note. This step runs towards the end of the wind-down so that any activities, contact creations, log files, or inbox triage completed during previous steps are fully incorporated, ensuring the work log captures the final state of play for the day.
 
@@ -353,7 +332,7 @@ Draft today's work log, align with Justin, and write it to today's daily note. T
 
 ---
 
-### Phase 6 — Tomorrow's Calendar Preview & Close-out
+### Phase 5 — Tomorrow's Calendar Preview & Close-out
 
 Preview tomorrow's schedule to establish mental readiness, coordinate upcoming tasks, and close out the day.
 
