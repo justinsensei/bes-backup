@@ -334,11 +334,11 @@ Draft today's work log, align with Justin, and write it to today's daily note. T
 
 ### Phase 5 — Open Loops
 
-This phase reviews the central `Open Loops.md` file, gathers context to help close loops, and captures any new loops that have emerged.
+This phase reviews the central `Open Loops.md` file, gathers context to help close loops, and captures any new open loops that have emerged.
 
 1.  **Review Existing Open Loops:**
-    - Read the contents of `/home/justin.guest/vault/Open Loops.md`.
-    - For each open loop (`[ ] ...`), gather relevant context that might indicate the loop can be closed. This includes:
+    - Read the contents of `/home/justin.guest/vault/Open Loops.md`. The file is a simple bulleted list.
+    - For each open loop (each line starting with `- `), gather relevant context that might indicate the loop can be closed. This includes:
         - Recently completed Todoist tasks.
         - Recently created or modified vault notes with similar keywords.
         - Recent calendar events.
@@ -350,9 +350,9 @@ This phase reviews the central `Open Loops.md` file, gathers context to help clo
       ```
       🌀 Open Loops Review:
 
-      1. `[ ] Follow up with [[Alice]] about the [[Project X]] deadline`
+      1. `- Follow up with [[Alice]] about the [[Project X]] deadline`
          - **Context:** You completed the Todoist task "Draft Project X timeline" yesterday. A new document `Notes/Project X Timeline Q3.md` was also created.
-      2. `[ ] Plan birthday party`
+      2. `- Plan birthday party`
          - **Context:** A calendar event "Nana's Birthday Dinner" was created for this Saturday.
 
       Which of these loops are now closed and can be removed? (e.g. "1 and 2", "remove 1", or "none")
@@ -365,9 +365,9 @@ This phase reviews the central `Open Loops.md` file, gathers context to help clo
     - **Wait for Justin's response.**
 
 4.  **Update the Master File:**
-    - Atomically update the `/home/justg.user/vault/Open Loops.md` file:
+    - Atomically update the `/home/justin.guest/vault/Open Loops.md` file:
       - Remove the lines for loops Justin confirmed are closed.
-      - Append any new loops he provided.
+      - Append any new loops he provided as simple bullets (`- ...`).
     - Report success, showing the final state of the file or a summary of changes.
 
 ---
