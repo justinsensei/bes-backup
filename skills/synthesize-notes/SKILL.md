@@ -1,5 +1,5 @@
 ---
-name: obsidian-synthesize-notes
+name: synthesize-notes
 description: Answers durable research questions by searching the vault, synthesizing findings, and filing the answer as a new note for future reference.
 version: 1.0.0
 author: Bes
@@ -10,7 +10,7 @@ metadata:
     related_skills: [obsidian, session_search, obsidian-ingest-log]
 ---
 
-# obsidian-synthesize-notes
+# synthesize-notes
 
 ## Overview
 
