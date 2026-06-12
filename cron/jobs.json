@@ -100,7 +100,7 @@
       "model": null,
       "provider": null,
       "base_url": null,
-      "script": null,
+      "script": "create_daily_note.py",
       "no_agent": false,
       "context_from": null,
       "schedule": {
@@ -233,5 +233,5 @@
       "profile": null
     }
   ],
-  "updated_at": "2026-06-12T10:58:22.439123-04:00"
+  "updated_at": "2026-06-12T11:11:14.960806-04:00"
 }
