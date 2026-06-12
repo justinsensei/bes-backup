@@ -118,15 +118,9 @@ skills/social-media/slack/**/*.pyc
 !skills/productivity/linear/**
 !skills/productivity/airtable/
 !skills/productivity/airtable/**
-!skills/research/arxiv/
-!skills/research/arxiv/**
-!skills/creative/comfyui/
-!skills/creative/comfyui/**
 # Exclude pycache from any of the above
 skills/productivity/linear/**/__pycache__/
 skills/productivity/airtable/**/__pycache__/
-skills/research/arxiv/**/__pycache__/
-skills/creative/comfyui/**/__pycache__/
 
 # Agent-authored skill: todoist (Doist MCP server wrapper — task management for Hermes + Bes)
 !skills/productivity/todoist/
