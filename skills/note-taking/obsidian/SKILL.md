@@ -91,7 +91,7 @@ category: "[[CategoryName]]"         # Single category link (quoted shortest-pat
 ### Formatting Rules
 - **Horizontal Rules:** Always use exactly three hyphens `---` on a line by itself to represent a horizontal divider. Never use two hyphens or other symbols.
 - **Heading & Bullet Spacing:** Ensure exactly one blank line exists between any heading (such as `## Timeline` or `## State`) and its subsequent content or bullet lists. Do not allow multiple consecutive blank lines to accumulate. Bulleted lists should be kept compact with zero blank lines between siblings.
-- **Filename Conventions:**
+- **Executive Summaries**: When present, should be a blockquote at the top of the note *without* the `Executive summary:` prefix. Just the text.
   - **Daily Notes:** Must be `YYYY-MM-DD Weekday.md` (e.g. `2026-06-09 Tuesday.md`).
   - **Notes, Decisions, Thoughts, Memories, Concepts, Scraps, Beliefs, Sources (compiled):** Must be named `Title ID.md` with the ID at the end (e.g. `Spaced Title 20260609120000.md`).
   - **References:** Must be named `Title.md` with no ID string in the filename (e.g. `Spaced Title.md`).

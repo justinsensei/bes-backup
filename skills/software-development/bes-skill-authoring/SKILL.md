@@ -168,6 +168,15 @@ Because both the local VM and remote edits modify metadata and files concurrentl
 
 8. **Importing MCP submodules in Python scripts or `execute_code`.** The `hermes_tools` library does NOT expose MCP-specific submodules (like `hermes_tools.mcp_todoist`). When writing Python scripts that need to communicate with external APIs (Todoist, Linear, Slack), always make direct HTTP requests using `urllib.request` and the corresponding key from `.env` (such as `TODOIST_API_KEY`, `LINEAR_API_KEY`).
 
+## Architecture: Monolithic vs. Modular
+
+When authoring skills, use the following heuristic to decide on the structure:
+
+-   **Modular Skill:** Encapsulate logic in its own standalone skill when it is expected to be used independently or in multiple different contexts. This promotes reusability. Example: `work-log`.
+-   **Monolithic Skill:** Keep logic within a larger, process-oriented skill when it is primarily intended to be used as one step in that specific, sequential process. This reduces complexity and state-management overhead. Example: The "Open Loops" logic is part of the `wind-down` skill because it's tightly coupled to that specific end-of-day ritual.
+
+The trigger to refactor a piece of logic out of a monolith into its own skill is the emergence of a clear use case for invoking it independently.
+
 ## Verification Checklist
 
 - [ ] File created successfully via `skill_manage` (lives in `~/.hermes/skills/`)
