@@ -334,31 +334,41 @@ Draft today's work log, align with Justin, and write it to today's daily note. T
 
 ### Phase 5 — Open Loops
 
-This phase is designed to identify and capture unresolved tasks, unanswered questions, and lingering commitments to ensure nothing falls through the cracks.
+This phase reviews the central `Open Loops.md` file, gathers context to help close loops, and captures any new loops that have emerged.
 
-1.  **Gather Potential Open Loops:**
-    - Run the dedicated script to find potential open loops from a wide range of sources:
-      ```bash
-      python3 ~/.hermes/scripts/fetch_open_loops.py
+1.  **Review Existing Open Loops:**
+    - Read the contents of `/home/justin.guest/vault/Open Loops.md`.
+    - For each open loop (`[ ] ...`), gather relevant context that might indicate the loop can be closed. This includes:
+        - Recently completed Todoist tasks.
+        - Recently created or modified vault notes with similar keywords.
+        - Recent calendar events.
+        - Relevant Slack or email conversations.
+
+2.  **Present for Closure Review:**
+    - Present each open loop along with the context you've gathered.
+    - Format:
       ```
-    - The script will query:
-        - **Todoist:** Incomplete tasks due today or overdue.
-        - **Linear:** Assigned issues that are not in a 'done' state.
-        - **Vault:** Explicit `TODO` markers and content in `## Open Loops` sections of recently modified notes.
-        - **Communications:** Recent emails and Slack messages for unanswered questions and phrases suggesting future action (e.g., "I'll follow up on...").
-        - **Calendar:** Upcoming events in the next 2-3 days that imply preparation.
+      🌀 Open Loops Review:
 
-2.  **Present and Review:**
-    - Present the list of suggested open loops found by the script.
-    - Ask for review and a brain dump:
-      *"Here are some potential open loops I found. Which of these should we add to the list? Please also share any other open loops on your mind."*
+      1. `[ ] Follow up with [[Alice]] about the [[Project X]] deadline`
+         - **Context:** You completed the Todoist task "Draft Project X timeline" yesterday. A new document `Notes/Project X Timeline Q3.md` was also created.
+      2. `[ ] Plan birthday party`
+         - **Context:** A calendar event "Nana's Birthday Dinner" was created for this Saturday.
+
+      Which of these loops are now closed and can be removed? (e.g. "1 and 2", "remove 1", or "none")
+      ```
     - **Wait for Justin's response.**
 
-3.  **Write to Daily Note:**
-    - Combine the approved suggestions with the items from Justin's brain dump.
-    - Format them as a clean bulleted list.
-    - Append this list under the `## Open Loops` section in today's daily note.
-    - Report success.
+3.  **Capture New Open Loops:**
+    - After processing closures, ask a simple, open-ended question to capture new loops.
+      *"Any new open loops on your mind to add to the list?"*
+    - **Wait for Justin's response.**
+
+4.  **Update the Master File:**
+    - Atomically update the `/home/justg.user/vault/Open Loops.md` file:
+      - Remove the lines for loops Justin confirmed are closed.
+      - Append any new loops he provided.
+    - Report success, showing the final state of the file or a summary of changes.
 
 ---
 
