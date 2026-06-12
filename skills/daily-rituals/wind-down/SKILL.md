@@ -401,7 +401,7 @@ Preview tomorrow's schedule to establish mental readiness, coordinate upcoming t
 
 ## Pitfalls & Defensive Rules
 
-- **Noisy Project Suggestions:** The project discovery phase can be noisy and suggest non-project entities. Use judgment and confirm with Justin before creating new project notes.
+- **Noisy Project Suggestions:** The project discovery phase (using `check_vault_signals.py`) can be extremely noisy and return scores of non-project entities or projects from ancient historical inputs (e.g. 2025). **Do not dump the raw list.** Filter the suggestions to only those from today's or very recent ingests, group/dedupe them, and highlight only the most plausible ones (typically those from files modified in the last 24 hours). Categorize legacy or single-word parsing artifacts as noisy and omit them from the main list. Confirm with Justin before creating new project notes.
 - **Preserve the Notepad:** Always load today's daily note first, find the `## 🗒 Notepad` section, and keep its contents completely intact.
 - **Inputs Terminology:** Always refer to Slack threads, emails, and other primary-category sources as "inputs" rather than "logs" in both conversations and note frontmatter, as per the updated vault schema.
 - **Accurate Attribution:** When drafting highlights and decisions from emails or meeting notes, ensure decisions are attributed to the correct person (e.g., Anya, Nana, teachers, etc.) rather than assuming Justin made them.
