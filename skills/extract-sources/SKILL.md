@@ -1,5 +1,5 @@
 ---
-name: obsidian-extract-sources
+name: extract-sources
 description: An interactive workflow for compiling immutable `Inputs/Readings` into mutable, summary-focused `Notes/Sources`.
 version: 1.3.0
 author: Bes
@@ -10,7 +10,7 @@ metadata:
     related_skills: [obsidian, obsidian-ingest-log, wind-down]
 ---
 
-# obsidian-extract-sources
+# extract-sources
 
 ## Overview
 
