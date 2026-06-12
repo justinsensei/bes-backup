@@ -242,7 +242,7 @@ def reconcile_granola_meetings(vault_path):
     
     # Pre-scan vault for existing IDs to avoid collisions
     existing_ids = set()
-    skip_dirs = {"Readwise", "Utilities", ".git", ".trash", ".cursor", ".claude", "Daily Notes"}
+    skip_dirs = {"Inputs", "Readwise", "Utilities", ".git", ".trash", ".cursor", ".claude", "Daily Notes"}
     for root, dirs, files in os.walk(vault_path):
         dirs[:] = [d for d in dirs if not d.startswith(".") and d not in skip_dirs]
         for f in files:
@@ -512,7 +512,7 @@ def heal_vault_filename_capitalizations(vault_path):
 
     renames = {}
     title_mapping = {}
-    ignore_dirs = {"Readwise", "Templates", "Daily Notes", "Categories", ".git", ".trash", ".cursor", ".claude", "Copilot"}
+    ignore_dirs = {"Inputs", "Readwise", "Templates", "Daily Notes", "Categories", ".git", ".trash", ".cursor", ".claude", "Copilot"}
     
     for root, dirs, files in os.walk(vault):
         dirs[:] = [d for d in dirs if not d.startswith(".") and d not in ignore_dirs]
@@ -628,7 +628,7 @@ incoming_links = defaultdict(set)
 outgoing_links = defaultdict(set)
 all_audited_notes = set()
 
-skip_dirs = {"Readwise", "Utilities", ".git", ".trash", ".cursor", ".claude", "Daily Notes"}
+skip_dirs = {"Inputs", "Readwise", "Utilities", ".git", ".trash", ".cursor", ".claude", "Daily Notes"}
 
 wrong_folder = []
 source_linkage_issues = []
