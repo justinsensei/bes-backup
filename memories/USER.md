@@ -11,3 +11,5 @@ Vault taxonomy: Inputs/Readings (raw immutable), Notes/Sources (compiled bibliog
 Admin automation (sync/ingest/lint) must be hands-off and fail loudly. Knowledge creation and work logs must never be automated (strictly manual or interactive reviews).
 §
 User values synthesis and knowledge integration over simple summarization. When processing new information, the goal is to connect it to existing notes in the vault by identifying agreements, tensions, and potential applications.
+§
+Justin prefers checking only internal wikilinks during vault hygiene runs, and does not want external links/citations audited.
