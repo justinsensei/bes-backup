@@ -741,7 +741,7 @@ for root, dirs, files in os.walk(VAULT):
                 missing_daily_notes.append(rel_path)
             
         # Parse wikilinks
-        wikilinks = re.findall(r'<!--.*?-->|\[\[([^\]]+)\]\]', text)
+        wikilinks = re.findall(r'<!--.*?-->|(?<!\\\\)\[\[([^\]]+)\]\]', text)
         for link in wikilinks:
             if not link: continue # Skip commented out links
             # Parse link target (before '#' or '|')
