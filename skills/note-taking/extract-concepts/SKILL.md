@@ -65,10 +65,10 @@ Once the plan is approved, the skill executes it in a granular, one-by-one inter
     *   Upon approval, the `patch` tool applies the changes to the original note.
     *   The updated note is then moved to `~/vault/Inbox/` using `mv`.
     *   This process repeats for each concept on the revision list.
-3.  **Create New Concepts (One by One):**
+3. **Create New Concepts (One by One):**
     *   For the first new concept, generate and display the full draft of the note content.
     *   The user can approve the draft or request modifications.
-    *   Upon approval, the `write_file` tool creates the new note directly in `~/vault/Inbox/` using the following template:
+    *   Upon approval, the `write_file` tool creates the new note directly in `~/vault/Inbox/` under the filename `{Concept Name} {ID}.md` (where `{ID}` is the same unique ID string `YYYYMMDDHHmmss` used in the frontmatter, and `{Concept Name}` is the concept's title). It must use the following template:
 
         ```markdown
         ---
