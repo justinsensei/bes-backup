@@ -92,3 +92,7 @@ Once the plan is approved, the skill executes it in a granular, one-by-one inter
 -   **Semantic Drift:** Semantic search is powerful but not perfect. The skill must be prepared for tangentially related or irrelevant results and avoid forcing connections where none exist.
 -   **Over-creation:** The default should be to integrate with existing knowledge (linking and revising) before creating something new. Avoid proposing a new `Concept` for every minor detail.
 -   **User Context:** The skill operates without the user's full mental model. Its proposals are best-effort suggestions and rely on the user for final validation and contextual fitness.
+
+## References
+
+-   `references/adhd-product-design.md`: Core design principles and product opportunity spaces synthesized from the June 2026 ADHD product audit.
