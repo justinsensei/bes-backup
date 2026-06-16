@@ -695,7 +695,7 @@ for root, dirs, files in os.walk(VAULT):
                     text = new_text
 
         if category:
-            if rel_str_f.startswith("inbox/"):
+            if rel_str_f.lower().startswith("inbox/"):
                 # Any note in the inbox is in a valid temporary landing/review state
                 pass
             else:
@@ -710,8 +710,8 @@ for root, dirs, files in os.walk(VAULT):
                 elif category == "Readings" and rel_str_f.startswith("Notes/"):
                     wrong_folder.append((rel_str_f, category, expected or prefixes[0]))
                 elif category == "Scraps":
-                    if not rel_str_f.startswith("inbox/"):
-                        wrong_folder.append((rel_str_f, category, "inbox/"))
+                    if not rel_str_f.lower().startswith("inbox/"):
+                        wrong_folder.append((rel_str_f, category, "Inbox/"))
                 elif prefixes and not any(rel_str_f.startswith(p.rstrip("/")) for p in prefixes):
                     wrong_folder.append((rel_str_f, category, expected or prefixes[0]))
 
@@ -736,7 +736,8 @@ for root, dirs, files in os.walk(VAULT):
         else:
             missing_ids.append(rel_path)
             
-        if category not in ["People", "Organizations"]:
+        is_contact = (category in ["People", "Organizations"]) or rel_str_f.lower().startswith("notes/contacts/")
+        if not is_contact:
             if not daily_note or "[[" not in daily_note:
                 missing_daily_notes.append(rel_path)
             
