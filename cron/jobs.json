@@ -111,7 +111,7 @@
       "schedule_display": "0 4 * * *",
       "repeat": {
         "times": null,
-        "completed": 24
+        "completed": 25
       },
       "enabled": true,
       "state": "scheduled",
@@ -119,9 +119,9 @@
       "paused_reason": null,
       "created_at": "2026-05-22T15:05:05.687250-04:00",
       "next_run_at": "2026-06-17T04:00:00-04:00",
-      "last_run_at": "2026-06-15T04:04:00.897193-04:00",
-      "last_status": "ok",
-      "last_error": null,
+      "last_run_at": "2026-06-16T04:05:32.623690-04:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: Morning, Justin! Ready to start your day?\n\n---\n\n### **Morning Briefing Background Run Summary**\n\nAll automated background preparation steps for your morning briefing are complete, and the session cache has been successfully written to `~/.hermes/morning-briefing/2026-06-16.json`.\n\n#### **1. Work-Day & Change Detection**\n* **Today:** Tuesday, June 16, 2026 (Work Day: **True**).\n* **Target Work Log:** Monday, June 15, 2026.\n* **Status:** Changes were detected between your live workspace activity and the previous daily note footer. \n\n#### **2. Background Jobs Completed**\n* **Job A (Work Log Reconciliation):** Fully updated yesterday's daily note (`Daily Notes/2026-06-15 Monday.md`) to reconcile complete, end-of-day workspace counts in the footer:\n  * *Updated Footer:* `Slack (40 msgs / 5 channels) | Linear (3 issues) | Gmail work (14 threads), personal-main (25) | Calendar (4 events / 2 accts) | Todoist (4 completed, 0 open) | vault git (33 files) | session history (23 chats) | daily note + chat.*`\n* **Job B (Vault Hygiene):** Ran Tier 1 hygiene. No auto-fixes were required. Captured all active Tier 2 issues (missing IDs and missing daily note links) directly into the briefing cache.\n* **Job C (Inbox Ingest Candidates):** Scanned primary email and Slack threads for triage candidates; inbox is currently clean (0 pending candidates).\n\n#### **3. Systems & Insights**\n* **Nightly Dream Cycle:** Log file is **missing** (in line with the decommissioning of the `gbrains` initiative).\n* **Concept of the Day:** Selected `Notes/Avoid mathy prioritization 20250603163001.md` (\"*Avoid mathy prioritization*\") as your focus concept for the day.",
       "last_delivery_error": null,
       "deliver": "origin",
       "origin": {
@@ -233,5 +233,5 @@
       "profile": null
     }
   ],
-  "updated_at": "2026-06-16T04:00:36.624786-04:00"
+  "updated_at": "2026-06-16T04:05:32.625091-04:00"
 }
