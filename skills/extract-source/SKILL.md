@@ -28,13 +28,10 @@ The process is designed to be interactive. It finds unprocessed readings, allows
 
 ### Phase 1: Ingestion and Parsing
 
-1.  **Find Unprocessed Readings:** Use `terminal` with `rg` or `find` to list files in `Inputs/Readings/` that do not have a corresponding `Source` note in `Notes/Sources/` or `Inbox/`.
+1.  **Find Unprocessed Readings:** Use `terminal` with `rg` or `find` to list files in `Inputs/Readings/` or custom raw research dumps in the `Inbox/` (e.g., named with an ID or having `category: "[[Readings]]"`) that do not have a corresponding `Source` note in `Notes/Sources/` or `Inbox/`.
 2.  **Present Selection:** Present a random sample of 5 unprocessed readings for user selection.
-3.  **Parse Local File:** Read the selected `Reading` file and parse it, extracting the following content to be copied verbatim into the new `Source` note:
-    -   Bibliographic data (Author, Title, URL).
-    -   The `Document Note` block.
-    -   The `Summary` block from Readwise.
-4.  **Fetch Full Text:** If a URL is present in the bibliographic data, use the browser tools (`browser_navigate`, then `browser_console` with `document.body.innerText`) to fetch the full, clean text from the source. This is more reliable than older tools like `web_extract`. Hold this, along with any user highlights from the `Reading` file, for the synthesis phase. If the fetch fails, fall back to using only the content present in the `Reading` file.
+3.  **Parse Local File:** Read the selected `Reading` file and parse it. Extract bibliographic data (Author, Title, URL). For AI-generated research logs or dialogues (e.g., from Dia or Claude) that lack formal bibliographic fields, infer the author (e.g., "Dia" or "Claude"), title, and query context to use as the `Document Note` or `Summary` base.
+4.  **Fetch Full Text:** If a URL is present in the bibliographic data, use the browser tools (`browser_navigate`, then `browser_console` with `document.body.innerText`) to fetch the full, clean text from the source. This is more reliable than older tools like `web_extract`. Hold this, along with any user highlights from the `Reading` file, for the synthesis phase. If no URL is present (e.g. self-generated or AI research logs), fall back to using the text already in the `Reading` file.
 
 ### Phase 2: Synthesis and Vault Reconnaissance
 
