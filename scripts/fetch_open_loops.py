@@ -47,7 +47,7 @@ def get_todoist_loops():
                     due_date = due.get("date")
                     if due_date and due_date <= today_str:
                         due_label = "overdue" if due_date < today_str else "today"
-                        loops.append(f"Todoist ({due_label}): {item["content"]}")
+                        loops.append(f"Todoist ({due_label}): {item['content']}")
     except Exception as e:
         loops.append(f"Todoist Error: {e}")
     return loops
@@ -87,7 +87,7 @@ def get_linear_loops():
             state_type = node.get("state", {}).get("type", "")
             state_name = node.get("state", {}).get("name", "")
             if state_type not in ["completed", "canceled"] and state_name not in ["Completed", "Done", "Canceled", "Cancelled"]:
-                loops.append(f"Linear [{node["identifier"]} - {state_name}]: {node["title"]}")
+                loops.append(f"Linear [{node['identifier']} - {state_name}]: {node['title']}")
     except Exception as e:
         loops.append(f"Linear Error: {e}")
     return loops
