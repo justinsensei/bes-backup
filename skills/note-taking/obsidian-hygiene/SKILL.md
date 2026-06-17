@@ -149,6 +149,20 @@ When the hygiene script reports "Ghost Links", it means there are wikilinks poin
     - **In-line with other content**: Escape the wikilink by prefixing the opening and closing brackets with backslashes (e.g. `\[\[f2p-brazil|F2P Brazil\]\]`). This retains the plain-text reference inside Obsidian but deactivates the link and prevents it from appearing on the graph or in future ghost link reports.
     - **Linter Ignore Pattern**: The linter uses `(?<!\\\\)\[\[([^\]]+)\]\]` to match active wikilinks, meaning any backslash-escaped wikilinks are natively ignored and will not trigger warnings.
 
+## How to Resolve Source Linkage Issues
+
+When the hygiene script reports source linkage issues, it means a compiled Source note (`category: "[[Sources]]"`) is either missing its raw inputs section, or doesn't link down to its raw immutable input file. Here's the process to resolve them:
+
+1.  **Locate the Files**: Match the compiled Source note (in `Notes/Sources/` or `Notes/`) with its original raw input file:
+    - Readings in `Inputs/Readings/` (e.g. Readwise exports).
+    - Meetings in `Inputs/Meetings/` (e.g. Granola meeting logs).
+2.  **Verify/Create Section**: Check if the compiled Source note has a `## Raw inputs` section at the end of the file. If missing, create it.
+3.  **Add Shortest-Path Wikilink**: Insert a bullet point linking directly to the raw input (e.g. `- [[Claude on Tough Products for ADHD 2026-06-15]]` or `- [[2026-05-13 Cursor on Agent-Powered Dev]]`).
+4.  **Handle Missing Raw Inputs**: If the original raw input file is completely missing on disk (e.g., deleted after an Inbox duplicate conflict):
+    - Use `session_search` on past cron or Readwise sync logs to look up its title or contents.
+    - Salvage its highlights and metadata.
+    - Recreate the raw reading file under `Inputs/Readings/` (e.g. `Inputs/Readings/Was Ozempic Discovered Thanks to “Silly” Research 2026-06-12.md`) to resolve the Ghost Link and source linkage warnings permanently.
+
 ## Verification Checklist
 
 
