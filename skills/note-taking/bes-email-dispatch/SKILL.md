@@ -48,7 +48,7 @@ If the instruction is empty, has no keywords, or is just "Save as a note", defau
 
 ### Storage Destination
 - Create a new markdown note inside the **`Inbox/`** directory of his vault:
-  `/home/justin.guest/vault/Inbox/<Capitalized Spaced Cleaned Subject> <ID>.md`
+  `/home/justin.guest/Developer/obsidian-vault/Inbox/<Capitalized Spaced Cleaned Subject> <ID>.md`
   *(Where `Capitalized Spaced Cleaned Subject` is a capitalized, spaced version of the subject, and `ID` is the 14-digit creation timestamp string `YYYYMMDDHHmmss` at write time. This conforms to the vault's standard `Title ID.md` format. Never use kebab-case or lowercase filenames).*
 
 ### Note Structure & Frontmatter
@@ -126,9 +126,9 @@ Use `mcp_todoist_add_tasks` to add a single task to Justin's Todoist **Inbox** (
 ## Other Intent Shapes (Legacy Support)
 
 If Justin explicitly uses the following phrasing, support these specific paths:
-- **Person note:** *"Person note for <Name>"* or *"<Name> works at <Org>"* → Create a brand-new Person note named `<Firstname> <Lastname> <ID>.md` (e.g. `Aly Lalji 20260611074153.md`, where `ID` is `YYYYMMDDHHmmss` at write time) in `/home/justin.guest/vault/Inbox/` (or update the existing note in-place if it already exists under `Notes/Contacts/` or `/Inbox/`). Conforms to the `obsidian-contacts.mdc` standard.
-- **Company/Organization note:** *"New company <Name>"*, *"Company note for <Name>"*, or *"<Name> is a new company"* → Create a brand-new Organization note named `<Organization Name> <ID>.md` (e.g. `SignLab 20260101000000.md`, where `ID` is `YYYYMMDDHHmmss` at write time) in `/home/justin.guest/vault/Inbox/` (or update the existing note in-place if it already exists under `Notes/Contacts/` or `/Inbox/`). Conforms to the `obsidian-contacts.mdc` standard.
-- **Project note:** *"New project <Name>"*, *"Project note for <Name>"*, or *"<Name> is a new project"* → Create `<Capitalized Spaced Project Name>.md` (no ID, e.g. `B2C Expansion Strategy.md`) under `/home/justin.guest/vault/Inbox/` first (or `/home/justin.guest/vault/Notes/Projects/` if moving directly) using standard Project formatting. Conforms to the `note-creation.mdc` standard (capitalized, spaced titles; no lowercase kebab-case).
+- **Person note:** *"Person note for <Name>"* or *"<Name> works at <Org>"* → Create a brand-new Person note named `<Firstname> <Lastname> <ID>.md` (e.g. `Aly Lalji 20260611074153.md`, where `ID` is `YYYYMMDDHHmmss` at write time) in `/home/justin.guest/Developer/obsidian-vault/Inbox/` (or update the existing note in-place if it already exists under `Notes/Contacts/` or `/Inbox/`). Conforms to the `obsidian-contacts.mdc` standard.
+- **Company/Organization note:** *"New company <Name>"*, *"Company note for <Name>"*, or *"<Name> is a new company"* → Create a brand-new Organization note named `<Organization Name> <ID>.md` (e.g. `SignLab 20260101000000.md`, where `ID` is `YYYYMMDDHHmmss` at write time) in `/home/justin.guest/Developer/obsidian-vault/Inbox/` (or update the existing note in-place if it already exists under `Notes/Contacts/` or `/Inbox/`). Conforms to the `obsidian-contacts.mdc` standard.
+- **Project note:** *"New project <Name>"*, *"Project note for <Name>"*, or *"<Name> is a new project"* → Create `<Capitalized Spaced Project Name>.md` (no ID, e.g. `B2C Expansion Strategy.md`) under `/home/justin.guest/Developer/obsidian-vault/Inbox/` first (or `/home/justin.guest/Developer/obsidian-vault/Notes/Projects/` if moving directly) using standard Project formatting. Conforms to the `note-creation.mdc` standard (capitalized, spaced titles; no lowercase kebab-case).
 - **Append to existing note:** *"Add to <note title>"*, *"Append to <note title>"*, or *"Add [content] to the <note title> note"* → Find the closest match vault-wide (the user may say "in my inbox" or guess the wrong folder, but the note often resides in its correct MECE directory like `personal/trips/` or `projects/`) and append a dated bullet point (format: `- YYYY-MM-DD | Ingest — <context/details>`).
 - **Calendar scheduling:** *"Schedule this"* or *"Add this to my calendar"* → Parse event details and call `gws_multi.py --account personal-main|work calendar create`.
 

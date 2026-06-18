@@ -35,7 +35,7 @@ SUBFOLDER_MERGE = {
 
 
 def vault_path():
-    return Path(os.environ.get("OBSIDIAN_VAULT_PATH", os.path.expanduser("~/vault")))
+    return Path(os.environ.get("OBSIDIAN_VAULT_PATH", os.path.expanduser("~/Developer/obsidian-vault")))
 
 
 def heal_wikilink_text(text):

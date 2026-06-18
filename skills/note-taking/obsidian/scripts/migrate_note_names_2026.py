@@ -172,7 +172,7 @@ def run_migration(vault_path, commit=False):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Migrate vault note naming conventions.")
-    parser.add_argument("--vault", default="/home/justin.guest/vault", help="Path to the Obsidian vault")
+    parser.add_argument("--vault", default="/home/justin.guest/Developer/obsidian-vault", help="Path to the Obsidian vault")
     parser.add_argument("--commit", action="store_true", help="Commit the changes to disk")
     args = parser.parse_args()
     

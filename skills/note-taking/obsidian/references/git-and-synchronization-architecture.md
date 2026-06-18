@@ -8,7 +8,7 @@ This reference document outlines the exact architecture, scripts, and behaviors 
 
 The Obsidian vault is configured as a fully bidirectional, real-time synced git repository.
 
-- **Local Path:** `/home/justin.guest/vault`
+- **Local Path:** `/home/justin.guest/Developer/obsidian-vault`
 - **Remote Repo:** `obsidian-vault` on GitHub
 - **Watcher Script:** `/home/justin.guest/.local/bin/bes-vault-sync`
 - **Daemon Service:** `bes-vault-sync.service` (systemd-user service)
@@ -24,8 +24,8 @@ The Obsidian vault is configured as a fully bidirectional, real-time synced git 
    - If files are modified locally, it auto-commits with the subject format `bes: <filename>` or `bes: N files changed` and pushes them to GitHub.
 
 ### Critical Pitfalls & Rules
-- **Do NOT manually run git commands inside `/home/justin.guest/vault`:** The background daemon races with manual git operations and will cause spurious commits, locked trees, or rebase loops.
-- **Merge Conflicts:** If the daemon alerts about a merge conflict, it pauses until resolved. Resolve it by SSHing into the VM, executing manual rebase fixes in `~/vault`, committing, and restarting the service:
+- **Do NOT manually run git commands inside `/home/justin.guest/Developer/obsidian-vault`:** The background daemon races with manual git operations and will cause spurious commits, locked trees, or rebase loops.
+- **Merge Conflicts:** If the daemon alerts about a merge conflict, it pauses until resolved. Resolve it by SSHing into the VM, executing manual rebase fixes in `~/Developer/obsidian-vault`, committing, and restarting the service:
   ```bash
   systemctl --user restart bes-vault-sync
   ```

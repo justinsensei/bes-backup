@@ -124,9 +124,9 @@ Would you like me to create contact notes for any of these? (e.g. "yes, 1 as org
 ```
 
 If Justin selects any:
-1. For each selected item, check if the contact file already exists in `/home/justin.guest/vault/Contacts/<Name>.md` OR in `/home/justin.guest/vault/Inbox/<Name>.md`.
+1. For each selected item, check if the contact file already exists in `/home/justin.guest/Developer/obsidian-vault/Contacts/<Name>.md` OR in `/home/justin.guest/Developer/obsidian-vault/Inbox/<Name>.md`.
 2. If the file exists in either location, do NOT overwrite or truncate it (as it contains precious history/timeline entries). Instead, patch the file in its current location to insert the standard frontmatter, executive summary, and state sections at the very top, preserving any existing content (like `## Timeline` and its entries) underneath.
-3. If the file does not exist in either location, create a new file in the inbox directory `/home/justin.guest/vault/Inbox/<Name>.md` and format the contact note following these strict standards:
+3. If the file does not exist in either location, create a new file in the inbox directory `/home/justin.guest/Developer/obsidian-vault/Inbox/<Name>.md` and format the contact note following these strict standards:
    * Frontmatter:
      ```yaml
      ---
@@ -164,13 +164,13 @@ This phase implements the formal 7-phase EIIRP cycle to perform comprehensive no
 Wait for Justin's confirmation or feedback at the end of the EIIRP report (Step 7) before executing any folder movements or renaming notes.
 
 1. **Step 1: Inventory (Scan & List)**
-   - Scan the vault inbox directory (`/home/justin.guest/vault/Inbox/`) using `search_files(path='/home/justin.guest/vault/inbox', pattern='*')`.
+   - Scan the vault inbox directory (`/home/justin.guest/Developer/obsidian-vault/Inbox/`) using `search_files(path='/home/justin.guest/Developer/obsidian-vault/inbox', pattern='*')`.
    - Identify any other files modified or created in the vault within the last 24 hours (excluding automated/system logs unless they need structural triage).
 
 2. **Step 2: Taxonomy (Classification & Routing)**
    - Classify all inventoried notes based on content analysis and map them to their correct Obsidian folder routes:
      - **`Contacts/`** (Category: `[[People]]` or `[[Organizations]]`):
-       - *Crucial Rule:* Any brand-new contact note created by Bes must land in `/home/justin.guest/vault/Inbox/`. Existing contacts already under `Contacts/` are updated in place and must *never* be relocated.
+       - *Crucial Rule:* Any brand-new contact note created by Bes must land in `/home/justin.guest/Developer/obsidian-vault/Inbox/`. Existing contacts already under `Contacts/` are updated in place and must *never* be relocated.
      - **`Inputs/Meetings/`** (Category: `[[Meetings]]`):
        - Meeting syncs, agendas, Granola summaries.
      - **`Inputs/Readings/`** (Category: `[[Readings]]`):
@@ -270,7 +270,7 @@ Draft today's work log, align with Justin, and write it to today's daily note. T
 
 5. **Write the Finalized Work Log:**
    - Combine Justin's feedback with the draft.
-   - Find or create today's daily note in `/home/justin.guest/vault/Daily Notes/YYYY-MM-DD Weekday.md` (create from template `/home/justin.guest/vault/Utilities/Templates/daily_note.md` if missing, stripping Templater tags).
+   - Find or create today's daily note in `/home/justin.guest/Developer/obsidian-vault/Daily Notes/YYYY-MM-DD Weekday.md` (create from template `/home/justin.guest/Developer/obsidian-vault/Utilities/Templates/daily_note.md` if missing, stripping Templater tags).
    - Overwrite/replace the corresponding headings (`> [!summary]`, `## 📅 Schedule & Events`, `## 🚀 Highlights & Decisions`, `## 🏆 Accomplishments`) with your new synthesized content.
    - **Crucial:** Preserve the entire content of the `## 🗒 Notepad` section (including manual text written by Justin). Never modify or delete it.
    - Append the sources attribution footer at the very bottom.
@@ -282,7 +282,7 @@ Draft today's work log, align with Justin, and write it to today's daily note. T
 This phase reviews the central `Open Loops.md` file, gathers context to help close loops, and captures any new open loops that have emerged.
 
 1.  **Review Existing Open Loops:**
-    - Read the contents of `/home/justin.guest/vault/Open Loops.md`. The file is a simple bulleted list.
+    - Read the contents of `/home/justin.guest/Developer/obsidian-vault/Open Loops.md`. The file is a simple bulleted list.
     - For each open loop (each line starting with `- `), gather relevant context that might indicate the loop can be closed. This includes:
         - Recently completed Todoist tasks.
         - Recently created or modified vault notes with similar keywords.
@@ -310,7 +310,7 @@ This phase reviews the central `Open Loops.md` file, gathers context to help clo
     - **Wait for Justin's response.**
 
 4.  **Update the Master File:**
-    - Atomically update the `/home/justin.guest/vault/Open Loops.md` file:
+    - Atomically update the `/home/justin.guest/Developer/obsidian-vault/Open Loops.md` file:
       - Remove the lines for loops Justin confirmed are closed.
       - Append any new loops he provided as simple bullets (`- ...`).
     - Report success, showing the final state of the file or a summary of changes.
@@ -364,7 +364,7 @@ Preview tomorrow's schedule to establish mental readiness, coordinate upcoming t
 - **Dangling Closing Dividers:** Ensure any automated or manual procedure that adds or updates properties writes back the closing divider (`---`) on a *fresh line*. Writing it without an intervening newline will append it directly to the end of the last property string (e.g., `daily_note: '...'---`), which corrupts properties.
 - **Non-Unique Aliases Guard:** Always skip auto-linking any alias that is non-unique (shared by more than one distinct contact path) to avoid incorrect connections in the vault.
 - **Timelines Deactivation (manual wind-down):** Do not manually append `## Timeline` bullets to contact cards during wind-down; rely on Obsidian's native Backlinks panel instead. **`integrate-entities`** is the sanctioned automated append path for both contacts and projects at ingest time — cron and meeting reconcile use it.
-- **Open Loops File:** Do not modify the `/home/justin.guest/vault/Open Loops.md` file directly. All changes must be presented to and approved by Justin during the interactive review.
+- **Open Loops File:** Do not modify the `/home/justin.guest/Developer/obsidian-vault/Open Loops.md` file directly. All changes must be presented to and approved by Justin during the interactive review.
 
 ## Verification Checklist
 

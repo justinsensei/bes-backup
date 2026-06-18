@@ -145,7 +145,7 @@ def urllib_parse_quote(s):
 
 def main():
     args = parse_args()
-    vault_path = os.environ.get('OBSIDIAN_VAULT_PATH', '/home/justin.guest/vault')
+    vault_path = os.environ.get('OBSIDIAN_VAULT_PATH', '/home/justin.guest/Developer/obsidian-vault')
     
     # Calculate cutoff time in UTC
     now_utc = datetime.now(timezone.utc)

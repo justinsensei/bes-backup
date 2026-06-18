@@ -19,7 +19,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
 
-VAULT = Path(os.environ.get("OBSIDIAN_VAULT_PATH", "/home/justin.guest/vault"))
+VAULT = Path(os.environ.get("OBSIDIAN_VAULT_PATH", "/home/justin.guest/Developer/obsidian-vault"))
 STATE_PATH = Path(os.path.expanduser("~/.hermes/state/semantic_lint_last.json"))
 
 SKIP_DIRS = {

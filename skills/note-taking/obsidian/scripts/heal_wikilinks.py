@@ -4,7 +4,7 @@ from pathlib import Path
 from collections import defaultdict
 
 def main():
-    vault_path = Path(os.environ.get("OBSIDIAN_VAULT_PATH", "/home/justin.guest/vault"))
+    vault_path = Path(os.environ.get("OBSIDIAN_VAULT_PATH", "/home/justin.guest/Developer/obsidian-vault"))
     if not vault_path.exists():
         print(f"Vault path not found: {vault_path}")
         return

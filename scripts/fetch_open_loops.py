@@ -94,7 +94,7 @@ def get_linear_loops():
 
 def get_vault_loops():
     loops = []
-    vault_path = os.path.expanduser("~/vault")
+    vault_path = os.path.expanduser("~/Developer/obsidian-vault")
     if not os.path.exists(vault_path):
         return []
         

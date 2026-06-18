@@ -7,7 +7,7 @@ import re
 from collections import defaultdict
 from pathlib import Path
 
-VAULT_DEFAULT = "/home/justin.guest/vault"
+VAULT_DEFAULT = "/home/justin.guest/Developer/obsidian-vault"
 CHANNEL_MAP_PATH = os.path.expanduser("~/.hermes/state/channel-project-map.json")
 
 STOP_WORDS = {

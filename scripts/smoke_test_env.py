@@ -79,7 +79,7 @@ def main():
     # Checkpoint 1: Crucial Path Availability
     # ----------------------------------------------------
     print_section("Checkpoint 1: Crucial Path Availability")
-    vault_path = "/home/justin.guest/vault"
+    vault_path = "/home/justin.guest/Developer/obsidian-vault"
     vault_exists = os.path.exists(vault_path)
     vault_is_dir = os.path.isdir(vault_path) if vault_exists else False
     vault_writable = os.access(vault_path, os.W_OK) if vault_exists else False

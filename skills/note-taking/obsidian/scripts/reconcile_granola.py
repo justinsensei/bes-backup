@@ -13,7 +13,7 @@ from pathlib import Path
 # Try to resolve vault path from env, fallback to default
 vault_path = os.getenv("OBSIDIAN_VAULT_PATH")
 if not vault_path:
-    vault_path = os.path.expanduser("~/vault")
+    vault_path = os.path.expanduser("~/Developer/obsidian-vault")
 
 MEETINGS_DIR = Path(vault_path) / "meetings"
 

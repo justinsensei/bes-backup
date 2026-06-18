@@ -164,7 +164,7 @@ def run_migration(vault_path, commit=False):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Rename kebab-case notes and heal wikilinks.")
-    parser.add_argument("--vault", default="/home/justin.guest/vault", help="Path to Obsidian vault")
+    parser.add_argument("--vault", default="/home/justin.guest/Developer/obsidian-vault", help="Path to Obsidian vault")
     parser.add_argument("--commit", action="store_true", help="Perform actual rename and edits")
     args = parser.parse_args()
     

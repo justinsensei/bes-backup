@@ -17,7 +17,7 @@ Captures noteworthy Slack threads and brain-dumps as high-quality synthesized in
 These notes capture a high-quality summary showing "who said what" clearly to retain crucial context and decisions, without storing verbatim message lists.
 
 ## Synced Path
-- `/home/justin.guest/vault/Inputs/Slack/YYYY-MM-DD - Spaced Title.md`
+- `/home/justin.guest/Developer/obsidian-vault/Inputs/Slack/YYYY-MM-DD - Spaced Title.md`
 
 ---
 

@@ -326,7 +326,7 @@ def main():
     for k, v in env.items():
         os.environ[k] = v
         
-    vault_path = os.environ.get('OBSIDIAN_VAULT_PATH', '/home/justin.guest/vault')
+    vault_path = os.environ.get('OBSIDIAN_VAULT_PATH', '/home/justin.guest/Developer/obsidian-vault')
     target_date = get_target_date()
     
     # Calculate previous morning briefing cutoff (yesterday 7:00 AM)

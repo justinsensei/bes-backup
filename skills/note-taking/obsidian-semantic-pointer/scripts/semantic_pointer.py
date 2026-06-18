@@ -12,7 +12,7 @@ import requests
 
 # Set database path
 DB_PATH = os.path.expanduser("~/.hermes/state/semantic_memory.db")
-VAULT_PATH = os.path.expanduser("~/vault")
+VAULT_PATH = os.path.expanduser("~/Developer/obsidian-vault")
 
 # Load sqlite-vec extension
 import sqlite_vec

@@ -15,10 +15,10 @@ metadata:
 
 Captures noteworthy Linear comments, project updates, and initiative updates carrying the `:obsidian_jg:` (or `🧠`/`brain`) reaction added by Justin.
 
-All ingested files bypass the inbox and must land inside `/home/justin.guest/vault/Inputs/Linear/` directory.
+All ingested files bypass the inbox and must land inside `/home/justin.guest/Developer/obsidian-vault/Inputs/Linear/` directory.
 
 ## Synced Path
-- `/home/justin.guest/vault/Inputs/Linear/YYYY-MM-DD - Linear - [Title].md`
+- `/home/justin.guest/Developer/obsidian-vault/Inputs/Linear/YYYY-MM-DD - Linear - [Title].md`
 
 ---
 

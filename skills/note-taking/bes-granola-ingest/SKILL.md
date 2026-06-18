@@ -15,8 +15,8 @@ metadata:
 Manages the ingestion pipeline for machine-generated meeting logs and transcripts synced from your Granola app. The sync directory acts as a landing zone, while this skill sweeps, formats, and files them.
 
 ## Sync Directories
-- **Raw Landing Zone:** `/home/justin.guest/vault/Meetings/`
-- **Processed Destination:** `/home/justin.guest/vault/Logs/Meetings/YYYY-MM-DD - Spaced Title.md`
+- **Raw Landing Zone:** `/home/justin.guest/Developer/obsidian-vault/Meetings/`
+- **Processed Destination:** `/home/justin.guest/Developer/obsidian-vault/Logs/Meetings/YYYY-MM-DD - Spaced Title.md`
 
 ---
 
@@ -24,7 +24,7 @@ Manages the ingestion pipeline for machine-generated meeting logs and transcript
 
 Meetings synced from Granola are swept automatically by the vault hygiene script (`vault_hygiene.py` or the custom `reconcile_granola.py` wrapper):
 
-1. **Scan Source:** Scans `/home/justin.guest/vault/Meetings/` for raw notes.
+1. **Scan Source:** Scans `/home/justin.guest/Developer/obsidian-vault/Meetings/` for raw notes.
 2. **Inject Standard Frontmatter:** Extracts the date from the file metadata or title, then inserts a standard numeric `id` and a symmetrical `daily_note` link:
    ```yaml
    ---
@@ -34,4 +34,4 @@ Meetings synced from Granola are swept automatically by the vault hygiene script
    ---
    ```
 3. **Format Cleanup:** Strips double hyphens, double rules, and extraneous sync headers.
-4. **Relocation:** Saves the sanitized file to `/home/justin.guest/vault/Logs/Meetings/` and deletes the raw file from the landing zone `/Meetings/`.
+4. **Relocation:** Saves the sanitized file to `/home/justin.guest/Developer/obsidian-vault/Logs/Meetings/` and deletes the raw file from the landing zone `/Meetings/`.

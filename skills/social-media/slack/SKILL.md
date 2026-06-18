@@ -194,7 +194,7 @@ You can capture high-quality conversation logs directly from Slack into the Obsi
 When Justin adds a `🧠` reaction to a message:
 - A cron job (`Slack Brain Note Capture`) runs every 2 hours using the `fetch_slack_brains.py` helper.
 - If Justin (user ID `U095LHMC4UW`) reacted with `🧠`, the script fetches the entire thread (if part of one) or an 11-message context window surrounding the message.
-- It synthesizes a Markdown log inside `/home/justin.guest/vault/Inputs/Slack/YYYY-MM-DD-slug.md` with participants, a summary of who said what, and key decisions/takeaways. Do NOT include verbatim Slack messages; store only summaries with retrieval metadata.
+- It synthesizes a Markdown log inside `/home/justin.guest/Developer/obsidian-vault/Inputs/Slack/YYYY-MM-DD-slug.md` with participants, a summary of who said what, and key decisions/takeaways. Do NOT include verbatim Slack messages; store only summaries with retrieval metadata.
 - It automatically appends a link + one-sentence gist under today's daily note `## 🗒 Notepad` section.
 - It marks the thread processed inside `~/.hermes/processed_slack_brains.json`.
 
@@ -222,7 +222,7 @@ There is a dedicated cron job ("Slack Brain Note Capture") running every 2 hours
 1. Runs `fetch_slack_brains.py` to fetch messages where Justin (`U095LHMC4UW`) added a `🧠` reaction.
 2. Checks against the processed cache at `~/.hermes/processed_slack_brains.json`.
 3. If new, retrieves the full conversation context (full thread replies if it's a thread; or a chronological 11-message context window around the reacted message if it's not).
-4. Summarizes the discussion via the agent and writes it to `/home/justin.guest/vault/Inputs/Slack/YYYY-MM-DD-slug.md`. Do NOT include verbatim Slack messages; store only summaries with retrieval metadata.
+4. Summarizes the discussion via the agent and writes it to `/home/justin.guest/Developer/obsidian-vault/Inputs/Slack/YYYY-MM-DD-slug.md`. Do NOT include verbatim Slack messages; store only summaries with retrieval metadata.
 5. Appends a link and one-sentence gist to today's Daily Note notepad under `## 🗒 Notepad`.
 6. Marks the message as processed using `python3 fetch_slack_brains.py --mark-processed <channel_id> <ts>`.
 

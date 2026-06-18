@@ -17,8 +17,8 @@ metadata:
 Bes is a **thin assistant** designed for lightweight mobile query, search, and automated background plumbing (ingestion and daily note/hygiene runs).
 
 To prevent drift and eliminate duplication of maintenance overhead, **the Obsidian vault itself is the sole canonical source of truth for all schemas, formats, layout structures, and workflows.** These conventions are actively maintained under:
-1. **Cursor Rules:** `/home/justin.guest/vault/.cursor/rules/`
-2. **Cursor Skills:** `/home/justin.guest/vault/.cursor/skills/`
+1. **Cursor Rules:** `/home/justin.guest/Developer/obsidian-vault/.cursor/rules/`
+2. **Cursor Skills:** `/home/justin.guest/Developer/obsidian-vault/.cursor/skills/`
 
 Bes does not store hard-coded copies of note formats, category tables, or sorting rules. Instead, this skill acts as a dynamic runtime instruction directing Bes to read the live rules directly from the filesystem prior to performing any note operations.
 
@@ -33,11 +33,11 @@ Bes does not store hard-coded copies of note formats, category tables, or sortin
 Whenever you are asked to interact with files in the vault, you **must** obey the following rigid steps:
 
 1. **Load Canonical Rules:** Read the live rules from the vault directory to retrieve current schemas, file naming conventions, and folders:
-   * **General Rules (Categories, Folders, Links):** Read `/home/justin.guest/vault/.cursor/rules/main.mdc`
-   * **Note Formats & Frontmatter:** Read `/home/justin.guest/vault/.cursor/rules/note-creation.mdc`
-   * **Contacts Layouts (People/Orgs):** Read `/home/justin.guest/vault/.cursor/rules/obsidian-contacts.mdc`
-   * **File Operations (Moves, Renames, Links):** Read `/home/justin.guest/vault/.cursor/rules/file-operations.mdc`
-   * **Markdown & Syntax (Callouts, Math, YAML):** Read `/home/justin.guest/vault/.cursor/rules/obsidian-syntax.mdc`
+   * **General Rules (Categories, Folders, Links):** Read `/home/justin.guest/Developer/obsidian-vault/.cursor/rules/main.mdc`
+   * **Note Formats & Frontmatter:** Read `/home/justin.guest/Developer/obsidian-vault/.cursor/rules/note-creation.mdc`
+   * **Contacts Layouts (People/Orgs):** Read `/home/justin.guest/Developer/obsidian-vault/.cursor/rules/obsidian-contacts.mdc`
+   * **File Operations (Moves, Renames, Links):** Read `/home/justin.guest/Developer/obsidian-vault/.cursor/rules/file-operations.mdc`
+   * **Markdown & Syntax (Callouts, Math, YAML):** Read `/home/justin.guest/Developer/obsidian-vault/.cursor/rules/obsidian-syntax.mdc`
 2. **Apply Rules Dynamically:** Treat the retrieved markdown contents as absolute constraints. For example:
    * Verify the exact frontmatter syntax required (e.g., `id: "YYYYMMDDHHmmss"` and `daily_note: "[[YYYY-MM-DD Weekday|YYYY-MM-DD Weekday]]"`).
    * Verify the correct category routing paths.
@@ -50,6 +50,6 @@ Whenever you are asked to interact with files in the vault, you **must** obey th
 3. **Failing to check for existing files:** Before creating any note or stub, search both `/Notes/` and `/Inbox/` by name to prevent duplicate stubs.
 
 ## Verification Checklist
-- [ ] Active rules (including `main.mdc`, `note-creation.mdc`, `obsidian-contacts.mdc`, `file-operations.mdc`, and `obsidian-syntax.mdc`) retrieved from `/home/justin.guest/vault/.cursor/rules/` before executing the operation
+- [ ] Active rules (including `main.mdc`, `note-creation.mdc`, `obsidian-contacts.mdc`, `file-operations.mdc`, and `obsidian-syntax.mdc`) retrieved from `/home/justin.guest/Developer/obsidian-vault/.cursor/rules/` before executing the operation
 - [ ] Note frontmatter, title, and location checked against the retrieved Cursor rules
-- [ ] Newly created notes land in `/home/justin.guest/vault/Inbox/` first (except raw feed folders bypass)
+- [ ] Newly created notes land in `/home/justin.guest/Developer/obsidian-vault/Inbox/` first (except raw feed folders bypass)

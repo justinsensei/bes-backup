@@ -375,7 +375,7 @@ def main():
     )
     args = parser.parse_args()
 
-    vault_path = os.environ.get('OBSIDIAN_VAULT_PATH', '/home/justin.guest/vault')
+    vault_path = os.environ.get('OBSIDIAN_VAULT_PATH', '/home/justin.guest/Developer/obsidian-vault')
     now_dt = datetime.now()
 
     if args.discover_projects:

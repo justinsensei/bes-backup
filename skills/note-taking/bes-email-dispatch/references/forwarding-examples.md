@@ -11,7 +11,7 @@ File this. I like the idea about the flux capacitor. I wonder if we could use it
 
 ### Expected Behavior:
 - **Intents:** File only.
-- **Vault Note Path:** `/home/justin.guest/vault/Inbox/2026-06-05-cool-science-idea.md` (assuming subject was "Cool Science Idea")
+- **Vault Note Path:** `/home/justin.guest/Developer/obsidian-vault/Inbox/2026-06-05-cool-science-idea.md` (assuming subject was "Cool Science Idea")
 - **Context section in markdown:**
   ```markdown
   ## Context
@@ -50,7 +50,7 @@ Task due Friday. Gotta finish the book before the weekend.
 ### Expected Behavior:
 - **Intents:** Both File and Task.
 - **Step 1: File Email to Vault:**
-  - Save to `/home/justin.guest/vault/Inbox/...`
+  - Save to `/home/justin.guest/Developer/obsidian-vault/Inbox/...`
   - Put "I like the idea about the flux capacitor..." under `## Context`.
 - **Step 2: Create Todoist Task:**
   - Create the task in Inbox with `content`: "Finish reading about the improbability engine" (or "Finish the book")

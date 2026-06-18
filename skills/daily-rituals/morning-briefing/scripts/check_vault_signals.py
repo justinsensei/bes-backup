@@ -332,7 +332,7 @@ def scan_file_for_ambiguous_mentions(file_path, content, entities, key_to_paths,
     return discovered
 
 def main():
-    vault_path = os.environ.get('OBSIDIAN_VAULT_PATH', '/home/justin.guest/vault')
+    vault_path = os.environ.get('OBSIDIAN_VAULT_PATH', '/home/justin.guest/Developer/obsidian-vault')
     now_dt = datetime.now()
     watermark_dt = load_watermark()
     

@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 
 def create_daily_note():
-    vault_path = os.path.expanduser("~/vault")
+    vault_path = os.path.expanduser("~/Developer/obsidian-vault")
     template_path = os.path.join(vault_path, "Utilities/Templates/daily_note.md")
     notes_dir = os.path.join(vault_path, "Daily Notes")
     

@@ -1,6 +1,6 @@
 # Vault Audit — 2026-05-22
 
-Full structural and frontmatter audit of `/home/justin.guest/vault`.
+Full structural and frontmatter audit of `/home/justin.guest/Developer/obsidian-vault`.
 
 ## Vault size
 

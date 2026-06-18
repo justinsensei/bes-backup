@@ -21,7 +21,7 @@ from integrate_entities import integrate_ingest, append_meeting_related
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-VAULT = Path(os.environ.get("OBSIDIAN_VAULT_PATH", "/home/justin.guest/vault"))
+VAULT = Path(os.environ.get("OBSIDIAN_VAULT_PATH", "/home/justin.guest/Developer/obsidian-vault"))
 
 
 def inputs_base(vault_path):
