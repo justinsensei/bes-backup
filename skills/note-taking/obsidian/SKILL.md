@@ -48,8 +48,10 @@ Whenever you are asked to interact with files in the vault, you **must** obey th
 1. **Improvising Conventions:** Relying on cached memory or general knowledge to write note properties, file names, or folder paths. Always read the live `.cursor/rules/` files from disk first.
 2. **Hard-coding YAML properties in scripts:** If a Cursor rule shifts (e.g., taxonomy change), scripts should be reviewed for alignment to prevent automated pipeline drift.
 3. **Failing to check for existing files:** Before creating any note or stub, search both `/Notes/` and `/Inbox/` by name to prevent duplicate stubs.
+4. **Failing to update the central wiki log:** Any newly created note (including manual quick-captures or scraps in `Inbox/`) must be logged in `Utilities/log.md` under the correct daily header (creating the header in `## YYYY-MM-DD Weekday` format if it doesn't already exist for the current date).
 
 ## Verification Checklist
 - [ ] Active rules (including `main.mdc`, `note-creation.mdc`, `obsidian-contacts.mdc`, `file-operations.mdc`, and `obsidian-syntax.mdc`) retrieved from `/home/justin.guest/Developer/obsidian-vault/.cursor/rules/` before executing the operation
 - [ ] Note frontmatter, title, and location checked against the retrieved Cursor rules
 - [ ] Newly created notes land in `/home/justin.guest/Developer/obsidian-vault/Inbox/` first (except raw feed folders bypass)
+- [ ] Central wiki log (`Utilities/log.md`) updated with the new creation under the correct date header
