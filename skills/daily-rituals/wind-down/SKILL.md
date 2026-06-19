@@ -163,12 +163,12 @@ This phase implements the formal 7-phase EIIRP cycle to perform comprehensive no
 
 Wait for Justin's confirmation or feedback at the end of the EIIRP report (Step 7) before executing any folder movements or renaming notes.
 
-1. **Step 1: Inventory (Scan & List)**
-   - Scan the vault inbox directory (`/home/justin.guest/Developer/obsidian-vault/Inbox/`) using `search_files(path='/home/justin.guest/Developer/obsidian-vault/inbox', pattern='*')`.
-   - Identify any other files modified or created in the vault within the last 24 hours (excluding automated/system logs unless they need structural triage).
+1. **Step 1: Inventory (Scan & List - Excluding Inbox)**
+   - Do NOT scan notes in your vault Inbox directory (`/home/justin.guest/Developer/obsidian-vault/Inbox/`). These notes are handled manually by Justin.
+   - Scan other vault folders to identify files modified or created in the vault within the last 24 hours (excluding automated/system logs and notes in `Inbox/` or `inbox/`).
 
 2. **Step 2: Taxonomy (Classification & Routing)**
-   - Classify all inventoried notes based on content analysis and map them to their correct Obsidian folder routes:
+   - Classify all inventoried notes (which exclude those in the `Inbox/` directory) based on content analysis and map them to their correct Obsidian folder routes:
      - **`Contacts/`** (Category: `[[People]]` or `[[Organizations]]`):
        - *Crucial Rule:* Any brand-new contact note created by Bes must land in `/home/justin.guest/Developer/obsidian-vault/Inbox/`. Existing contacts already under `Contacts/` are updated in place and must *never* be relocated.
      - **`Inputs/Meetings/`** (Category: `[[Meetings]]`):
@@ -350,6 +350,7 @@ Preview tomorrow's schedule to establish mental readiness, coordinate upcoming t
 
 ## Pitfalls & Defensive Rules
 
+- **Excluding the Inbox from EEIRP Scans:** Always ensure that vault scanning scripts (such as `fetch_vault_notes_candidates.py` and `check_vault_signals.py`) completely ignore the `Inbox/` and `inbox/` directories. Notes in the inbox are temporary and meant to be triaged manually by Justin, so scanning them produces premature tasks, suggestions, and signals.
 - **No Project Discovery in Wind-Down:** Never attempt to run live project discovery or suggest project note creations during the wind-down session. Project suggestions are too noisy for this workflow; instead, project entity matching and timeline appends are handled exclusively via the automated ingest pipelines (`integrate-entities`).
 - **Preserve the Notepad:** Always load today's daily note first, find the `## 🗒 Notepad` section, and keep its contents completely intact. If the section doesn't exist, create it at the bottom of the note instead of overwriting any other sections.
 - **Inputs Terminology:** Always refer to Slack threads, emails, and other primary-category sources as "inputs" rather than "logs" in both conversations and note frontmatter, as per the updated vault schema.
