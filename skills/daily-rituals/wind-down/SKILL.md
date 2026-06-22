@@ -1,7 +1,7 @@
 ---
 name: wind-down
-description: "Interactive daily wrap-up: 1. Input candidates; 2. Discovered contacts; 3. Everything In Its Right Place (EIIRP) Vault Hygiene & Triage; 4. Work log draft/write; 5. Open loops; 6. Next day's calendar preview."
-version: 1.3.0
+description: "Interactive daily wrap-up: 1. Input candidates (Slack/email); 2. Discovered contacts; 3. Work log draft/write; 4. Next day's calendar preview."
+version: 2.0.0
 author: Bes
 license: MIT
 platforms:
@@ -9,8 +9,8 @@ platforms:
   - macos
 metadata:
   hermes:
-    tags: [productivity, wind-down, daily-routine, work-log, inbox-triage, sources, calendar, hygiene]
-    related_skills: [work-log, morning-briefing, obsidian, obsidian-hygiene, llm-wiki, todoist]
+    tags: [productivity, wind-down, daily-routine, work-log, inbox-triage, sources, calendar]
+    related_skills: [work-log, morning-briefing, obsidian, todoist]
 ---
 
 # 🌅 Daily Wind-Down & Wrap-Up
@@ -151,96 +151,13 @@ If Justin selects any:
      ## Timeline
      - <Date> | Discovered — Mentioned in [[<context_file_relative_path_no_ext>|<context_file_title>]].
      ```
-3. Report success and confirm creation in the inbox directory.
+4. Report success and confirm creation in the inbox directory.
 
 If no discovered contacts are found, proceed to Phase 3.
 
 ---
 
-### Phase 3 — Everything In Its Right Place (EIIRP) Vault Hygiene & Triage
-
-This phase implements the formal 7-phase EIIRP cycle to perform comprehensive note hygiene, frontmatter validation, and inbox triage across the entire vault. This ensures files are clean, metadata is valid, and the knowledge graph is richly linked.
-
-Wait for Justin's confirmation or feedback at the end of the EIIRP report (Step 7) before executing any folder movements or renaming notes.
-
-1. **Step 1: Inventory (Scan & List - Excluding Inbox)**
-   - Do NOT scan notes in your vault Inbox directory (`/home/justin.guest/Developer/obsidian-vault/Inbox/`). These notes are handled manually by Justin.
-   - Scan other vault folders to identify files modified or created in the vault within the last 24 hours (excluding automated/system logs and notes in `Inbox/` or `inbox/`).
-
-2. **Step 2: Taxonomy (Classification & Routing)**
-   - Classify all inventoried notes (which exclude those in the `Inbox/` directory) based on content analysis and map them to their correct Obsidian folder routes:
-     - **`Contacts/`** (Category: `[[People]]` or `[[Organizations]]`):
-       - *Crucial Rule:* Any brand-new contact note created by Bes must land in `/home/justin.guest/Developer/obsidian-vault/Inbox/`. Existing contacts already under `Contacts/` are updated in place and must *never* be relocated.
-     - **`Inputs/Meetings/`** (Category: `[[Meetings]]`):
-       - Meeting syncs, agendas, Granola summaries.
-     - **`Inputs/Readings/`** (Category: `[[Readings]]`):
-       - Raw reading imports (immutable).
-     - **`Notes/`** with **`[[Sources]]`**:
-       - Compiled bibliographical records (integrate-full, not raw imports).
-     - **`Notes/`** (maturity tiers):
-       - Thoughts, concepts, beliefs, memories, decisions, projects:
-         - **`Notes/Thoughts`** (Category: `[[Thoughts]]`) — reflections, raw thoughts, ideas, and opinions.
-         - **`Notes/Concepts`** (Category: `[[Concepts]]`) — models, theories, definitions, or educational concepts (others' thinking).
-         - **`Notes/References`** (Category: `[[References]]`) — patterns, structured guides, technical reference sheets (note: Justin uses Apple Notes as a "filing cabinet" for references, but continues using Obsidian for general note-taking/referencing).
-         - **`Notes/Beliefs`** (Category: `[[Beliefs]]`) — philosophies and core values (axioms).
-         - **`Notes/Memories`** (Category: `[[Memories]]`) — personal memories or historical highlights.
-         - **`Notes/Decisions`** (Category: `[[Decisions]]`) — specific personal or project-related choices.
-         - **`Notes/Projects`** (Category: `[[Projects]]`) — active project hubs and dashboard files.
-
-3. **Step 3: Schema Check (Frontmatter Validation)**
-   - Validate the YAML frontmatter headers of all new or modified notes.
-   - Enforce the following criteria:
-     - **Identifiers:** Every note must contain a 14-digit unique timestamp identifier (`id: YYYYMMDDHHmmss` format) in its frontmatter.
-     - **Daily Note Link:** Ensure `daily_note: "[[<YYYY-MM-DD Weekday>]]"` is present and correctly matches the note's creation date.
-     - **Category:** Confirm the correct `category` matches the note's taxonomy (e.g. `category: "[[Thoughts]]"`).
-     - **Frontmatter Safety:**
-       - Ensure a closing `---` divider is present and sits on its own line after the properties block to avoid unclosed properties blocks.
-       - Verify that adding/updating properties doesn't result in "dangling closing dividers" or merged text (e.g., `daily_note: '...'---` is invalid).
-       - Ensure timeline removal or legacy cleanup patterns do not accidentally match and destroy the frontmatter closing divider.
-
-4. **Step 4: File & Filing (Execution & Triage)**
-   - Run the automated vault hygiene routines to auto-reconcile, move, and link files.
-   - **Run the automated script:**
-     ```bash
-     python3 ~/.hermes/scripts/vault_hygiene.py
-     ```
-     - This script automatically relocates misplaced daily notes to `Daily Notes/`, converts legacy inline tags (like `#people` or `#meeting`) to category YAML metadata, and runs the auto-linker to convert plain-text mentions of known contacts and projects into proper wikilinks.
-   - For all other inbox notes requiring human judgment, compile your recommended movements and renames into the final report.
-
-
-
-6. **Step 6: Verification (Link & Orphan Audit)**
-   - Verify that all internal and external wikilinks inside the newly created or modified notes are valid and not broken. **Important:** Ignore any broken link errors originating from files within the `/Inputs/` directory or any of its sub-folders.
-   - Scan for orphaned files created today (i.e. notes with zero incoming or outgoing links) and propose relevant connections to existing daily notes or project hubs.
-
-7. **Step 7: Report (Unified Status Summary)**
-   - Generate a beautifully formatted, unified status summary of the 7-phase EIIRP run.
-   - Present this report to Justin in Telegram. It must summarize:
-     - **Inventory:** Notes analyzed today.
-     - **Taxonomy & Schema:** Recommended destination subfolders, categories, and frontmatter validation results.
-     - **File & Filing:** Misplaced notes relocated by `vault_hygiene.py` and suggested manual inbox triage routes.
-     - **Audit & Verification:** Reconnection/audit results, broken links, and orphaned notes.
-     - *Format example:*
-       ```
-       📥 EIIRP Vault Hygiene & Triage Report:
-
-       1. **Inventory**: 3 new files found in Inbox/ and 2 modified today.
-       2. **Taxonomy & Schema**:
-          - `20260610090000.md` → Suggest `Notes/Thoughts` (Category: `[[Thoughts]]`). Frontmatter: Valid.
-          - `New Contact.md` → Suggest `Inbox/` (Category: `[[People]]`). Frontmatter: Missing daily_note link, will heal.
-       3. **File & Filing**:
-          - Misplaced daily note `2026-06-09 Tuesday.md` moved from Inbox/ to `Daily Notes/` via `vault_hygiene.py`.
-       4. **Audit & Verification**:
-          - Broken link detected in `20260610090000.md` pointing to non-existent `[[Project Alpha]]`.
-          - All other links valid. No orphaned notes.
-
-       Shall I execute these inbox movements and heal the frontmatter as suggested, or would you like to route them differently?
-       ```
-   - **Wait for Justin's response and explicit approval before moving any inbox files or applying manual frontmatter edits.**
-
----
-
-### Phase 4 — Work Log Draft & Alignment
+### Phase 3 — Work Log Draft & Alignment
 
 Draft today's work log, align with Justin, and write it to today's daily note. This step runs towards the end of the wind-down so that any activities, contact creations, log files, or inbox triage completed during previous steps are fully incorporated, ensuring the work log captures the final state of play for the day.
 
@@ -277,47 +194,7 @@ Draft today's work log, align with Justin, and write it to today's daily note. T
 
 ---
 
-### Phase 5 — Open Loops
-
-This phase reviews the central `Open Loops.md` file, gathers context to help close loops, and captures any new open loops that have emerged.
-
-1.  **Review Existing Open Loops:**
-    - Read the contents of `/home/justin.guest/Developer/obsidian-vault/Open Loops.md`. The file is a simple bulleted list.
-    - For each open loop (each line starting with `- `), gather relevant context that might indicate the loop can be closed. This includes:
-        - Recently completed Todoist tasks.
-        - Recently created or modified vault notes with similar keywords.
-        - Recent calendar events.
-        - Relevant Slack or email conversations.
-
-2.  **Present for Closure Review:**
-    - Present each open loop along with the context you've gathered.
-    - Format:
-      ```
-      🌀 Open Loops Review:
-
-      1. `- Follow up with [[Alice]] about the [[Project X]] deadline`
-         - **Context:** You completed the Todoist task "Draft Project X timeline" yesterday. A new document `Notes/Project X Timeline Q3.md` was also created.
-      2. `- Plan birthday party`
-         - **Context:** A calendar event "Nana's Birthday Dinner" was created for this Saturday.
-
-      Which of these loops are now closed and can be removed? (e.g. "1 and 2", "remove 1", or "none")
-      ```
-    - **Wait for Justin's response.**
-
-3.  **Capture New Open Loops:**
-    - After processing closures, ask a simple, open-ended question to capture new loops.
-      *"Any new open loops on your mind to add to the list?"*
-    - **Wait for Justin's response.**
-
-4.  **Update the Master File:**
-    - Atomically update the `/home/justin.guest/Developer/obsidian-vault/Open Loops.md` file:
-      - Remove the lines for loops Justin confirmed are closed.
-      - Append any new loops he provided as simple bullets (`- ...`).
-    - Report success, showing the final state of the file or a summary of changes.
-
----
-
-### Phase 6 — Tomorrow's Calendar Preview & Close-out
+### Phase 4 — Tomorrow's Calendar Preview & Close-out
 
 Preview tomorrow's schedule to establish mental readiness, coordinate upcoming tasks, and close out the day.
 
@@ -350,12 +227,11 @@ Preview tomorrow's schedule to establish mental readiness, coordinate upcoming t
 
 ## Pitfalls & Defensive Rules
 
-- **Excluding the Inbox from EEIRP Scans:** Always ensure that vault scanning scripts (such as `fetch_vault_notes_candidates.py` and `check_vault_signals.py`) completely ignore the `Inbox/` and `inbox/` directories. Notes in the inbox are temporary and meant to be triaged manually by Justin, so scanning them produces premature tasks, suggestions, and signals.
 - **No Project Discovery in Wind-Down:** Never attempt to run live project discovery or suggest project note creations during the wind-down session. Project suggestions are too noisy for this workflow; instead, project entity matching and timeline appends are handled exclusively via the automated ingest pipelines (`integrate-entities`).
 - **Preserve the Notepad:** Always load today's daily note first, find the `## 🗒 Notepad` section, and keep its contents completely intact. If the section doesn't exist, create it at the bottom of the note instead of overwriting any other sections.
 - **Inputs Terminology:** Always refer to Slack threads, emails, and other primary-category sources as "inputs" rather than "logs" in both conversations and note frontmatter, as per the updated vault schema.
 - **Accurate Attribution:** When drafting highlights and decisions from emails or meeting notes, ensure decisions are attributed to the correct person (e.g., Anya, Nana, teachers, etc.) rather than assuming Justin made them.
-- **Accurate Assumption/Feasibility Status:** Be extremely precise about what has actually been validated versus what remains an open question when drafting research findings. For example, if LLM-based text generation of flashcards was successful, do *not* log that the feasibility of "audio flashcards" was confirmed, as speech-to-text and audio-based evaluation elements remain untested. Always bound claims strictly to the scope of what was directly tested.
+- **Accurate Assumption/Feasibility Status:** Be extremely precise about what has actually been validated versus what remains an open question when drafting research findings. Always bound claims strictly to the scope of what was directly tested.
 - **Escape Slack Channels:** Always write `#channel-name` as `\#channel-name` inside the daily note so Obsidian doesn't parse it as a tag.
 - **Dynamic Timezone Offset:** When fetching calendar events, always calculate and append the local timezone offset (e.g. `-04:00` or `-05:00`) to `--start` and `--end` to prevent boundary events from leaking from yesterday or tomorrow.
 - **Git Commit Warning:** Do not manually `git add` or `git commit` any vault edits. The `bes-vault-sync` watcher will handle it immediately.
@@ -365,14 +241,11 @@ Preview tomorrow's schedule to establish mental readiness, coordinate upcoming t
 - **Dangling Closing Dividers:** Ensure any automated or manual procedure that adds or updates properties writes back the closing divider (`---`) on a *fresh line*. Writing it without an intervening newline will append it directly to the end of the last property string (e.g., `daily_note: '...'---`), which corrupts properties.
 - **Non-Unique Aliases Guard:** Always skip auto-linking any alias that is non-unique (shared by more than one distinct contact path) to avoid incorrect connections in the vault.
 - **Timelines Deactivation (manual wind-down):** Do not manually append `## Timeline` bullets to contact cards during wind-down; rely on Obsidian's native Backlinks panel instead. **`integrate-entities`** is the sanctioned automated append path for both contacts and projects at ingest time — cron and meeting reconcile use it.
-- **Open Loops File:** Do not modify the `/home/justin.guest/Developer/obsidian-vault/Open Loops.md` file directly. All changes must be presented to and approved by Justin during the interactive review.
 
 ## Verification Checklist
 
-- [ ] All 6 phases completed in strict interactive sequence.
+- [ ] All 4 phases completed in strict interactive sequence.
 - [ ] Today's Notepad section in the daily note preserved completely intact without modification or truncation.
-- [ ] Frontmatter properties (`id`, `daily_note`, `category`) checked and validated for all triaged notes.
-- [ ] Misplaced daily notes and logs successfully reorganized using `vault_hygiene.py`.
 - [ ] Discovered contacts drafted in the inbox, and existing contact cards updated in place without relocation.
 - [ ] Work log draft synthesized with accurate attribution of decisions, and written to today's daily note.
 - [ ] Tomorrow's schedule fetched and presented with timezone-aware calendar offsets.

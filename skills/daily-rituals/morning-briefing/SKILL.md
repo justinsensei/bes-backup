@@ -251,22 +251,29 @@ Once Justin confirms selections:
 
 ### Phase 4 — Near-term task triage
 
-Query Todoist for tasks with due dates or deadlines in the next 3 days (inclusive of today).
+Query Todoist for tasks with due dates or deadlines in the next 3 days (inclusive of today). Also query Linear for open issues assigned to Justin with due dates in the next 3 days or marked high-priority.
 
-**Rule:** Skip any tasks that are already in the "Now" project, or completed/cancelled tasks.
-Only present this if there are matching tasks. If none, skip directly to Phase 5.
+**Rule:** Skip any Todoist tasks that are already in the "Now" project, or completed/cancelled tasks. For Linear, skip issues with status Triage, Backlog, Completed, or Canceled.
+Only present this if there are matching tasks/issues. If none, skip directly to Phase 5.
 
 **Format:**
 ```
-📌 N tasks due or with deadlines in the next 3 days:
+📌 N tasks/issues due or with deadlines in the next 3 days:
 
+**Todoist**
 1. [Project] Task name (due: Date/Time | deadline: Date)
 ...
 
-Would you like to move any of these to "Now"?
+**Linear**
+2. [Team] Issue title (due: Date | priority: High)
+...
+
+Would you like to move any Todoist tasks to "Now"?
 ```
 
-Once Justin selects tasks, move them to the "Now" project.
+Use `mcp_todoist_find_tasks_by_date` for Todoist and `mcp_linear_*` tools for Linear issues.
+
+Once Justin selects Todoist tasks, move them to the "Now" project.
 
 After presenting and handling any movements, wait for acknowledgment before Phase 5.
 
@@ -359,7 +366,7 @@ US federal holidays auto-detected. Personal days off in `~/.hermes/days-off.txt`
 - **Child name or grade misattribution.** Do not guess or assume which child a school event (like a graduation, potluck, or class celebration) belongs to. Always verify school grades and ages against the user profile (e.g., Jamie is in 5th grade/G5, Sam is in 6th grade/G6) before writing descriptions or adding summaries.
 - **Decision misattribution.** When summarizing work logs or calendar updates, do not attribute decisions made by others (colleagues, family members, teachers) to Justin. Always explicitly credit the actual decision-maker.
 - **Don't re-run background jobs if the cache is fresh.** Check the cache first. Only re-run if the file is missing or >4h old.
-- **Work log section header** is usually `## 🚀 Highlights & Decisions` or `# 📋 Work Log` / `## 📋 Work Log` in the daily note. If all are absent, the note may not have been logged yet — say so, don't silently skip.
+- **Work log section header** is usually `## 🚀 Highlights & Decisions`, `## 💼 Work Log`, `# 📋 Work Log`, or `## 📋 Work Log` in the daily note. If all are absent, the note may not have been logged yet — say so, don't silently skip.
 - **Multiple work-log dates:** synthesize, don't concatenate. Justin doesn't want to read Friday's full log on Monday — he wants the 3-line version.
 - **Calendar dedup is against the full 30-day snapshot** already in the cache. Don't re-fetch unless you need to.
 - **"Day off" filter applies per-phase.** Check it before each phase, not just once at the top.

@@ -282,7 +282,7 @@
     },
     {
       "id": "a15e9509d0e6",
-      "name": "Wind-Down Pre-Cache — 3:30PM",
+      "name": "Wind-Down Pre-Cache — 3:30PM (disabled — wind-down moved back to Bes interactive)",
       "prompt": "[IMPORTANT: You are running as a scheduled cron job. DELIVERY: Your final response will be automatically delivered to the user — do NOT use send_message or try to deliver the output yourself. SILENT: If the cache was written successfully, respond with exactly \"[SILENT]\" to suppress delivery. Only send a message if an error occurs.]\n\n## Wind-Down Pre-Cache\n\nYour job is to gather context for Justin's end-of-day wind-down and write it to the vault cache file so Cursor can read it without making expensive live MCP calls.\n\n---\n\n## Step 1 — Fetch Slack input candidates\n\nFetch Slack threads from the last 36 hours where Justin was a participant, that have NOT already been saved as Input notes in `/home/justin.guest/vault/Inputs/Slack/`.\n\n- Use the Slack MCP to search recent conversations involving Justin\n- For each candidate thread, capture: `channel` (channel name), `ts` (thread timestamp, as a string), `participants` (list of names), `preview` (1-sentence topic summary)\n- Exclude threads whose content already exists as a file in `/home/justin.guest/vault/Inputs/Slack/` (check by scanning that directory for files created today or yesterday)\n- Keep the list to the most relevant 10–15 candidates if there are many\n\n---\n\n## Step 2 — Discover contact candidates\n\nRun the vault signals scan:\n```bash\npython3 ~/.hermes/scripts/check_vault_signals.py\n```\nRead the output from `/home/justin.guest/.hermes/morning-briefing/vault_signals_last_run.json` and extract `discovered_entities` (people and organizations lists).\n\n---\n\n## Step 3 — Fetch tomorrow's calendar\n\nFetch tomorrow's scheduled meetings from Granola:\n- Call `list_meetings` with a date range covering tomorrow (start of day to end of day)\n- For each meeting, extract: `time` (HH:MM in local time), `title`, `attendees` (external only, list of names)\n- If Granola is unavailable, set `tomorrow_calendar` to `null`\n\n---\n\n## Step 4 — Write cache file\n\nCreate the cache directory if needed:\n```bash\nmkdir -p /home/justin.guest/vault/Utilities/cache\n```\n\nWrite `/home/justin.guest/vault/Utilities/cache/wind-down.json`:\n\n```json\n{\n  \"date\": \"<TODAY in YYYY-MM-DD>\",\n  \"cached_at\": \"<current ISO 8601 timestamp with timezone>\",\n  \"slack_candidates\": [\n    { \"channel\": \"channel-name\", \"ts\": \"...\", \"participants\": [\"Name\"], \"preview\": \"...\" }\n  ],\n  \"contact_candidates\": { \"people\": [...], \"organizations\": [...] },\n  \"tomorrow_calendar\": [\n    { \"time\": \"HH:MM\", \"title\": \"...\", \"attendees\": [...] }\n  ]\n}\n```\n\nAfter writing, verify the file exists. Then respond with \"[SILENT]\".",
       "skills": [],
       "skill": null,
@@ -302,10 +302,10 @@
         "times": null,
         "completed": 0
       },
-      "enabled": true,
-      "state": "scheduled",
-      "paused_at": null,
-      "paused_reason": null,
+      "enabled": false,
+      "state": "paused",
+      "paused_at": "2026-06-22T00:00:00-04:00",
+      "paused_reason": "wind-down moved back to Bes interactive — cache file no longer needed",
       "created_at": "2026-06-19T15:15:18.701814-04:00",
       "next_run_at": null,
       "last_run_at": null,
@@ -323,7 +323,7 @@
     },
     {
       "id": "dabb49b78988",
-      "name": "Wind-Down Pre-Cache — 4:30PM",
+      "name": "Wind-Down Pre-Cache — 4:30PM (disabled — wind-down moved back to Bes interactive)",
       "prompt": "[IMPORTANT: You are running as a scheduled cron job. DELIVERY: Your final response will be automatically delivered to the user — do NOT use send_message or try to deliver the output yourself. SILENT: If the cache was written successfully, respond with exactly \"[SILENT]\" to suppress delivery. Only send a message if an error occurs.]\n\n## Wind-Down Pre-Cache\n\nYour job is to gather context for Justin's end-of-day wind-down and write it to the vault cache file so Cursor can read it without making expensive live MCP calls.\n\n---\n\n## Step 1 — Fetch Slack input candidates\n\nFetch Slack threads from the last 36 hours where Justin was a participant, that have NOT already been saved as Input notes in `/home/justin.guest/vault/Inputs/Slack/`.\n\n- Use the Slack MCP to search recent conversations involving Justin\n- For each candidate thread, capture: `channel` (channel name), `ts` (thread timestamp, as a string), `participants` (list of names), `preview` (1-sentence topic summary)\n- Exclude threads whose content already exists as a file in `/home/justin.guest/vault/Inputs/Slack/` (check by scanning that directory for files created today or yesterday)\n- Keep the list to the most relevant 10–15 candidates if there are many\n\n---\n\n## Step 2 — Discover contact candidates\n\nRun the vault signals scan:\n```bash\npython3 ~/.hermes/scripts/check_vault_signals.py\n```\nRead the output from `/home/justin.guest/.hermes/morning-briefing/vault_signals_last_run.json` and extract `discovered_entities` (people and organizations lists).\n\n---\n\n## Step 3 — Fetch tomorrow's calendar\n\nFetch tomorrow's scheduled meetings from Granola:\n- Call `list_meetings` with a date range covering tomorrow (start of day to end of day)\n- For each meeting, extract: `time` (HH:MM in local time), `title`, `attendees` (external only, list of names)\n- If Granola is unavailable, set `tomorrow_calendar` to `null`\n\n---\n\n## Step 4 — Write cache file\n\nCreate the cache directory if needed:\n```bash\nmkdir -p /home/justin.guest/vault/Utilities/cache\n```\n\nWrite `/home/justin.guest/vault/Utilities/cache/wind-down.json`:\n\n```json\n{\n  \"date\": \"<TODAY in YYYY-MM-DD>\",\n  \"cached_at\": \"<current ISO 8601 timestamp with timezone>\",\n  \"slack_candidates\": [\n    { \"channel\": \"channel-name\", \"ts\": \"...\", \"participants\": [\"Name\"], \"preview\": \"...\" }\n  ],\n  \"contact_candidates\": { \"people\": [...], \"organizations\": [...] },\n  \"tomorrow_calendar\": [\n    { \"time\": \"HH:MM\", \"title\": \"...\", \"attendees\": [...] }\n  ]\n}\n```\n\nAfter writing, verify the file exists. Then respond with \"[SILENT]\".",
       "skills": [],
       "skill": null,
@@ -343,10 +343,10 @@
         "times": null,
         "completed": 0
       },
-      "enabled": true,
-      "state": "scheduled",
-      "paused_at": null,
-      "paused_reason": null,
+      "enabled": false,
+      "state": "paused",
+      "paused_at": "2026-06-22T00:00:00-04:00",
+      "paused_reason": "wind-down moved back to Bes interactive — cache file no longer needed",
       "created_at": "2026-06-19T15:15:18.701814-04:00",
       "next_run_at": null,
       "last_run_at": null,
@@ -363,5 +363,5 @@
       "profile": null
     }
   ],
-  "updated_at": "2026-06-19T15:06:46.126194-04:00"
+  "updated_at": "2026-06-22T00:00:00-04:00"
 }
