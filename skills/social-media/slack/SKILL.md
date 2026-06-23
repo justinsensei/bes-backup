@@ -149,7 +149,7 @@ If Justin reacts to a message with the `🧠` (brain) emoji, use `scripts/fetch_
    ```
 2. For each new item:
    - Generate a summarized Slack log in `Inputs/Slack/YYYY-MM-DD-slug.md`.
-   - Update today's daily note with a link and one-sentence gist under `## 🗒 Notepad` or `## 🚀 Highlights & Decisions`.
+   - Do NOT append to the daily note (as the Notepad section is retired).
    - Mark the item as processed so it is never duplicated:
      ```bash
      python3 ${HERMES_HOME:-$HOME/.hermes}/skills/social-media/slack/scripts/fetch_slack_brains.py --mark-processed <channel_id> <ts>
@@ -195,14 +195,14 @@ When Justin adds a `🧠` reaction to a message:
 - A cron job (`Slack Brain Note Capture`) runs every 2 hours using the `fetch_slack_brains.py` helper.
 - If Justin (user ID `U095LHMC4UW`) reacted with `🧠`, the script fetches the entire thread (if part of one) or an 11-message context window surrounding the message.
 - It synthesizes a Markdown log inside `/home/justin.guest/Developer/obsidian-vault/Inputs/Slack/YYYY-MM-DD-slug.md` with participants, a summary of who said what, and key decisions/takeaways. Do NOT include verbatim Slack messages; store only summaries with retrieval metadata.
-- It automatically appends a link + one-sentence gist under today's daily note `## 🗒 Notepad` section.
+- It does NOT append to today's daily note (as the Notepad section is retired).
 - It marks the thread processed inside `~/.hermes/processed_slack_brains.json`.
 
 ### 2. Manual Candidate Suggestions (Morning Briefing Phase 5)
 If a conversation wasn't explicitly tagged, the Morning Briefing live-scans active Slack threads from the last 36 hours for note-worthy discussions:
 - Runs `python3 ~/.hermes/scripts/fetch_slack_brains.py --list-candidates`.
 - **Candidate filters:** Requires `>= 3` messages, `>= 2` unique human participants, Justin's active participation or mention, and **no existing `🧠` reaction** (to avoid double-processing).
-- Prompts Justin with numbered candidates. If approved, it synthesizes the log, updates the daily note notepad, and marks it processed.
+- Prompts Justin with numbered candidates. If approved, it synthesizes the log, saves it as an input, and marks it processed (without updating the daily note).
 
 ### 3. Managing the System Helper
 The background script lives at:
@@ -223,8 +223,7 @@ There is a dedicated cron job ("Slack Brain Note Capture") running every 2 hours
 2. Checks against the processed cache at `~/.hermes/processed_slack_brains.json`.
 3. If new, retrieves the full conversation context (full thread replies if it's a thread; or a chronological 11-message context window around the reacted message if it's not).
 4. Summarizes the discussion via the agent and writes it to `/home/justin.guest/Developer/obsidian-vault/Inputs/Slack/YYYY-MM-DD-slug.md`. Do NOT include verbatim Slack messages; store only summaries with retrieval metadata.
-5. Appends a link and one-sentence gist to today's Daily Note notepad under `## 🗒 Notepad`.
-6. Marks the message as processed using `python3 fetch_slack_brains.py --mark-processed <channel_id> <ts>`.
+5. Marks the message as processed using `python3 fetch_slack_brains.py --mark-processed <channel_id> <ts>`. (Does NOT append to the daily note notepad, as that section is retired).
 
 To run the fetcher script manually to list new reactions:
 ```bash
