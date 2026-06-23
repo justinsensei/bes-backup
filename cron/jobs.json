@@ -93,8 +93,8 @@
     },
     {
       "id": "d8811ffe259f",
-      "name": "Morning Briefing \u2014 4AM daily",
-      "prompt": "Morning briefing prep processes are complete.",
+      "name": "Morning Briefing \u2014 5AM daily",
+      "prompt": "[IMPORTANT: You are running as a scheduled cron job. DELIVERY: Your final response will be automatically delivered to the user \u2014 do NOT use send_message or try to deliver the output yourself. Just produce your report/output as your final response and the system handles the rest.]\n\nMorning briefing prep processes are complete. Please generate today's morning briefing report as a single message following the simplified format described in the morning-briefing skill:\n\n\u2022 Calendar preview (just today and tomorrow)\n\u2022 Summary of yesterday's work log (not the full log)\n\u2022 High-urgency tasks and inbox candidates\n\u2022 Calendar candidates\n\u2022 Morning thought\n\nAt the end of the report, ask me if I have any follow-up questions or requests.",
       "skills": [],
       "skill": null,
       "model": null,
@@ -105,10 +105,10 @@
       "context_from": null,
       "schedule": {
         "kind": "cron",
-        "expr": "0 4 * * *",
-        "display": "0 4 * * *"
+        "expr": "0 5 * * *",
+        "display": "0 5 * * *"
       },
-      "schedule_display": "0 4 * * *",
+      "schedule_display": "0 5 * * *",
       "repeat": {
         "times": null,
         "completed": 28
@@ -118,7 +118,7 @@
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-22T15:05:05.687250-04:00",
-      "next_run_at": "2026-06-24T04:00:00-04:00",
+      "next_run_at": "2026-06-24T05:00:00-04:00",
       "last_run_at": "2026-06-23T04:03:42.125832-04:00",
       "last_status": "ok",
       "last_error": null,
@@ -233,7 +233,7 @@
     },
     {
       "id": "97e98cc14c09",
-      "name": "Morning Briefing Cache \u2014 7AM daily",
+      "name": "Morning Briefing Cache \u2014 4AM daily",
       "prompt": "Morning briefing cache compilation complete.",
       "skills": [],
       "skill": null,
@@ -245,10 +245,10 @@
       "context_from": null,
       "schedule": {
         "kind": "cron",
-        "expr": "0 7 * * *",
-        "display": "0 7 * * *"
+        "expr": "0 4 * * *",
+        "display": "0 4 * * *"
       },
-      "schedule_display": "0 7 * * *",
+      "schedule_display": "0 4 * * *",
       "repeat": {
         "times": null,
         "completed": 2
@@ -258,7 +258,7 @@
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-06-19T07:00:00.000000-04:00",
-      "next_run_at": "2026-06-24T07:00:00-04:00",
+      "next_run_at": "2026-06-24T04:00:00-04:00",
       "last_run_at": "2026-06-23T07:00:46.246438-04:00",
       "last_status": "ok",
       "last_error": null,
@@ -278,5 +278,5 @@
       "profile": null
     }
   ],
-  "updated_at": "2026-06-23T08:20:49.167260-04:00"
+  "updated_at": "2026-06-23T08:26:25.632206-04:00"
 }
