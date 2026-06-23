@@ -39,7 +39,7 @@ Daily Notes are the central journal and timeline for Justin's day.
 - **Format:** `YYYY-MM-DD Weekday.md` (e.g., `2026-06-09 Tuesday.md`, `2026-06-14 Sunday.md`). Weekdays must be fully capitalized, separated from the date by a space.
 
 ### Note Layout & Structure
-A Daily Note begins with an executive summary callout block followed by chronological work and notepad sections:
+A Daily Note begins with an executive summary callout block followed by chronological schedule, scratchpad, work log, and notepad sections (note: the Accomplishments section was retired as redundant):
 ```markdown
 ---
 id: "YYYYMMDDHHmmss"
@@ -50,21 +50,26 @@ category: "[[Daily Notes]]"
 |> [!summary] Summary Callout
 |> High-level executive bullet summary of the day.
 
-## 📅 Schedule & Events
+## 🌄 Morning Briefing
+- Work Log Review (Yesterday)
+- Heads-Up (Urgent Tasks, Inbox/Calendar Candidates)
+
+## 🗓 Schedule & Events
 - List of meetings, calendar events, or appointments for the day.
 
-## 🚀 Highlights & Decisions
-- Key milestones or critical choices made during the day.
+## 🗒 Scratchpad
+- Inline tasks and daily check-offs.
 
-## 🏆 Accomplishments
-- Bulleted list of completed work items and achievements (updated via work logs).
+## ✅ Work Log
+### 🚀 Highlights & Decisions
+- Key milestones, critical choices, and active decisions made during the day.
 
 ## 🗒 Notepad
-- Freeform scratchpad, thoughts, or rapid logs captured during the day.
+- Freeform scratchpad, thoughts, or rapid logs captured during the day (e.g. Slack/Email summaries).
 ```
 
 ### Interaction with `work-log`
-When compiling a work log, fetch events from Google Calendar, Linear, Todoist, and Slack, compile a daily summary, and append/update the accomplishments and schedule sections directly inside today's Daily Note.
+When compiling a work log, fetch events from Google Calendar, Linear, Todoist, and Slack, compile today's summary, and append/update the schedule and Highlights & Decisions sections directly inside today's Daily Note (omitting accomplishments/completed task lists entirely).
 
 ---
 
