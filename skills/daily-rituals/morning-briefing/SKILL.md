@@ -1,385 +1,82 @@
 ---
 name: morning-briefing
-description: "Interactive morning briefing for Justin — runs after the 7AM cron has done background work (work log change-detection, vault hygiene Tier 1, inbox gather). Walks through a multi-phase conversation: work log highlights (including vault updates, skipped if no changes since wind-down), calendar summary, calendar event candidates, near-term task triage, general inbox candidates. Load this skill whenever Justin responds to the morning greeting or asks for his morning briefing."
-platforms: [linux]
-related_skills: [work-log, task-inbox-fill, obsidian-hygiene, llm-wiki, todoist]
+description: Use when generating or managing Justin's daily morning briefing report. Governs the structure, section ordering, and data-retrieval methods for the simplified, single-message 5AM briefing.
+version: 2.0.0
+author: Bes
+license: MIT
+metadata:
+  hermes:
+    tags: [briefing, morning, report, calendar, todoist]
+    related_skills: [work-log, todoist, obsidian]
 ---
 
 # 🌅 Morning Briefing
 
-This skill governs the **interactive phase** of the morning briefing. The 7AM cron runs background jobs and sends a greeting; once Justin responds, load this skill and walk through the phases in order.
+## Overview
+This skill governs the automated generation of Justin's morning briefing. It is run daily as a scheduled cron job at 5:00 AM, reading cached data compiled by the 4:00 AM caching run and performing live queries for real-time calendar and task status.
 
-## Key files
+## When to Use
+* **Scheduled Cron Run:** Executed daily at 5:00 AM to generate the morning briefing message.
+* **Manual Request:** Used when Justin explicitly asks "give me my morning briefing" or "show today's overview".
 
-- **Cache:** `~/.hermes/morning-briefing/YYYY-MM-DD.json` — written by cron, read here
-- **Days off:** `~/.hermes/days-off.txt` — personal non-holiday days off
-- **Work-day helper:** `python3.12 ~/.hermes/scripts/work_day.py <cmd> [date]`
-- **Change detector & vault activity scan:** `python3 ~/.hermes/scripts/check_morning_changes.py`
-- **Vault notes candidate scanner:** `python3 ~/.hermes/scripts/fetch_vault_notes_candidates.py` — scans non-daily, non-Granola notes (excluding the `Inbox/` directory completely) created or modified in the lookback window to gather task candidates and development/follow-up suggestions for newly created notes
-- **Vault signals scan script:** `scripts/check_vault_signals.py` (copied to `~/.hermes/scripts/check_vault_signals.py`) — read-only scan (excluding the `Inbox/` directory completely) that gathers unresolved contact candidates (active timeline enrichment is disabled in favor of native Obsidian Backlinks)
-- **Tier-3 semantic lint state:** `~/.hermes/state/semantic_lint_last.json` — written by monthly `wiki_semantic_lint_cron.py`; surfaced once in Phase 1
-- **Vault:** `/home/justin.guest/Developer/obsidian-vault` (or `$OBSIDIAN_VAULT_PATH`)
+## Report Structure
+The briefing is delivered as a **single, unified message** containing exactly five sections in the following strict order, followed by an interactive follow-up question.
 
-## Background Cron Job (7AM daily)
-
-The cron job `d8811ffe259f` (**Morning Briefing — 7AM daily**) runs the background phase of the briefing.
-- **Delivery Target:** Delivers directly to Justin's personal DM (`origin` / `8612970484`).
-- **Overnight Job Reporting:** It reads `~/.hermes/cron/jobs.json` to retrieve the statuses of the overnight cron jobs (**vault-hygiene** and any other automated tasks) and appends them to the greeting:
-  ```text
-  Morning, Justin! Ready to start your day?
-
-  **Overnight Cron Jobs:**
-  • **vault-hygiene** (9 PM): <status: e.g. ok | error>
-  • **Daily Work Log** (12 AM): paused — (work logs are now managed interactively)
+### 1. Calendar Preview
+* **Timeframe:** Show scheduled events for **today and tomorrow only**.
+* **Method:** Retrieve scheduled events live across all calendar accounts to ensure accuracy:
+  ```bash
+  python3 ~/.hermes/skills/productivity/google-workspace/scripts/gws_multi.py --account all calendar list
   ```
-- **Strict Separation of Background & Foreground:** The background cron job must **never** write, overwrite, or update yesterday's daily note, work log, or any knowledge notes in the background. It is limited to scanning for changes and writing the cache file `~/.hermes/morning-briefing/YYYY-MM-DD.json`.
-  - If changes are detected, it must set `work_log_status` to `"pending_review"` (not `"ok"` or `"skipped"`) so that the interactive briefing session can offer to generate it with your approval.
-- **Rerouting to Personal DM:** Both the background cron job greeting and all subsequent interactive phases belong in Justin's personal DM chat (`8612970484`).
+* **Formatting:** Group by day (Today vs. Tomorrow). For each event, show:
+  * Time range (e.g., `08:30 - 09:00`)
+  * Event summary
+  * Target calendar account in brackets (e.g., `[work]` or `[personal-main]`)
+  * Bulleted notes for notable events (e.g., campers' camps, specific child details).
+* **Zero-state:** If a day is empty, print *"Nothing on the calendar."*
 
-## Entry point
+### 2. Summary of Yesterday's Work Log
+* **Method:** Locate the daily note for the previous workday under `/home/justin.guest/Developer/obsidian-vault/Daily Notes/`.
+  * Note: Use `python3.12 ~/.hermes/scripts/work_day.py logs_to_summarize` to identify the correct date to summarize (e.g., summarizing Friday's log on a Monday).
+* **Content:** Extract the content of the work log (under `# 📋 Work Log` or `## 🚀 Highlights & Decisions`).
+* **Synthesis:** Compile a tight, 3–4 bullet point summary focusing on core accomplishments, key decisions, and blockers. Do **not** copy the full log verbatim.
+* **Zero-state:** If the note or work log section is missing, note the omission and proceed.
 
-The cron sends the morning greeting (detailed above) to the Cron Logs channel. Justin's reply determines the flow:
-- **"yes" / any affirmative** → full briefing (all phases)
-- **"day off" / "taking the day off" / similar** → skip Phase 1; run remaining phases with personal-only filter
-- **no response within the session** → nothing; cron already ran background jobs
+### 3. High-Urgency Tasks and Inbox Candidates
+* **Todoist Live Check:** Fetch live tasks due today or overdue.
+  * *Constraint:* Exclude tasks already in the "Now" project, or completed/cancelled tasks.
+* **Linear Live Check:** Fetch assigned open issues due today or marked high-priority.
+  * *Constraint:* Exclude issues with statuses of type Triage, Backlog, Completed, or Canceled.
+* **Inbox Candidates:** Read `inbox_candidates.action_items` from the morning cache file (`~/.hermes/morning-briefing/YYYY-MM-DD.json`).
+  * *Crucial Safety Rule:* If `inbox_candidates.action_items` is empty, do **not** fall back to reading `gather_run.json`. An empty array means the inbox is genuinely clear.
+* **Formatting:** Group clearly into **Todoist**, **Linear**, and **Potential Inbox Items** (if any candidates are present).
 
-## Cache file schema
+### 4. Calendar Candidates
+* **Source:** Read `inbox_candidates.calendar_events` from the morning cache file (`~/.hermes/morning-briefing/YYYY-MM-DD.json`).
+* **Formatting:** List each candidate showing source, time, and suggested calendar (`work` or `personal-main`).
+* **Zero-state:** If empty, print *"Nothing new to add to your calendar."*
 
-The 7AM cron writes `~/.hermes/morning-briefing/YYYY-MM-DD.json` with this structure:
-
-```json
-{
-  "date": "YYYY-MM-DD",
-  "is_work_day": true,
-  "work_log_dates": ["YYYY-MM-DD"],
-  "work_log_status": "ok | error | skipped",
-  "vault_hygiene": {
-    "tier1_status": "ok | error",
-    "tier1_summary": "Moved 2 daily notes.",
-    "tier2_issues": [
-      "sources/note.md — missing ID",
-      "Meetings/other.md — malformed ID field"
-    ]
-  },
-  "inbox_candidates": {
-    "status": "ok | error | partial",
-    "sources_failed": [],
-    "calendar_events": [...],
-    "action_items": [...]
-  },
-  "vault_activity": {
-    "total_updated": 4,
-    "type_counts": {"daily": 1, "concept": 3},
-    "added_entities": {
-      "person": [{"slug": "Contacts/jeev-sahoo", "title": "Jeev Sahoo"}],
-      "company": [],
-      "concept": []
-    }
-  },
-  "daily_thought": {
-    "path": "Notes/Thoughts on fatphobia 20260128135845.md",
-    "title": "Thoughts on Fatphobia",
-    "category": "Opinions / Thoughts"
-  },
-  "discovered_contacts": {
-    "people": [
-      {
-        "name": "Jeev Sahoo",
-        "type": "person",
-        "context_file": "Inputs/Meetings/2026-06-08 Product meeting.md"
-      }
-    ],
-    "organizations": []
-  }
-}
-```
-
-If the cache file doesn't exist (cron failed or hasn't run yet), run the background jobs inline before proceeding. Tell Justin there'll be a brief pause.
-
-### 🔄 Cache Recovery & Inline Execution Steps
-1. **Check today's work day status:**
-   `python3.12 ~/.hermes/scripts/work_day.py is_work_day`
-2. **Find which dates' work logs to summarize:**
-   `python3.12 ~/.hermes/scripts/work_day.py logs_to_summarize`
-3. **Run the change detection script live:**
-   `python3 ~/.hermes/scripts/check_morning_changes.py`
-4. **Write the recovery cache file manually:**
-   Construct and write the complete JSON cache to `/home/justin.guest/.hermes/morning-briefing/YYYY-MM-DD.json` containing the correct values for `date`, `is_work_day`, `work_log_dates`, `work_log_status` ("skipped" if the target date daily note is already fully populated, "ok" if generated), `vault_hygiene` (run `python3 ~/.hermes/scripts/vault_hygiene.py` inline to get the tier1_summary), `vault_activity` parsed from step 3, and a randomly selected note under `daily_thought` (selected from Thoughts/Opinions, Beliefs, or Concepts categories in the vault).
-5. **Proceed with Phase 1 presentation:**
-   Present Phase 1 highlights/status based on the newly written recovery cache.
-
-## Phase sequence
-
-### Phase 1 — Work log highlights & Vault updates
-
-**Skip entirely if:** `is_work_day` is false OR Justin said "day off".
-
-If `work_log_status` is `"skipped"` in the daily cache file, present only the vault activity summary under "Vault Updates":
-
-**Format for skipped work log:**
-```
-📋 Work log — [Day, Mon DD]
-
-*Yesterday's work log was skipped since nothing changed after your wind-down wrap-up.*
-
-**Vault updates since yesterday morning:**
-• Updated: [N pages across M types, e.g., "1 note, 3 concepts"]
-• Newly Added:
-  • People: [List of [[Contacts/slug|Title]] or "None"]
-  • Companies: [List of [[Contacts/slug|Title]] or "None"]
-  • Concepts: [List of [[Notes/slug|Title]] or "None"]
-
-[If vault hygiene Tier 2 issues exist in the cache, append right here:
-🗂 Vault hygiene — N items to look at when you have a moment:
-• sources/some-note.md — missing ID
-• ...]
-
-[If `~/.hermes/state/semantic_lint_last.json` exists with `"surfaced": false` and non-empty `tier3_issues` (monthly wiki lint), append:
-🧠 Wiki semantic lint — N items from the monthly pass:
-• Notes/foo.md — maturity orphan (Concepts)
-• ...
-After presenting, set `"surfaced": true` in that JSON file.]
-```
-
-**If `is_work_day` is true and `work_log_status` is NOT `"skipped"`:**
-
-1. Load `work_log_dates` from cache (computed by cron using `work_day.py logs_to_summarize`)
-2. For each date in `work_log_dates`, read the `## 🚀 Highlights & Decisions` (or `# 📋 Work Log` / `## 📋 Work Log`) section from the daily note in vault
-3. Synthesize highlights across all dates into a single brief summary
-4. Read the `vault_activity` section from the daily cache file (`~/.hermes/morning-briefing/YYYY-MM-DD.json`). If the cache file or `"vault_activity"` section is missing or has status `"error"`, run the scan script live to retrieve the summary: `python3 ~/.hermes/scripts/check_morning_changes.py`
-
-**Format:**
-```
-📋 Work log — [Day, Mon DD] (or "Fri–Mon" for multi-day spans)
-
-• [2–4 bullet highlights — most important things that happened]
-• Decisions: [1–2 if any, otherwise omit]
-• Still open: [1–2 blockers/open questions, if any]
-
-**Vault updates since yesterday morning:**
-• Updated: [N pages across M types, e.g., "1 note, 3 concepts"]
-• Newly Added:
-  • People: [List of [[Contacts/slug|Title]] or "None"]
-  • Companies: [List of [[Contacts/slug|Title]] or "None"]
-  • Concepts: [List of [[Notes/slug|Title]] or "None"]
-
-[If vault hygiene Tier 2 issues exist in the cache, append right here:
-🗂 Vault hygiene — N items to look at when you have a moment:
-• sources/some-note.md — missing ID
-• ...]
-
-[If `~/.hermes/state/semantic_lint_last.json` exists with `"surfaced": false` and non-empty `tier3_issues`, append wiki semantic lint block (same format as skipped-work-log branch above). Set `"surfaced": true` after presenting.]
-
-[If ambiguous plain-text mentions exist in `vault_signals_last_run.json` (unlinked names matching duplicate aliases), append right here:
-❓ Ambiguous mentions — N items to resolve:
-• "Aunt Lindy" in [[Daily Notes/2026-06-09 Tuesday]] (candidates: [[Linda Massie]], [[Linda Lash]])
-• ...]
-```
-
-Keep it scannable. 4–6 bullets max for the work log section. If multiple days, don't repeat obvious context — synthesize across them. Don't recite every meeting; surface the consequential ones. Keep the vault section beautifully formatted with Wiki-links. If nothing was updated or added in the vault, output: *"No vault updates since yesterday morning."* for the vault section.
-
-If the user clarifies an ambiguous mention (e.g. "I meant Linda Massie for Aunt Lindy"), use the `patch` tool to replace the plain-text alias in the context file with the correct link (e.g. `[[Linda Massie|Aunt Lindy]]`) and confirm the fix.
-
-If no work log entries exist for the dates (notes missing or no Work Log section), present the vault updates, note the missing work log, and move on. Don't block on it.
-
-**If the user asks you to generate the missing daily note / work log:**
-- Gather yesterday's raw materials from Slack, Linear, GWS, and Todoist (using `/home/justin.guest/bes-backup/skills/note-taking/work-log/references/direct_execution.py` or parallel subagents).
-- Scan for any other notes written on that date in the vault (e.g. `Notebook/Kennywood Day...` or other files with matching timestamp/daily_note fields) to capture personal context.
-- Synthesize them into a complete daily note and work log following the `work-log` skill and the `<vault>/Templates/Daily Note.md` template.
-- Write the daily note to the vault archive (`Daily Notes/YYYY-MM-DD DayName.md`).
-- Update the morning briefing cache file (`~/.hermes/morning-briefing/YYYY-MM-DD.json`) to set `work_log_status: "ok"`, remove the `work_log_error`, and clear `vault_hygiene` issues if resolved.
-- Present the synthesized work log highlights and proceed to Phase 2.
-
-After presenting, **wait for acknowledgment or a question** before moving to Phase 2. Don't immediately dump everything at once.
+### 5. Morning Thought
+* **Source:** Read the pre-selected thought from `daily_thought` in the cache file (`YYYY-MM-DD.json`).
+* **Fallback Selection:** If the cache or field is missing, randomly select a markdown file containing `category: "[[Thoughts]]"`, `category: "[[Beliefs]]"`, or `category: "[[Concepts]]"` from the vault directory `/home/justin.guest/Developer/obsidian-vault/Notes/`.
+* **Formatting:** Display as:
+  `💡 Morning Thought — [[Notes/file_name|Title]] (Category)`
+  followed by the full note content wrapped in a blockquote (`>`).
 
 ---
 
-### Phase 2 — Calendar summary
+## Closing Question
+End the briefing with this exact prompt to hand control back to Justin:
+*"Would you like me to make any edits, schedule any of these candidates, or do you have any follow-up questions or requests?"*
 
-Pull today's calendar and look ahead 7 days for anything major. Since the background cache file only stores *candidates* (events not yet on the calendar), you must fetch the actual scheduled events live.
+## Common Pitfalls
+1. **Including Vault Hygiene:** The Vault Hygiene section has been completely removed from the briefing report. Do not append or include it under any circumstances.
+2. **Interactive Phasing:** Do not wait for acknowledgment between sections. Deliver the entire briefing as a single, well-structured message.
+3. **Stale Inbox Candidates:** Verify live task/issue status rather than blindly repeating stale cache values.
+4. **Incorrect Date Synthesis:** Ensure that weekends and holidays are handled correctly. Always summarize the previous *workday's* work log.
 
-**Sources:** Fetch live from Google Workspace across all accounts (or personal accounts only on non-work days):
-- Work and personal: `python3 ~/.hermes/skills/productivity/google-workspace/scripts/gws_multi.py --account all calendar list`
-- Personal only (weekends/days off): `python3 ~/.hermes/skills/productivity/google-workspace/scripts/gws_multi.py --account personal-main,personal-junk calendar list`
-
-**Format:**
-```
-📅 Today — [Day, Mon DD]
-
-• HH:MM  Event name (attendees if external)
-• HH:MM  Event name
-[if nothing: "Nothing on the calendar today."]
-
-Coming up this week:
-• [Day] Event name — [why it's notable: external attendees / prep needed / important]
-[only surface 2–3 notable items, not every standup]
-```
-
-**On non-work days (or "day off"):** show personal calendar events only. Skip work account events.
-
-After presenting, wait for acknowledgment before Phase 3 (Calendar event candidates).
-
----
-
-### Phase 3 — Calendar event candidates
-
-Present the calendar event candidates from `inbox_candidates.calendar_events`.
-
-Suggest a target calendar (`work` or `personal-main`) for each candidate based on its source and content (e.g., family/school/personal tasks default to `personal-main`, while SignLab/professional ones default to `work`).
-
-Format:
-```
-📅 N potential calendar events not yet on your calendar:
-
-1. [Source] Event | when: date/time | calendar: work | context: where found
-2. [Source] Event | when: date/time | calendar: personal-main | context: where found
-...
-
-Which ones should I add directly to your Google Calendar?
-```
-
-If `calendar_events` is empty, say "Nothing new to add to your calendar." and skip to Phase 4.
-
-Once Justin confirms selections:
-- Schedule/create the events directly on the respective Google Calendar accounts (`work` or `personal-main`) using the calendar write capabilities (`gws_multi.py --account <name> calendar create --summary "..." --start "..." --end "..." --attendees "..." --description "..."`).
-- Only create a Todoist "Add to calendar:" task as an exceptional fallback if Justin specifically requests it or if the event timing/date is too ambiguous to schedule directly.
-- Report the scheduling confirmation with event details and links, then move to Phase 4.
-
-**On non-work days / day off:** still run this phase but filter to personal events only (skip work Slack, work email sources).
-
----
-
-### Phase 4 — Near-term task triage
-
-Query Todoist for tasks with due dates or deadlines in the next 3 days (inclusive of today). Also query Linear for open issues assigned to Justin with due dates in the next 3 days or marked high-priority.
-
-**Rule:** Skip any Todoist tasks that are already in the "Now" project, or completed/cancelled tasks. For Linear, skip issues with status Triage, Backlog, Completed, or Canceled.
-Only present this if there are matching tasks/issues. If none, skip directly to Phase 5.
-
-**Format:**
-```
-📌 N tasks/issues due or with deadlines in the next 3 days:
-
-**Todoist**
-1. [Project] Task name (due: Date/Time | deadline: Date)
-...
-
-**Linear**
-2. [Team] Issue title (due: Date | priority: High)
-...
-
-Would you like to move any Todoist tasks to "Now"?
-```
-
-Use `mcp_todoist_find_tasks_by_date` for Todoist and `mcp_linear_*` tools for Linear issues.
-
-Once Justin selects Todoist tasks, move them to the "Now" project.
-
-After presenting and handling any movements, wait for acknowledgment before Phase 5.
-
----
-
-### Phase 5 — Inbox candidates
-
-Present the action-item candidates from `inbox_candidates.action_items`.
-
-Use the format from `task-inbox-fill` Step 4 Section B — semantically batched groups:
-```
-📥 N potential inbox items:
-
-**[Group label]**
-1. [Source] Task description
-2. [Source] Task description
-
-**[Group label]**
-3. ...
-
-Which ones should I add?
-```
-
-If `action_items` is empty, say "Inbox looks clear." 
-
-Once Justin confirms → batch-add to Todoist Inbox with comments.
-
-**On non-work days / day off:** filter out work-sourced tasks (Linear, work email, work Slack). Keep home/family/personal ones.
-
----
-
-### Phase 6 — Morning Thought
-
-Present a random note (the Morning Thought) from the Thoughts (Opinions), Beliefs, or Sources categories. This should ideally be loaded from the cache file's `"daily_thought"` field. If the cache is missing this field, select a random `.md` file with `category: "[[Thoughts]]"`, `category: "[[Beliefs]]"`, or `category: "[[Concepts]]"` from the vault, and display its title, category, and full content.
-
-Make sure it is clear which category the Morning Thought comes from (e.g., Opinions/Thoughts, Beliefs, or Concepts).
-
-**Format:**
-```
-💡 Morning Thought — [[<relative_path_no_extension>|Title]] (<Category>)
-
-[Full content of the note - keeping it markdown-formatted]
-
----
-Would you like to make any edits to this note, or are we set for today?
-```
-
-If Justin requests an edit to the note, use the `patch` or `write_file` tool to apply his changes, and confirm.
-
-After Phase 6 is complete, proceed to the "After all phases" wrap-up.
-
----
-
-### After all phases
-
-Close out: *"That's everything. Have a good [day/weekend/Monday]."* (Match the day.)
-
----
-
-## Work-day detection quick reference
-
-```bash
-# Is today a work day?
-python3.12 ~/.hermes/scripts/work_day.py is_work_day
-
-# Which dates' work logs to summarize today?
-python3.12 ~/.hermes/scripts/work_day.py logs_to_summarize
-
-# Previous work day
-python3.12 ~/.hermes/scripts/work_day.py prev_work_day
-```
-
-US federal holidays auto-detected. Personal days off in `~/.hermes/days-off.txt` (one YYYY-MM-DD per line, # comments ok).
-
----
-
-## Tone and pacing
-
-- One phase per message. Don't dump everything at once.
-- Wait for acknowledgment between phases. Justin may want to ask a question or act on something before moving on.
-- Keep each phase message short. The briefing should feel like a quick check-in, not a wall of text.
-- Match energy to day: Monday morning gets a slightly warmer opener; Friday gets a brief "anything to wrap up this week?" at the end if there are open blockers.
-- On weekends / days off: lighter, shorter, personal focus only.
-
----
-
-## Pitfalls
-
-- **Excluding the Inbox from EEIRP Scans:** Always ensure that vault scanning scripts (such as `fetch_vault_notes_candidates.py` and `check_vault_signals.py`) completely ignore the `Inbox/` and `inbox/` directories. Notes in the inbox are temporary and meant to be triaged manually by Justin, so scanning them produces premature tasks, suggestions, and signals.
-- **Child name or grade misattribution.** Do not guess or assume which child a school event (like a graduation, potluck, or class celebration) belongs to. Always verify school grades and ages against the user profile (e.g., Jamie is in 5th grade/G5, Sam is in 6th grade/G6) before writing descriptions or adding summaries.
-- **Decision misattribution.** When summarizing work logs or calendar updates, do not attribute decisions made by others (colleagues, family members, teachers) to Justin. Always explicitly credit the actual decision-maker.
-- **Don't re-run background jobs if the cache is fresh.** Check the cache first. Only re-run if the file is missing or >4h old.
-- **Work log section header** is usually `## 🚀 Highlights & Decisions`, `## 💼 Work Log`, `# 📋 Work Log`, or `## 📋 Work Log` in the daily note. If all are absent, the note may not have been logged yet — say so, don't silently skip.
-- **Multiple work-log dates:** synthesize, don't concatenate. Justin doesn't want to read Friday's full log on Monday — he wants the 3-line version.
-- **Calendar dedup is against the full 30-day snapshot** already in the cache. Don't re-fetch unless you need to.
-- **"Day off" filter applies per-phase.** Check it before each phase, not just once at the top.
-- **Vault hygiene is never blocking.** Always present it right after the work log highlights and vault updates section (Phase 1), and always frame it as "when you have a moment."
-- **Concept of the Day vs Morning Thought.** Since the migration away from gbrain, concepts no longer exist as a standalone category directory in the vault. Always select the "Morning Thought" from the superset of Thoughts, Beliefs, or Concepts categories, and represent the Thoughts category as "Opinions / Thoughts" to align with the user's preference.
-- **Do not read the `.env` credential file directly.** The agent running under cron cannot read `${HERMES_HOME:-$HOME/.hermes}/.env` using direct file tools (like `read_file`) due to defense-in-depth safety blocks. Always run terminal commands with `.env` sourced in the shell context (`source ${HERMES_HOME:-$HOME/.hermes}/.env && python3 ...`) or rely on the host environment, rather than attempting to read/parse the credential file.
-- **Concept of the Day directory has changed.** Following the migration away from gbrain, concept files are located in `/home/justin.guest/Developer/obsidian-vault/Notes/` instead of `/home/justin.guest/Developer/obsidian-vault/concepts/`. Identify them by searching for markdown files containing `type: concept` or `type: "concept"` in their frontmatter, and completely avoid querying any deprecated `concepts/` directory.
-- **Discrepancy in Daily Thought / Morning Thought Path:** The morning briefing cache might specify a path with the timestamp ID appended (e.g., `Notes/Thoughts on signlab k12 gtm proposal 20250808153818.md`), whereas the actual file in the vault may have the timestamp ID prepended (e.g., `Notes/20250808153818 Thoughts on signlab k12 gtm proposal.md`). If a note's path is not found directly as specified in the cache, always use `search_files` with a wildcard query containing the title or timestamp to locate the actual file before reporting it missing.
-- **Cron RuntimeError & Max Iterations & Stale Cache:** If the background phase fails with `RuntimeError: Morning, Justin! Ready to start your day?`, this indicates the agent hit its `max_iterations` limit during the cron run. The scheduler treats the incomplete run as a failure and raises a RuntimeError containing the final generated greeting text. Optimize background execution to use as few tool calls as possible. 
-  *Crucial Pitfall during Recovery:* If you must perform cache recovery manually after a cron failure, do NOT blindly copy-paste candidates from the existing `gather_run.json` on disk into today's cache file. That file contains yesterday's stale candidates, which may have since been completed or archived. Always run the gather queries live (Linear, Gmail, etc.) to ensure candidates are completely fresh.
-- **Do not read stale gather files on empty cache:** If `inbox_candidates.action_items` in the daily cache file (`YYYY-MM-DD.json`) is empty, do NOT fall back to reading `gather_run.json`. An empty array means Justin's inbox is genuinely clear. Falling back to `gather_run.json` will present outdated, already-completed, or archived tasks from previous runs.
-- **Gmail custom labels & archived emails:** Emails labeled with custom filters (like `label:"Bes/Inbox"`) will still match search queries even after being archived from the Inbox. To exclude archived forwarded emails, always explicitly append `in:inbox` to search queries (e.g. `label:"Bes/Inbox" in:inbox`).
-- **Python Interpreter Mismatch:** Background cron runs may use the default `python3` (which can resolve to a base environment like 3.11 lacking required packages). Always execute scripts with their matching target environments: `python3.12` for scripts requiring the `holidays` package, and `~/.hermes/hermes-agent/venv/bin/python3` for scripts requiring `slack_sdk` or other agent-specific dependencies.
-- **Inbox Candidate Exclusions:** When gathering or presenting inbox candidates (Phase 5), strictly exclude iMessages (do not use iMessage as an input source), exclude archived emails (only show emails from the active inbox), and for assigned Linear issues, exclude any tasks with statuses of type Triage, Backlog, Completed, or Canceled.
-- **Stale Inbox Candidates in Cache:** Because the daily briefing cache file is written early (usually 4 AM), inbox candidates like emails or Linear tasks may have already been replied to or completed by the time Justin does his briefing. Always run a quick live check (e.g., running `fetch_unified_ingest.py` or checking specific candidate IDs/threads) to ensure they are still active before presenting them, rather than presenting them blindly from the stale cache.
-- **Do not use `execute_code` for cache recovery.** In non-interactive or restricted profiles, `execute_code` may be sandboxed or blocked under certain security policies (e.g., `approvals.cron_mode`). Always construct the JSON cache text and write it directly using `write_file` instead of programmatically generating it via `execute_code` or custom python execution hooks.
+## Verification Checklist
+- [ ] Briefing is delivered as a single message.
+- [ ] Vault Hygiene section is completely absent.
+- [ ] Sections are ordered exactly: Calendar Preview, Yesterday's Work Log, Urgency & Inbox, Calendar Candidates, Morning Thought.
+- [ ] Closes with the interactive follow-up question.
