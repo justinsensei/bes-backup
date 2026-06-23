@@ -593,6 +593,219 @@ def heal_vault_filename_capitalizations(vault_path):
         if modified_files:
             print(f"Auto-healed wikilinks in {modified_files} files to match new capitalization.")
 
+def _slugify(text, max_len=60):
+    """Convert task text to a URL/filename-safe slug."""
+    slug = text.lower()
+    slug = re.sub(r"[^a-z0-9\s-]", "", slug)
+    slug = re.sub(r"\s+", "-", slug.strip())
+    slug = re.sub(r"-+", "-", slug).strip("-")
+    return slug[:max_len].rstrip("-")
+
+
+def _parse_frontmatter(text):
+    """Return (fm_dict_raw_str, body) or ({}, full_text) if no frontmatter."""
+    if not text.startswith("---"):
+        return {}, text
+    end = text.find("\n---", 3)
+    if end < 0:
+        return {}, text
+    fm_raw = text[3:end].strip()
+    body = text[end + 4:]
+    fm = {}
+    for line in fm_raw.splitlines():
+        m = re.match(r'^(\w[\w_]*):\s*(.*)', line)
+        if m:
+            fm[m.group(1)] = m.group(2).strip().strip("'\"")
+    return fm, body
+
+
+def _rewrite_frontmatter(path, new_fields):
+    """Add missing fields to a file's YAML frontmatter. Writes only if changes made."""
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except Exception:
+        return False
+    if not text.startswith("---"):
+        return False
+    end = text.find("\n---", 3)
+    if end < 0:
+        return False
+    fm_block = text[3:end]
+    body_and_rest = text[end:]
+    changed = False
+    for key, value in new_fields.items():
+        if not re.search(rf'^{re.escape(key)}:', fm_block, re.MULTILINE):
+            fm_block = fm_block.rstrip("\n") + f"\n{key}: {value}"
+            changed = True
+    if changed:
+        path.write_text(f"---{fm_block}{body_and_rest}", encoding="utf-8")
+    return changed
+
+
+def sweep_eiirp_tasks(vault, lookback_hours=96):
+    """Convert raw - [ ] checkboxes in recent daily notes to TaskNote files.
+
+    Returns a list of human-readable summary strings describing conversions made.
+    """
+    daily_notes_dir = Path(vault) / "Daily Notes"
+    tasknotes_dir = Path(vault) / "TaskNotes" / "Tasks"
+    if not daily_notes_dir.exists():
+        return []
+    tasknotes_dir.mkdir(parents=True, exist_ok=True)
+
+    cutoff = datetime.datetime.now() - datetime.timedelta(hours=lookback_hours)
+    summary = []
+
+    for note_path in sorted(daily_notes_dir.glob("*.md")):
+        try:
+            mtime = datetime.datetime.fromtimestamp(note_path.stat().st_mtime)
+        except Exception:
+            continue
+        if mtime < cutoff:
+            continue
+
+        try:
+            text = note_path.read_text(encoding="utf-8", errors="replace")
+        except Exception:
+            continue
+
+        lines = text.splitlines(keepends=True)
+        new_lines = []
+        in_work_log = False
+        note_modified = False
+
+        # Derive the daily note stem for use in daily_note frontmatter (e.g. "2026-06-23 Tuesday")
+        daily_note_stem = note_path.stem  # e.g. "2026-06-23 Tuesday"
+
+        for line in lines:
+            stripped = line.rstrip("\n")
+            # Track sections to avoid converting Work Log entries
+            if re.match(r'^##\s+', stripped):
+                in_work_log = "Work Log" in stripped or "💼" in stripped
+            if in_work_log:
+                new_lines.append(line)
+                continue
+
+            # Match unchecked checkbox that hasn't already been converted
+            m = re.match(r'^(\s*)-\s+\[\s+\]\s+(.+)$', stripped)
+            if m and "[[TaskNotes/Tasks/" not in stripped:
+                indent = m.group(1)
+                task_text = m.group(2).strip()
+                now = datetime.datetime.now()
+                ts = now.strftime("%Y%m%d%H%M%S")
+                iso_ts = now.strftime("%Y-%m-%dT%H:%M:%S")
+                slug = _slugify(task_text)
+                filename = f"{slug}-{ts}.md" if slug else f"task-{ts}.md"
+                task_path = tasknotes_dir / filename
+
+                fm_content = (
+                    f"---\n"
+                    f"id: {ts}\n"
+                    f"title: {task_text}\n"
+                    f"status: open\n"
+                    f"dateCreated: {iso_ts}\n"
+                    f"dateModified: {iso_ts}\n"
+                    f'daily_note: "[[{daily_note_stem}]]"\n'
+                    f"---\n"
+                )
+                try:
+                    task_path.write_text(fm_content, encoding="utf-8")
+                    wikilink = f"{indent}[[TaskNotes/Tasks/{filename[:-3]}]]\n"
+                    new_lines.append(wikilink)
+                    note_modified = True
+                    summary.append(f"  - [[TaskNotes/Tasks/{filename[:-3]}]] (from {note_path.name})")
+                except Exception as e:
+                    print(f"  EIIRP: error creating {filename}: {e}")
+                    new_lines.append(line)
+            else:
+                new_lines.append(line)
+
+        if note_modified:
+            try:
+                note_path.write_text("".join(new_lines), encoding="utf-8")
+            except Exception as e:
+                print(f"  EIIRP: error updating {note_path.name}: {e}")
+
+    return summary
+
+
+def sweep_tasknote_reverse_hygiene(vault):
+    """Backfill missing id and daily_note fields on existing TaskNote files.
+
+    Returns a list of human-readable summary strings describing fixes made.
+    """
+    tasknotes_dir = Path(vault) / "TaskNotes" / "Tasks"
+    daily_notes_dir = Path(vault) / "Daily Notes"
+    if not tasknotes_dir.exists():
+        return []
+
+    # Build a lookup: date string "YYYY-MM-DD" -> daily note stem
+    daily_note_by_date = {}
+    if daily_notes_dir.exists():
+        for dn in daily_notes_dir.glob("????-??-?? *.md"):
+            date_str = dn.stem[:10]
+            daily_note_by_date[date_str] = dn.stem
+
+    summary = []
+
+    for task_path in sorted(tasknotes_dir.glob("*.md")):
+        try:
+            text = task_path.read_text(encoding="utf-8", errors="replace")
+        except Exception:
+            continue
+        fm, _ = _parse_frontmatter(text)
+
+        new_fields = {}
+
+        # --- id field ---
+        if "id" not in fm:
+            date_created = fm.get("dateCreated", "")
+            if date_created:
+                try:
+                    dt = datetime.datetime.fromisoformat(date_created.replace("Z", "+00:00").split("+")[0])
+                    new_fields["id"] = dt.strftime("%Y%m%d%H%M%S")
+                except ValueError:
+                    pass
+            if "id" not in new_fields:
+                # Fallback: file ctime
+                try:
+                    ct = datetime.datetime.fromtimestamp(task_path.stat().st_ctime)
+                    new_fields["id"] = ct.strftime("%Y%m%d%H%M%S")
+                except Exception:
+                    pass
+
+        # --- daily_note field ---
+        if "daily_note" not in fm:
+            date_created = fm.get("dateCreated", "")
+            target_date = None
+            if date_created:
+                try:
+                    dt = datetime.datetime.fromisoformat(date_created.replace("Z", "+00:00").split("+")[0])
+                    target_date = dt.strftime("%Y-%m-%d")
+                except ValueError:
+                    pass
+            if not target_date:
+                try:
+                    ct = datetime.datetime.fromtimestamp(task_path.stat().st_ctime)
+                    target_date = ct.strftime("%Y-%m-%d")
+                except Exception:
+                    pass
+            if target_date:
+                dn_stem = daily_note_by_date.get(target_date)
+                if dn_stem:
+                    new_fields["daily_note"] = f'"[[{dn_stem}]]"'
+                else:
+                    print(f"  TaskNote reverse hygiene: no daily note found for {target_date}, skipping {task_path.name}")
+
+        if new_fields:
+            patched = _rewrite_frontmatter(task_path, new_fields)
+            if patched:
+                added = ", ".join(new_fields.keys())
+                summary.append(f"  - {task_path.name} — added {added}")
+
+    return summary
+
+
 # Run filename capitalization healer first
 heal_vault_filename_capitalizations(VAULT)
 
@@ -888,8 +1101,32 @@ if False: # readings_audit_dirs:
             if err:
                 citation_issues[rel_src_str].append((url, err))
 
+# 2.5 EIIRP: convert raw daily-note checkboxes to TaskNotes (96h window)
+print("Running EIIRP task sweep (last 96h)...")
+eiirp_summary = sweep_eiirp_tasks(VAULT, lookback_hours=96)
+if eiirp_summary:
+    print(f"EIIRP: converted {len(eiirp_summary)} raw checkboxes to TaskNotes.")
+else:
+    print("EIIRP: no unconverted checkboxes found in recent daily notes.")
+
+# 2.6 TaskNote reverse hygiene: backfill missing id and daily_note
+print("Running TaskNote reverse hygiene...")
+reverse_hygiene_summary = sweep_tasknote_reverse_hygiene(VAULT)
+if reverse_hygiene_summary:
+    print(f"TaskNote reverse hygiene: patched {len(reverse_hygiene_summary)} files.")
+else:
+    print("TaskNote reverse hygiene: all TaskNotes already have id and daily_note.")
+
 # 3. Format output for vault_hygiene_cron.py
 lines = []
+
+if eiirp_summary:
+    lines.append(f"\n## ✅ EIIRP sweep — {len(eiirp_summary)} checkboxes converted to TaskNotes")
+    lines.extend(eiirp_summary)
+
+if reverse_hygiene_summary:
+    lines.append(f"\n## ✅ TaskNote reverse hygiene — {len(reverse_hygiene_summary)} files patched")
+    lines.extend(reverse_hygiene_summary)
 
 # ID Conflicts
 id_conflicts = {nid: paths for nid, paths in id_to_paths.items() if len(paths) > 1}

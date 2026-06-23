@@ -2,7 +2,7 @@
 name: morning-briefing
 description: "Interactive morning briefing for Justin — runs after the 7AM cron has done background work (work log change-detection, vault hygiene Tier 1, inbox gather). Walks through a multi-phase conversation: work log highlights (including vault updates, skipped if no changes since wind-down), calendar summary, calendar event candidates, near-term task triage, general inbox candidates. Load this skill whenever Justin responds to the morning greeting or asks for his morning briefing."
 platforms: [linux]
-related_skills: [work-log, todoist-inbox-fill, obsidian-hygiene, llm-wiki, todoist]
+related_skills: [work-log, task-inbox-fill, obsidian-hygiene, llm-wiki, todoist]
 ---
 
 # 🌅 Morning Briefing
@@ -283,7 +283,7 @@ After presenting and handling any movements, wait for acknowledgment before Phas
 
 Present the action-item candidates from `inbox_candidates.action_items`.
 
-Use the format from `todoist-inbox-fill` Step 4 Section B — semantically batched groups:
+Use the format from `task-inbox-fill` Step 4 Section B — semantically batched groups:
 ```
 📥 N potential inbox items:
 

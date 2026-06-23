@@ -129,11 +129,11 @@ skills/productivity/airtable/**/__pycache__/
 skills/productivity/todoist/**/__pycache__/
 skills/productivity/todoist/**/*.pyc
 
-# Custom skill — todoist-inbox-fill (Bes-only)
-!skills/productivity/todoist-inbox-fill/
-!skills/productivity/todoist-inbox-fill/**
-skills/productivity/todoist-inbox-fill/**/__pycache__/
-skills/productivity/todoist-inbox-fill/**/*.pyc
+# Custom skill — task-inbox-fill (Bes-only)
+!skills/productivity/task-inbox-fill/
+!skills/productivity/task-inbox-fill/**
+skills/productivity/task-inbox-fill/**/__pycache__/
+skills/productivity/task-inbox-fill/**/*.pyc
 
 # Agent-authored skill: obsidian-manage-categories (Bes manages vault category notes/templates)
 !skills/note-taking/

@@ -15,7 +15,7 @@ Tracked agent-authored and customized skills in `bes-backup/skills/`.
 | bes-skill-authoring | software-development | Skill authoring conventions |
 | slack | social-media | Slack integration + brain capture |
 | manage-projects | productivity | Cross-tool project workflow |
-| todoist / todoist-inbox-fill | productivity | Task management |
+| todoist / task-inbox-fill | productivity | Task management |
 | google-workspace | productivity | Gmail, Calendar (read-mostly) |
 | linear / airtable | productivity | Work tracking APIs |
 | imessage | apple | Scoped iMessage read |
