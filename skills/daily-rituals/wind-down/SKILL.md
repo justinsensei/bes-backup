@@ -124,9 +124,9 @@ Would you like me to create contact notes for any of these? (e.g. "yes, 1 as org
 ```
 
 If Justin selects any:
-1. For each selected item, check if the contact file already exists in `/home/justin.guest/Developer/obsidian-vault/Notes/Contacts/` OR in `/home/justin.guest/Developer/obsidian-vault/Inbox/` using a wildcard/search for `*<Name>*.md` (since existing contact files are named with appended YYYYMMDDHHmmss timestamps/IDs, e.g., `Tor Barstad 20260610075543.md`).
+1. Check if the contact card already exists under `/home/justin.guest/Developer/obsidian-vault/Notes/Contacts/` OR in `/home/justin.guest/Developer/obsidian-vault/Inbox/` by performing a wildcard search on the name (e.g. searching for files matching `*Name*` using the `search_files` tool with `target='files'`). This is critical because contacts are saved with their unique timestamp appended (e.g., `Notes/Contacts/Tor Barstad 20260610075543.md`).
 2. If a matching file exists in either location, do NOT overwrite or truncate it (as it contains precious history/timeline entries). Instead, patch the file in its current location to insert the standard frontmatter, executive summary, and state sections at the very top, preserving any existing content (like `## Timeline` and its entries) underneath.
-3. If no matching file exists in either location, create a new file in the inbox directory `/home/justin.guest/Developer/obsidian-vault/Inbox/<Name>.md` (without a timestamp suffix in the filename itself, but with the ID property in frontmatter) and format the contact note following these strict standards:
+3. If the file does not exist in either location, create a new file in the inbox directory `/home/justin.guest/Developer/obsidian-vault/Inbox/<Name>.md` and format the contact note following these strict standards:
    * Frontmatter:
      ```yaml
      ---
