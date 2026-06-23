@@ -175,7 +175,7 @@ Draft today's work log, align with Justin, and write it to today's daily note. T
    - Synthesize the gathered material into a set of clean, structured blocks matching the standard work log format:
      - **Preview Summary:** A highly concise, 1-2 sentence active-voice overview of the day's main focus.
      - **🗓 Schedule & Events:** Chronological bullet list of today's and tomorrow's meetings and events (shared with the Morning Briefing).
-     - **✅ Work Log:** Synthesized highlights, bolded decisions (with accurate attribution), open questions/blockers, and accomplishments (completed Todoist tasks, closed Linear issues, git commits, or high-level vault changes).
+     - **✅ Work Log:** Synthesized highlights, bolded decisions (with accurate attribution), and open questions/blockers (omitting redundant accomplishments/completed tasks).
 
 
 4. **Present the Draft to Justin:**
@@ -187,7 +187,7 @@ Draft today's work log, align with Justin, and write it to today's daily note. T
 5. **Write the Finalized Work Log:**
    - Combine Justin's feedback with the draft.
    - Find or create today's daily note in `/home/justin.guest/Developer/obsidian-vault/Daily Notes/YYYY-MM-DD Weekday.md` (create from template `/home/justin.guest/Developer/obsidian-vault/Utilities/Templates/daily_note.md` if missing, stripping Templater tags).
-   - Overwrite/replace the corresponding headings (`> [!summary]`, `## 🗓 Schedule & Events` for Today's and Tomorrow's events, and `## ✅ Work Log` with subheadings `### 🚀 Highlights & Decisions` and `### 🏆 Accomplishments`) with your new synthesized content.
+   - Overwrite/replace the corresponding headings (`> [!summary]`, `## 🗓 Schedule & Events` for Today's and Tomorrow's events, and `## ✅ Work Log` with the subheading `### 🚀 Highlights & Decisions`) with your new synthesized content.
    - **Crucial:** Preserve the entire content of the `## 🗒 Scratchpad` section (including manual text written by Justin) and the `## 🌄 Morning Briefing` section. Never modify or delete them.
    - Append the sources attribution footer at the very bottom.
 
