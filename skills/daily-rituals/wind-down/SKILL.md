@@ -74,8 +74,6 @@ If Justin selects any:
          - "Participant Name"
        ---
        ```
-     - Append a link and one-sentence gist to today's daily note notepad under `## 🗒 Notepad` (if this section is missing from the daily note, append it to the bottom of the file first):
-       `* [[Inputs/Slack/<filename>|Slack summary]]: <One-sentence-gist>.`
      - Run the command to mark it processed:
        `python3 /home/justin.guest/.hermes/scripts/fetch_slack_brains.py --mark-processed <channel_id> <ts>`
    - **For Emails:**
@@ -93,8 +91,6 @@ If Justin selects any:
          - "Sender Name"
        ---
        ```
-     - Append a link and one-sentence gist to today's daily note notepad under `## 🗒 Notepad` (if this section is missing from the daily note, append it to the bottom of the file first):
-       `* [[Inputs/Emails/<filename>|Email summary]]: <One-sentence-gist>.`
      - Run the command to mark it processed:
        `python3 /home/justin.guest/.hermes/scripts/fetch_source_candidates.py --mark-email-processed <thread_id>`
    - Report the input(s) successfully saved.
@@ -167,7 +163,7 @@ Draft today's work log, align with Justin, and write it to today's daily note. T
      - **Linear:** Query the Linear GraphQL API via Python's `urllib.request` using `LINEAR_API_KEY` from `~/.hermes/.env` (no "Bearer" prefix) to retrieve issues updated today where Justin is assignee, creator, or subscriber.
      - **Todoist:** Query completed tasks via native `mcp_todoist_find_completed_tasks` (omit `responsibleUser` to include unassigned personal tasks) and any due-today incomplete tasks via `mcp_todoist_find_tasks_by_date`.
      - **Vault Git:** Check git history of the vault to capture manual notes Justin added, modified, or deleted today (e.g., `git -C ~/Developer/obsidian-vault log --since="<YYYY-MM-DD> 00:00:00" --until="<YYYY-MM-DD> 23:59:59" --name-status --pretty=format:"COMMIT:%h|%an|%s"`). Filter out commits from `Bes (bes-vm)` or containing `bes` to isolate Justin's manual edits.
-   - Read today's existing Obsidian daily note with `read_file` to see manual notepad entries.
+   - Read today's existing Obsidian daily note with `read_file` to see manual scratchpad entries.
    - Search the vault for any meeting/Granola notes generated today (look in `vault/Meetings/` or files containing today's date in their name).
    - Read the daily briefing cache `/home/justin.guest/.hermes/morning-briefing/<YYYY-MM-DD>.json` to check the `vault_activity` field, and run a quick terminal find command over the vault to gather any high-level vault restructuring, bulk updates, or manual categorization sweeps that took place during the day.
 
@@ -244,7 +240,7 @@ Preview tomorrow's schedule to establish mental readiness, coordinate upcoming t
 ## Verification Checklist
 
 - [ ] All 4 phases completed in strict interactive sequence.
-- [ ] Today's Notepad section in the daily note preserved completely intact without modification or truncation.
+- [ ] Today's Scratchpad section in the daily note preserved completely intact without modification or truncation.
 - [ ] Discovered contacts drafted in the inbox, and existing contact cards updated in place without relocation.
 - [ ] Work log draft synthesized with accurate attribution of decisions, and written to today's daily note.
 - [ ] Tomorrow's schedule fetched and presented with timezone-aware calendar offsets.

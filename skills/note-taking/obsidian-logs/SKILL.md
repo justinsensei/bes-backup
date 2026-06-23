@@ -39,7 +39,7 @@ Daily Notes are the central journal and timeline for Justin's day.
 - **Format:** `YYYY-MM-DD Weekday.md` (e.g., `2026-06-09 Tuesday.md`, `2026-06-14 Sunday.md`). Weekdays must be fully capitalized, separated from the date by a space.
 
 ### Note Layout & Structure
-A Daily Note begins with an executive summary callout block followed by chronological schedule, scratchpad, work log, and notepad sections (note: the Accomplishments section was retired as redundant):
+A Daily Note begins with an executive summary callout block followed by chronological schedule, scratchpad, and work log sections (note: the Accomplishments and Notepad sections were retired as redundant):
 ```markdown
 ---
 id: "YYYYMMDDHHmmss"
@@ -63,9 +63,6 @@ category: "[[Daily Notes]]"
 ## ✅ Work Log
 ### 🚀 Highlights & Decisions
 - Key milestones, critical choices, and active decisions made during the day.
-
-## 🗒 Notepad
-- Freeform scratchpad, thoughts, or rapid logs captured during the day (e.g. Slack/Email summaries).
 ```
 
 ### Interaction with `work-log`
