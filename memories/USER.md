@@ -15,3 +15,5 @@ User values synthesis and knowledge integration over simple summarization. When 
 Justin prefers checking only internal wikilinks during vault hygiene runs, and does not want external links/citations audited.
 §
 User only uses first-name aliases in contact frontmatter for family, friends, and close current colleagues. Do not add first-name aliases for general professional or business contacts.
+§
+Justin prefers his Daily Notes to have specific headings: ## 🗒 Scratchpad, ## 🌄 Morning Briefing (Work Log Review + Heads-Up), ## 🗓 Schedule & Events (shared Today/Tomorrow preview), and ## ✅ Work Log (Highlights + Accomplishments).
