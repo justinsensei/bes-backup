@@ -60,6 +60,7 @@ If candidates (Slack or Email) are found:
 If Justin selects any:
 1. For each selected item:
    - **For Slack conversations:**
+     - **Thread Isolation:** If multiple distinct threads are selected from the same channel or multi-party DM (MPDM), write a separate, focused Markdown note for each thread (using the thread's initial message timestamp for the frontmatter `id` and local datetime conversions) to preserve search resolution.
      - Synthesize a high-quality summary showing "who said what" clearly. Do NOT store verbatim Slack messages; store only summaries with retrieval metadata.
      - Write to `$OBSIDIAN_VAULT_PATH/Inputs/Slack/YYYY-MM-DD - Spaced Title.md`.
      - Structure the YAML frontmatter for Slack inputs:
@@ -103,7 +104,11 @@ If no candidates are found, skip this phase entirely and proceed to Phase 2.
 
 Present any discovered contacts or organizations (unresolved wikilinks found by the `check_vault_signals.py` script) from the signals cache file at `~/.hermes/morning-briefing/vault_signals_last_run.json` (under the `discovered_entities.people` and `discovered_entities.organizations` fields).
 
-If no discovered contacts are found in the signals cache, skip this phase entirely and proceed to Phase 3.
+*Crucial Filtering & Duplication Check:* The raw cache contains many false-positive people/organization names (such as "Use Anya Volosskaya", "ASL Bloom", "Daily Wind", "Scraps", or action item phrases). 
+1. **Filter Candidates:** Filter out non-entity phrases, daily note headers, action items, or generic software tools before presenting the list. Only present genuine, unresolved human and organizational entities.
+2. **Duplicate Check:** Always perform a wildcard search (e.g., `*Name*`) using `search_files` under `/home/justin.guest/Developer/obsidian-vault/` to check if a contact note already exists in `Notes/Contacts/` or `Inbox/`. Omit any entities that already have an existing contact card from the candidate list entirely.
+
+If no new, unresolved, and verified human or organization candidates are found in the signals cache after filtering, skip this phase entirely and proceed to Phase 3.
 
 Format:
 ```
