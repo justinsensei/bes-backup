@@ -23,7 +23,6 @@ def get_env_vars():
 ENV = get_env_vars()
 
 def get_todoist_loops():
-    return []
     loops = []
     token = ENV.get("TODOIST_API_KEY")
     if not token:
