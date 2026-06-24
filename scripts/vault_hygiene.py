@@ -1215,6 +1215,14 @@ if reverse_hygiene_summary:
 else:
     print("TaskNote reverse hygiene: all TaskNotes already have id and daily_note.")
 
+# 2.7 Sweep completed TaskNotes to Archive
+print("Running completed TaskNotes sweep to Archive...")
+completed_sweep_summary = sweep_completed_tasknotes(VAULT)
+if completed_sweep_summary:
+    print(f"Completed TaskNotes sweep: archived {len(completed_sweep_summary)} completed tasks.")
+else:
+    print("Completed TaskNotes sweep: no completed tasks to archive.")
+
 # 3. Format output for vault_hygiene_cron.py
 lines = []
 
@@ -1225,6 +1233,10 @@ if eiirp_summary:
 if reverse_hygiene_summary:
     lines.append(f"\n## ✅ TaskNote reverse hygiene — {len(reverse_hygiene_summary)} files patched")
     lines.extend(reverse_hygiene_summary)
+
+if completed_sweep_summary:
+    lines.append(f"\n## ✅ Completed TaskNotes sweep — {len(completed_sweep_summary)} tasks archived")
+    lines.extend(completed_sweep_summary)
 
 # ID Conflicts
 id_conflicts = {nid: paths for nid, paths in id_to_paths.items() if len(paths) > 1}
