@@ -580,13 +580,4 @@ platform_toolsets:
   - hermes-teams
   google_chat:
   - hermes-google_chat
-mcp_servers:
-  todoist:
-    command: npx
-    args:
-    - -y
-    - '@doist/todoist-mcp'
-    env:
-      TODOIST_API_KEY: ${TODOIST_API_KEY}
-    timeout: 120
-    connect_timeout: 60
+mcp_servers: {}
