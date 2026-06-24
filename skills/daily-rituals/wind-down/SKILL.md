@@ -184,7 +184,7 @@ Draft today's work log, align with Justin, and write it to today's daily note. T
    - Combine Justin's feedback with the draft.
    - Find or create today's daily note in `/home/justin.guest/Developer/obsidian-vault/Daily Notes/YYYY-MM-DD Weekday.md` (create from template `/home/justin.guest/Developer/obsidian-vault/Utilities/Templates/daily_note.md` if missing, stripping Templater tags).
    - Overwrite/replace the corresponding headings (`> [!summary]`, `## 🗓 Schedule & Events` for Today's and Tomorrow's events, and `## ✅ Work Log` with the subheading `### 🚀 Highlights & Decisions`) with your new synthesized content.
-   - **Crucial:** Preserve the entire content of the `## 🗒 Scratchpad` section (including manual text written by Justin) and the `## 🌄 Morning Briefing` section. Never modify or delete them.
+   - **Crucial:** Preserve the entire content of the `## 🌄 Morning Briefing` section. Never modify or delete it.
    - Append the sources attribution footer at the very bottom.
 
 ---
@@ -223,7 +223,7 @@ Preview tomorrow's schedule to establish mental readiness, coordinate upcoming t
 ## Pitfalls & Defensive Rules
 
 - **No Project Discovery in Wind-Down:** Never attempt to run live project discovery or suggest project note creations during the wind-down session. Project suggestions are too noisy for this workflow; instead, project entity matching and timeline appends are handled exclusively via the automated ingest pipelines (`integrate-entities`).
-- **Preserve the Scratchpad:** Always load today's daily note first, find the `## 🗒 Scratchpad` section, and keep its contents completely intact. If the section doesn't exist, create it under `## 🗒 Scratchpad` instead of overwriting any other sections.
+- **Scratchpad Redirection:** Quick notes or captured items during wind-down or on-the-go should go to the single global `/Inbox/Scratchpad.md` note (categorized under `# ✅ Tasks` or `# 🗒 Notes` headings) rather than the daily note, which has retired its Scratchpad heading.
 - **Inputs Terminology:** Always refer to Slack threads, emails, and other primary-category sources as "inputs" rather than "logs" in both conversations and note frontmatter, as per the updated vault schema.
 - **Accurate Attribution:** When drafting highlights and decisions from emails or meeting notes, ensure decisions are attributed to the correct person (e.g., Anya, Nana, teachers, etc.) rather than assuming Justin made them.
 - **Accurate Assumption/Feasibility Status:** Be extremely precise about what has actually been validated versus what remains an open question when drafting research findings. Always bound claims strictly to the scope of what was directly tested.
@@ -240,7 +240,7 @@ Preview tomorrow's schedule to establish mental readiness, coordinate upcoming t
 ## Verification Checklist
 
 - [ ] All 4 phases completed in strict interactive sequence.
-- [ ] Today's Scratchpad section in the daily note preserved completely intact without modification or truncation.
+- [ ] Any captured quick notes or tasks routed to the global `/Inbox/Scratchpad.md` note instead of daily note headings.
 - [ ] Discovered contacts drafted in the inbox, and existing contact cards updated in place without relocation.
 - [ ] Work log draft synthesized with accurate attribution of decisions, and written to today's daily note.
 - [ ] Tomorrow's schedule fetched and presented with timezone-aware calendar offsets.

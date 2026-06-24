@@ -16,4 +16,4 @@ Justin prefers checking only internal wikilinks during vault hygiene runs, and d
 §
 User only uses first-name aliases in contact frontmatter for family, friends, and close current colleagues. Do not add first-name aliases for general professional or business contacts.
 §
-Justin prefers his Daily Notes to have specific headings: ## 🗒 Scratchpad, ## 🌄 Morning Briefing (Work Log Review + Heads-Up), ## 🗓 Schedule & Events (shared Today/Tomorrow preview), and ## ✅ Work Log (Highlights & Decisions).
+Justin prefers his Daily Notes to have specific headings: ## 🌄 Morning Briefing (Work Log Review + Heads-Up), ## 🗓 Schedule & Events (shared Today/Tomorrow preview), and ## ✅ Work Log (Highlights & Decisions). He has retired the Daily Note Scratchpad heading, preferring to use a single Scratchpad.md note in the Inbox (under ~/Developer/obsidian-vault/Inbox/Scratchpad.md) for capturing quick notes and tasks.
