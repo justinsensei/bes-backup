@@ -143,14 +143,6 @@ def main():
     else:
         # Define API configurations
         apis = {
-            "Todoist": {
-                "key_var": "TODOIST_API_KEY",
-                "method": "GET",
-                "url": "https://api.todoist.com/rest/v2/projects",
-                "fallback_url": "https://api.todoist.com/api/v1/projects",
-                "headers": lambda k: {"Authorization": f"Bearer {k}"},
-                "verifier": lambda r: r.status_code == 200
-            },
             "Slack": {
                 "key_var": "SLACK_USER_TOKEN",
                 "method": "POST",
