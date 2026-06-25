@@ -94,7 +94,7 @@
     {
       "id": "d8811ffe259f",
       "name": "Morning Briefing \u2014 5AM daily",
-      "prompt": "[IMPORTANT: You are running as a scheduled cron job. DELIVERY: Your final response will be automatically delivered to the user \u2014 do NOT use send_message or try to deliver the output yourself. Just produce your report/output as your final response and the system handles the rest.]\n\nMorning briefing prep processes are complete. Please generate today's morning briefing report as a single message following the simplified format described in the morning-briefing skill:\n\n\u2022 Calendar preview (just today and tomorrow)\n\u2022 Summary of yesterday's work log (not the full log)\n\u2022 High-urgency tasks and inbox candidates\n\u2022 Calendar candidates\n\u2022 Morning thought\n\nAt the end of the report, ask me if I have any follow-up questions or requests.",
+      "prompt": "[IMPORTANT: You are running as a scheduled cron job. DELIVERY: Your final response will be automatically delivered to the user \u2014 do NOT use send_message or try to deliver the output yourself. Just produce your report/output as your final response and the system handles the rest.]\n\nMorning briefing prep processes are complete. Please generate today's morning briefing report as a single message following the simplified format described in the morning-briefing skill:\n\n\u2022 Calendar preview (just today and tomorrow)\n\u2022 Summary of yesterday's work log (not the full log)\n\u2022 High-urgency tasks and inbox candidates\n\u2022 Calendar candidates\n\nAt the end of the report, ask me if I have any follow-up questions or requests.",
       "skills": [],
       "skill": null,
       "model": null,
@@ -276,5 +276,5 @@
       "profile": null
     }
   ],
-  "updated_at": "2026-06-25T06:55:09.683762-04:00"
+  "updated_at": "2026-06-25T07:10:46.937722-04:00"
 }
