@@ -90,6 +90,8 @@ URL validation on markdown links in `Inputs/Readings/` (legacy: `Logs/Sources/`,
 ### ID conflicts / Missing ID / Missing daily_note
 Report but never auto-fix.
 
+*Note: The **Missing ID**, **Ghost Links**, and **Orphan Notes** checks are strictly restricted to the `Notes/` folder and its subfolders to prevent false-positive reports on temporary files (`Inbox/`, `TaskNotes/`, etc.).*
+
 ## Hygiene tiers
 
 | Tier | Check | Owner | Schedule |

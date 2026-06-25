@@ -35,3 +35,5 @@ When building solutions, prefer creating simple, single-purpose utility tools th
 When creating new Concept notes, the generated ID (YYYYMMDDHHmmss) must be appended to the end of the filename, and the files must be written to ~/Developer/obsidian-vault/Inbox/ for review.
 §
 Daily briefing cache for 2026-06-17 showed stale candidates (MKD-1, John Kearney) which were actually completed on June 11. Live queries verified they were already done.
+§
+The vault hygiene checks for Missing ID, Ghost Links, and Orphan Notes are strictly restricted to the `Notes/` folder and its subfolders to avoid false positives from temporary directories like Inbox/ and TaskNotes/.
