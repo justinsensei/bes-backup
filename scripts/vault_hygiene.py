@@ -1147,6 +1147,9 @@ def sweep_root_tasknotes(vault):
 # Run filename capitalization healer first
 heal_vault_filename_capitalizations(VAULT)
 
+# Auto-resolve ID conflicts by incrementing conflicting IDs
+resolve_id_conflicts_automatically(VAULT)
+
 # 1. Reconcile raw Granola meetings from external syncing
 reconcile_granola_meetings(VAULT)
 
