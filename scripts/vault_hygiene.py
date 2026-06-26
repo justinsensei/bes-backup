@@ -593,6 +593,148 @@ def heal_vault_filename_capitalizations(vault_path):
         if modified_files:
             print(f"Auto-healed wikilinks in {modified_files} files to match new capitalization.")
 
+
+def heal_links_for_renamed_files(vault_path, title_mapping):
+    link_pattern = re.compile(r"\[\[([^\]]+)\]\]")
+    
+    def replace_link(match):
+        inner = match.group(1)
+        if "|" in inner:
+            target_part, display = inner.split("|", 1)
+        else:
+            target_part, display = inner, None
+            
+        if "#" in target_part:
+            base_target, section = target_part.split("#", 1)
+            section = "#" + section
+        else:
+            base_target, section = target_part, ""
+            
+        base_target_clean = base_target.strip()
+        base_target_lower = base_target_clean.lower()
+        target_filename_lower = os.path.basename(base_target_lower)
+        
+        if target_filename_lower in title_mapping:
+            new_target_title = title_mapping[target_filename_lower]
+            dir_part = os.path.dirname(base_target_clean)
+            new_base_target = os.path.join(dir_part, new_target_title) if dir_part else new_target_title
+            
+            if display:
+                return f"[[{new_base_target}{section}|{display}]]"
+            else:
+                return f"[[{new_base_target}{section}]]"
+        return match.group(0)
+        
+    modified_files = 0
+    ignore_dirs = {"Inputs", "Readwise", "Templates", "Daily Notes", "Categories", ".git", ".trash", ".cursor", ".claude", "Copilot"}
+    for root, dirs, files in os.walk(vault_path):
+        dirs[:] = [d for d in dirs if not d.startswith(".") and d not in ignore_dirs]
+        for f in files:
+            if f.endswith(".md"):
+                path = Path(root) / f
+                try:
+                    content = path.read_text(encoding="utf-8", errors="replace")
+                    new_content = link_pattern.sub(replace_link, content)
+                    if new_content != content:
+                        path.write_text(new_content, encoding="utf-8")
+                        modified_files += 1
+                except Exception as e:
+                    print(f"  Error healing links in {f}: {e}")
+    if modified_files:
+        print(f"Auto-healed wikilinks in {modified_files} files to match renamed ID files.")
+
+
+def resolve_id_conflicts_automatically(vault_path):
+    all_existing_ids = set()
+    for root, dirs, files in os.walk(vault_path):
+        dirs[:] = [d for d in dirs if not d.startswith(".")]
+        for f in files:
+            if f.endswith(".md") and f != "RESOLVER.md":
+                path = Path(root) / f
+                try:
+                    content = path.read_text(encoding="utf-8", errors="replace")
+                    if content.startswith("---"):
+                        end = content.find("\n---", 3)
+                        if end > 0:
+                            fm_raw = content[3:end]
+                            id_match = re.search(r"^id:\s*[\"']?(\d+)[\"']?", fm_raw, re.MULTILINE)
+                            if id_match:
+                                all_existing_ids.add(id_match.group(1).strip())
+                except Exception:
+                    pass
+
+    skip_dirs = {"Inputs", "Readwise", "Utilities", ".git", ".trash", ".cursor", ".claude", "Daily Notes"}
+    id_to_paths = defaultdict(list)
+    for root, dirs, files in os.walk(vault_path):
+        dirs[:] = [d for d in dirs if not d.startswith(".") and d not in skip_dirs]
+        for f in files:
+            if f.endswith(".md") and f != "RESOLVER.md":
+                path = Path(root) / f
+                try:
+                    content = path.read_text(encoding="utf-8", errors="replace")
+                    if content.startswith("---"):
+                        end = content.find("\n---", 3)
+                        if end > 0:
+                            fm_raw = content[3:end]
+                            id_match = re.search(r"^id:\s*[\"']?(\d+)[\"']?", fm_raw, re.MULTILINE)
+                            if id_match:
+                                nid = id_match.group(1).strip()
+                                id_to_paths[nid].append(path)
+                except Exception:
+                    pass
+
+    conflicts = {nid: sorted(paths) for nid, paths in id_to_paths.items() if len(paths) > 1 and nid != ""}
+    if conflicts:
+        print(f"Found {len(conflicts)} ID conflict groups. Resolving automatically by incrementing...")
+        title_mapping = {}
+        for nid, paths in sorted(conflicts.items()):
+            # Keep the first path as-is, increment subsequent paths
+            for p in paths[1:]:
+                new_nid = nid
+                while new_nid in all_existing_ids:
+                    try:
+                        new_nid = str(int(new_nid) + 1)
+                    except ValueError:
+                        new_nid = new_nid + "1"
+                
+                all_existing_ids.add(new_nid)
+                
+                # Update ID in frontmatter
+                try:
+                    content = p.read_text(encoding="utf-8", errors="replace")
+                    if content.startswith("---"):
+                        end = content.find("\n---", 3)
+                        if end > 0:
+                            fm_raw = content[3:end]
+                            new_fm_raw = re.sub(
+                                rf"^id:\s*[\"']?{re.escape(nid)}[\"']?",
+                                f"id: {new_nid}",
+                                fm_raw,
+                                flags=re.MULTILINE
+                            )
+                            if new_fm_raw != fm_raw:
+                                new_content = f"---\n{new_fm_raw}\n---\n" + content[end + 4:]
+                                p.write_text(new_content, encoding="utf-8")
+                                print(f"  Updated ID in frontmatter of {p.relative_to(vault_path)}: {nid} -> {new_nid}")
+                except Exception as e:
+                    print(f"  Error updating frontmatter ID in {p}: {e}")
+                    continue
+                
+                # If ID is in the filename, rename the file
+                if nid in p.name:
+                    new_name = p.name.replace(nid, new_nid)
+                    new_path = p.parent / new_name
+                    try:
+                        p.rename(new_path)
+                        print(f"  Renamed file: {p.relative_to(vault_path)} -> {new_name}")
+                        title_mapping[p.stem.lower()] = new_path.stem
+                    except Exception as e:
+                        print(f"  Error renaming file {p} to {new_name}: {e}")
+        
+        if title_mapping:
+            heal_links_for_renamed_files(vault_path, title_mapping)
+
+
 def _slugify(text, max_len=60):
     """Convert task text to a URL/filename-safe slug."""
     slug = text.lower()
