@@ -872,21 +872,13 @@ def sweep_eiirp_tasks(vault, lookback_hours=96):
 
 
 def sweep_tasknote_reverse_hygiene(vault):
-    """Backfill missing id and daily_note fields on existing TaskNote files.
+    """Backfill missing id field on existing TaskNote files.
 
     Returns a list of human-readable summary strings describing fixes made.
     """
     tasknotes_dir = Path(vault) / "TaskNotes" / "Tasks"
-    daily_notes_dir = Path(vault) / "Daily Notes"
     if not tasknotes_dir.exists():
         return []
-
-    # Build a lookup: date string "YYYY-MM-DD" -> daily note stem
-    daily_note_by_date = {}
-    if daily_notes_dir.exists():
-        for dn in daily_notes_dir.glob("????-??-?? *.md"):
-            date_str = dn.stem[:10]
-            daily_note_by_date[date_str] = dn.stem
 
     summary = []
 
@@ -915,29 +907,6 @@ def sweep_tasknote_reverse_hygiene(vault):
                     new_fields["id"] = ct.strftime("%Y%m%d%H%M%S")
                 except Exception:
                     pass
-
-        # --- daily_note field ---
-        if "daily_note" not in fm:
-            date_created = fm.get("dateCreated", "")
-            target_date = None
-            if date_created:
-                try:
-                    dt = datetime.datetime.fromisoformat(date_created.replace("Z", "+00:00").split("+")[0])
-                    target_date = dt.strftime("%Y-%m-%d")
-                except ValueError:
-                    pass
-            if not target_date:
-                try:
-                    ct = datetime.datetime.fromtimestamp(task_path.stat().st_ctime)
-                    target_date = ct.strftime("%Y-%m-%d")
-                except Exception:
-                    pass
-            if target_date:
-                dn_stem = daily_note_by_date.get(target_date)
-                if dn_stem:
-                    new_fields["daily_note"] = f'"[[{dn_stem}]]"'
-                else:
-                    print(f"  TaskNote reverse hygiene: no daily note found for {target_date}, skipping {task_path.name}")
 
         if new_fields:
             patched = _rewrite_frontmatter(task_path, new_fields)
@@ -1299,7 +1268,7 @@ for root, dirs, files in os.walk(VAULT):
             missing_ids.append(rel_path)
             
         is_contact = (category in ["People", "Organizations"]) or rel_str_f.lower().startswith("notes/contacts/")
-        if not is_contact:
+        if rel_str_f.startswith("Notes/") and not is_contact:
             if not daily_note or "[[" not in daily_note:
                 missing_daily_notes.append(rel_path)
             
@@ -1451,13 +1420,13 @@ if eiirp_summary:
 else:
     print("EIIRP: no unconverted checkboxes found in recent daily notes.")
 
-# 2.6 TaskNote reverse hygiene: backfill missing id and daily_note
+# 2.6 TaskNote reverse hygiene: backfill missing id
 print("Running TaskNote reverse hygiene...")
 reverse_hygiene_summary = sweep_tasknote_reverse_hygiene(VAULT)
 if reverse_hygiene_summary:
     print(f"TaskNote reverse hygiene: patched {len(reverse_hygiene_summary)} files.")
 else:
-    print("TaskNote reverse hygiene: all TaskNotes already have id and daily_note.")
+    print("TaskNote reverse hygiene: all TaskNotes already have id.")
 
 # 2.7 Sweep completed TaskNotes to Archive
 print("Running completed TaskNotes sweep to Archive...")
