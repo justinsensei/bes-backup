@@ -51,8 +51,63 @@ Whenever you are asked to interact with files in the vault, you **must** obey th
 3. **Failing to check for existing files:** Before creating any note or stub, search both `/Notes/` and `/Inbox/` by name to prevent duplicate stubs.
 4. **Failing to update the central wiki log:** Any newly created note (including manual quick-captures or scraps in `Inbox/`) must be logged in `Utilities/log.md` under the correct daily header (creating the header in `## YYYY-MM-DD Weekday` format if it doesn't already exist for the current date).
 
-## Verification Checklist
+## Vault Hygiene & Structural Plumbing
+
+Unlike semantic linting (which audits note content for meaning), physical and structural hygiene ensures files are in correct folders, filenames follow capitalizations, stale or completed tasks are archived, and cross-references (wikilinks) remain functional.
+
+### Daily Vault Hygiene Pipeline
+The pipeline runs autonomously every night at 9:00 PM via the cron job **"vault-hygiene"** (`0b12d967fdf6`), running `vault_hygiene_cron.py`.
+The script runs silently under a **watchdog pattern**:
+- Normal successful runs or quiet auto-fixes produce **no stdout**, meaning no Telegram alert is sent.
+- Warnings or errors (flagged by `# 🔴` or `# ⚠️` markers) are surfaced to Telegram.
+
+### Core Hygiene Operations
+
+#### 1. TaskNotes Sweep & Archive (Daily)
+TaskNotes represent actionable work items. Completed or abandoned items are swept out of active view to keep folders tidy:
+- **`TaskNotes/Tasks/` (Subfolders):** Notes with `status: done` (case-insensitive) are moved to `TaskNotes/Archive/`.
+- **`TaskNotes/` Root Directory (no subfolders):** Notes with `status: done` or `status: dropped` (case-insensitive) are moved to `TaskNotes/Archive/`.
+- **Link Healing:** When a note is moved to `Archive/`, the pipeline scans all Markdown files in the vault and updates their internal wikilinks (e.g., `[[TaskNotes/Some Task]]` -> `[[TaskNotes/Archive/Some Task]]`) to prevent broken links.
+- **Filename Collisions:** If an archived task has a filename collision in `Archive/`, the script appends a numeric suffix (e.g., `Some Task_1.md`).
+
+#### 2. EIIRP Task Promotion (Checkbox-to-Note Conversion)
+- **Operation:** Scans the last 96 hours of Daily Notes for raw markdown checkboxes formatted as `- [ ] <Task Name> #task`.
+- **Promotion:** Automatically promotes these checkboxes into separate physical TaskNote files in `TaskNotes/Tasks/` using the standard TaskNote schema, keeping the vault highly organized.
+
+#### 3. Filename Capitalization & Link Healing
+- **Standard Proper Nouns & Acronyms:** Matches files against pre-defined rules (e.g. `ai` -> `AI`, `signlab` -> `SignLab`, `typescript` -> `TypeScript`) and renames mismatched files.
+- **Link Repair:** Updates references across all files in the vault to use the corrected, newly renamed capitalized filepath.
+
+#### 4. Folder Boundary Constraints
+- **Scope Rule:** Folder-wide health audits (Missing ID, Missing Daily Note, Ghost Links, and Orphan Notes) are strictly restricted to the `Notes/` directory and its subdirectories.
+- **Why:** This avoids false positives and warning noise from temporary or inbox files in `Inbox/` or `TaskNotes/`.
+
+#### 5. Automated ID Conflict Resolution
+- **Operation:** When multiple notes in the vault share the same 14-digit `id` field in their frontmatter, the pipeline automatically resolves the conflict.
+- **Resolution:**
+  - Keeps the alphabetical/first file's ID unchanged.
+  - Increments the ID for subsequent conflicting files until a globally unique ID in the vault is found.
+  - Rewrites the frontmatter `id:` field in the resolved files.
+  - If the conflicting ID is present in the filename, renames the file to match the new ID.
+  - Heals any incoming wikilinks to the renamed files across the entire vault.
+
+---
+
+### Technical & Environment Architecture: The Bidirectional Sync Gotcha
+On the VM environment, changes to tracked scripts (like `vault_hygiene.py`) and configurations have a strict directory mapping.
+- **The Pitfall:** The VM's active runtime directory is **`~/.hermes/`**, but there is also a backup repository at **`~/bes-backup/`**.
+- **The Mirror Mechanism:** The system runs a background daemon `bes-autocommit.service` which watches `~/.hermes/` and mirrors its contents into `~/bes-backup/` (using `rsync --delete`).
+- **How to Avoid Reversion:** You must **never** edit python scripts directly in `~/bes-backup/scripts/` or files under `~/bes-backup/`. If you do, your changes will be silently deleted and overwritten on the next sync event!
+- **Rule:** Always apply patches and write files to the active runtime paths under **`~/.hermes/`** (e.g., `~/.hermes/scripts/vault_hygiene.py`). The background daemon will safely mirror and commit those changes to git.
+
+---
+
+## Expanded Verification Checklist
 - [ ] Active rules (including `main.mdc`, `note-creation.mdc`, `obsidian-contacts.mdc`, `file-operations.mdc`, and `obsidian-syntax.mdc`) retrieved from `/home/justin.guest/Developer/obsidian-vault/.cursor/rules/` before executing the operation
 - [ ] Note frontmatter, title, and location checked against the retrieved Cursor rules
 - [ ] Newly created notes land in `/home/justin.guest/Developer/obsidian-vault/Inbox/` first (except raw feed folders bypass)
 - [ ] Central wiki log (`Utilities/log.md`) updated with the new creation under the correct date header
+- [ ] Run the hygiene script manually when auditing: `python3 ~/.hermes/scripts/vault_hygiene_cron.py`
+- [ ] Verify stdout of hygiene script only contains legitimate unresolved errors or is empty for a clean state
+- [ ] Confirm moved tasks exist in `TaskNotes/Archive/` and are deleted from their source paths
+- [ ] Check `git -C ~/bes-backup status` and ensure the autocommit service safely mirrored and pushed updates
