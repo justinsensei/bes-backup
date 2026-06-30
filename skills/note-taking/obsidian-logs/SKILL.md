@@ -65,6 +65,12 @@ category: "[[Daily Notes]]"
 ### Interaction with `work-log`
 When compiling a work log, fetch events from Google Calendar, Linear, Todoist, and Slack, compile today's summary, and append/update the schedule and Highlights & Decisions sections directly inside today's Daily Note (omitting accomplishments/completed task lists entirely).
 
+### Updating Past Events & Cancellations
+When updating past daily notes or reviews to reflect that a planned calendar event was not attended or was cancelled:
+- **Do not delete the event**: Keep the event entry in the `Schedule & Events` section to preserve the context of what was planned.
+- **Mark the status**: Wrap the event text in strikethroughs `~~...~~` and append `(Did not attend)` or `(Cancelled)` to clearly signify the actual outcome.
+- **Align dependent sections**: Scan the Daily Note's `Preview Summary` and the following day's `Morning Briefing` (which contains the `Work Log Review (Yesterday)`) and update them to accurately reflect that the event did not occur.
+
 ---
 
 ## 3. Meetings & Granola Management
